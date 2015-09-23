@@ -92,7 +92,7 @@ USE_TZ = True
 
 
 # Parse database configuration from $DATABASE_URL
-DATABASES['default'] = dj_database_url.config(default='postgres://heroku@localhost:5432/gamesite')
+DATABASES['default'] = dj_database_url.config(default='postgres://heroku:seng330@localhost:5432/gamesite')
 
 # Enable Connection Pooling (if desired)
 DATABASES['default']['ENGINE'] = 'django_postgrespool'
