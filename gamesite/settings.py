@@ -13,7 +13,7 @@ import os
 import socket
 import dj_database_url
 
-if socket.gethostname == '6817853a-1a15-4d05-80f5-e67283fad47d':
+if socket.gethostname() == '6817853a-1a15-4d05-80f5-e67283fad47d':
     ENV = 'PROD'
 else:
     ENV = 'DEV'
