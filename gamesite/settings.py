@@ -10,10 +10,9 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 import os
-import socket
 import dj_database_url
 
-if socket.gethostname() == '6817853a-1a15-4d05-80f5-e67283fad47d':
+if 'USER' in os.environ and os.environ['USER'] == 'heroku_prod':
     ENV = 'PROD'
 else:
     ENV = 'DEV'
