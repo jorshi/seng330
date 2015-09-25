@@ -10,7 +10,13 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 import os
+import socket
 import dj_database_url
+
+if socket.gethostname == '6817853a-1a15-4d05-80f5-e67283fad47d':
+    ENV = 'PROD'
+else:
+    ENV = 'DEV'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -23,7 +29,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = ")mt8l9$eny==^-ca1ql=3bk@p4-&b^i3ars_is)qn)06(=b%&#"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if ENV != 'PROD':
+    DEBUG = True
+else:
+    DEBUG = False
 
 TEMPLATE_DEBUG = True
 
