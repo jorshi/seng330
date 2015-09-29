@@ -12,7 +12,15 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 import dj_database_url
 
-if 'USER' in os.environ and os.environ['USER'] == 'heroku_prod':
+sqlliteUsers = [
+]
+
+if 'USER' in os.environ:
+    USER = os.environ['USER']
+else:
+    USER = None
+
+if USER == 'heroku_prod':
     ENV = 'PROD'
 else:
     ENV = 'DEV'
@@ -98,12 +106,12 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+if ENV == 'PROD' or USER in sqlliteUsers:
+    # Parse database configuration from $DATABASE_URL
+    DATABASES['default'] = dj_database_url.config(default='postgres://heroku:seng330@localhost:5432/gamesite')
 
-# Parse database configuration from $DATABASE_URL
-DATABASES['default'] = dj_database_url.config(default='postgres://heroku:seng330@localhost:5432/gamesite')
-
-# Enable Connection Pooling (if desired)
-DATABASES['default']['ENGINE'] = 'django_postgrespool'
+    # Enable Connection Pooling (if desired)
+    DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
