@@ -1,0 +1,21 @@
+Added login page
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch login
+# Changes to be committed:
+#	modified:   gamesite/settings.py
+#	modified:   gamesite/urls.py
+#
+# Untracked files:
+#	gamesite/__init__.pyc
+#	gamesite/base.html
+#	gamesite/loggedin.html
+#	gamesite/settings.pyc
+#	gamesite/urls.pyc
+#	gamesite/views.py
+#	gamesite/views.pyc
+#	gamesite/wsgi.pyc
+#	templates/
+#	venv/
+#
