@@ -12,6 +12,20 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 import dj_database_url
 
+postgresUser = [
+    'jshier'
+]
+
+if 'USER' in os.environ:
+    USER = os.environ['USER']
+else:
+    USER = None
+
+if USER == 'heroku_prod':
+    ENV = 'PROD'
+else:
+    ENV = 'DEV'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -23,7 +37,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = ")mt8l9$eny==^-ca1ql=3bk@p4-&b^i3ars_is)qn)06(=b%&#"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if ENV != 'PROD':
+    DEBUG = True
+else:
+    DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -90,12 +107,12 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+if ENV == 'PROD' or USER in postgresUser:
+    # Parse database configuration from $DATABASE_URL
+    DATABASES['default'] = dj_database_url.config(default='postgres://heroku:seng330@localhost:5432/gamesite')
 
-# Parse database configuration from $DATABASE_URL
-DATABASES['default'] = dj_database_url.config(default='postgres://heroku:seng330@localhost:5432/gamesite')
-
-# Enable Connection Pooling (if desired)
-DATABASES['default']['ENGINE'] = 'django_postgrespool'
+    # Enable Connection Pooling (if desired)
+    DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

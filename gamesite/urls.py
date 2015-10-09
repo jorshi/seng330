@@ -17,5 +17,6 @@ urlpatterns = patterns('',
     url(r'^loggedin/$', 'gamesite.views.loggedin'),
     url(r'^logout/$', 'gamesite.views.logout'),
     url(r'^home/$', 'gamesite.views.home')
+                       
 )
 
