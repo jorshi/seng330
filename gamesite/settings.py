@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 import dj_database_url
 
-sqlliteUsers = [
+postgresUser = [
+    'jshier'
 ]
 
 if 'USER' in os.environ:
@@ -106,7 +107,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-if ENV == 'PROD' or USER in sqlliteUsers:
+if ENV == 'PROD' or USER in postgresUser:
     # Parse database configuration from $DATABASE_URL
     DATABASES['default'] = dj_database_url.config(default='postgres://heroku:seng330@localhost:5432/gamesite')
 
