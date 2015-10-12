@@ -17,7 +17,7 @@ def register(request):
                 username=form.cleaned_data['username'],
                 password=form.cleaned_data['password1'],
             )
-            return HttpResponseRedirect('/home/')
+            return HttpResponseRedirect('/')
     else:
         form = RegistrationForm()
     return render(request, 'register.html', {'form': form})
@@ -32,7 +32,7 @@ def login(request):
             user = django.contrib.auth.authenticate(username=username, password=password)
             if user != None:
                 django.contrib.auth.login(request, user)
-                return HttpResponseRedirect('/home/', {'user': user})
+                return HttpResponseRedirect('/', {'user': user})
             else:
                 form.add_error(None, 'Invalid username or password')
         else:
@@ -46,6 +46,8 @@ def player_logout(request):
     django.contrib.auth.logout(request)
     return render(request, 'logout_success.html')
 
-@login_required
 def home(request):
-    return render(request, 'home.html', {'user': request.user})
+    if request.user.is_authenticated():
+        return render(request, 'home.html', {'user': request.user})
+    else:
+        return HttpResponseRedirect('/login')
