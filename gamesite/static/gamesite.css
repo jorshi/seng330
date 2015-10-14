@@ -88,6 +88,11 @@
   border-bottom-color: #fff;
 }
 
+.navbar .navbar-nav li a:hover,
+.navbar .navbar-nav li a:focus {
+    color: #999;
+}
+
 .navbar .navbar-nav li a:focus {
     outline: 0;
 }

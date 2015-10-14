@@ -1,6 +1,16 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+<!-- template for game dashboard with parser -->
 {% block content %}
-    <div>
-        <h3>Player Dashboard</h3>
-    </div>
+    <!-- insert room description -->
+    <p>"There's a gun, a door, a clock and a key in the room..."</p>
+    <form id="commandForm" method="return post();return false;" onsubmit="parse();return false;"> 
+        <input type="text" name="command" /> 
+        <input type="submit" value="enter" /> 
+    </form>
+    
+    
+    <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script> 
+    <script language="javascript" type="text/javascript" src="http://malsup.github.com/jquery.form.js"></script>
+    <script language="javascript" type="text/javascript" src="{% static 'js/parsertest.js' %}"></script>
 {% endblock %}
