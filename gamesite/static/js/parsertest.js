@@ -10,7 +10,7 @@
      pattDrop = /^\s*(discard|drop|throw away|throw out)\s+(\w*)\s*$/i;
 
 
-	 
+     
 	// function that will check if an item is in a room (it will return that item if it is, else will return null)
 	function itemIsInRoomOrInv(name, mode) {
 		/* The mode specifies if your checking the inventory, room or both
@@ -60,7 +60,6 @@
 
 	// Parser Method to check if a command is valid or not
 	Parser.prototype.check = function(s) {
-		
 		if (pickUpCheck(s)) return true;					
 		if (useItemCheck(s)) return true;
 		if (examineCheck(s)) return true;		
@@ -69,7 +68,7 @@
 		// just for error checking	
 		if (s == "printroom") {
 			printRoom();
-			return true
+			return true;
 		}
 
 		return false;	// Not a valid command
@@ -92,7 +91,7 @@
 			if (itemToCheck != null){
 				// item is in the room, so see if it can be picked up
 				if (itemToCheck.canBePickedUp == true){
-					$("body").append("You just picked up the " + itemToCheck.name + "<br>");
+					displayResponse("You just picked up the " + itemToCheck.name);
 					// Now we have to remove the item from the room and put it into the inventory
 					var index = itemsInRoom.indexOf(itemToCheck);
 					// confusing looking but all it does is move the item from the room to the inventory
@@ -100,11 +99,11 @@
 					itemToCheck.inInv = true;
 					return true;
 				} else {
-					$("body").append("You can not pick up the " + itemToCheck.name + "<br>");
+					displayResponse("You can not pick up the " + itemToCheck.name);
 					return true;
 				}
 			} else {
-				$("body").append("There is no " + match[2] + "<br>");
+				displayResponse("There is no " + match[2] + "in the room");
 				return true;
 
 			}
@@ -126,7 +125,7 @@
 			// checks if item is in the room
 			if (itemToCheck != null){
 				// item is in the room, so see if it can be picked up
-				$("body").append("You dropped the " + itemToCheck.name + "<br>");
+				displayResponse("You dropped the " + itemToCheck.name);
 				// Now we have to remove the item from the room and put it into the inventory
 				var index = itemsInInventory.indexOf(itemToCheck);
 				// confusing looking but all it does is move the item from the Inventory to the room
@@ -134,7 +133,7 @@
 				itemToCheck.inInv = false;
 				return true;
 			} else {
-				$("body").append("There is no " + match[2] + " in your inventory" + "<br>");
+				displayResponse("There is no " + match[2] + " in your inventory");
 				return true;
 
 			}
@@ -155,10 +154,10 @@
 			// checks if item is in the room
 			if (itemToCheck != null){
 				// item is in the room, so see if it can be picked up
-				$("body").append(itemToCheck.description + "<br>");
+				displayResponse(itemToCheck.description);
 				return true;
 			} else {
-				$("body").append("There is no " + match[2] + "<br>");
+				displayResponse("There is no " + match[2]);
 				return true;
 
 			}
@@ -185,35 +184,35 @@
 					if (itemToCheck.needsToBeInInvForUse == false) {
 						// in case we want a custom message when the item is used
 						if (itemToCheck.useMessage == null) {
-							$("body").append("You just used the " + itemToCheck.name + "<br>");
+							displayResponse("You just used the " + itemToCheck.name);
 							return true;
 						} else {
-							$("body").append(itemToCheck.useMessage + "<br>");
+							displayResponse(itemToCheck.useMessage);
 							return true;
 						}
 					// the item needs to be in your inventory to be used so check if in inventory
 					} else if (itemToCheck.inInv == true) {
 						// custom method for item use
 						if (itemToCheck.useMessage == null) {
-							$("body").append("You just used the " + itemToCheck.name + "<br>");
+							displayResponse("You just used the " + itemToCheck.name);
 							return true;
 						} else {
-							$("body").append(itemToCheck.useMessage + "<br>");
+							displayResponse(itemToCheck.useMessage);
 							return true;
 						}
 					// item isnt in your inventory and needs to be there to be used
 					} else {
-						$("body").append("You need to pick it up first" + "<br>");
+						displayResponse("You need to pick it up first");
 						return true;
 					}
 				} else {
 						// the item cant be used so give tell the player
-						$("body").append("You can not use the " + itemToCheck.name + "<br>");
+						displayResponse("You cannot use the " + itemToCheck.name);
 						return true;
 				}
 			} else {
 				// if their wasn't an item in the room
-				$("body").append("There is no " + match[2] + "<br>");
+				displayResponse("There is no " + match[2] + "here");
 				return true;
 			}
 		}
@@ -230,43 +229,66 @@
 
 			//temporary movement logic
 			if (direction == 'north'){
-				$("body").append("You went north." + "<br>");
+				displayResponse("You went north." + "<br>");
 			}
 			else if (direction == 'east'){
-				$("body").append("You went east." + "<br>");
+				displayResponse("You went east." + "<br>");
 			}
 			else if (direction == 'south'){
-				$("body").append("You went south." + "<br>");
+				displayResponse("You went south." + "<br>");
 			}
 			else if (direction == 'west'){
-				$("body").append("You went west." + "<br>");
+				displayResponse("You went west." + "<br>");
 			}
 
 			else{
-				$("body").append("Invalid direction specified." + "<br>");
+				displayResponse("Invalid direction specified." + "<br>");
 			}
 		}
 	}
+    
+    // global variables
+    var key, door, clock, gun, parser;
 
     // Called once when document loads
     $(function()  {
         // Instantiate some test items
-        var key = new Item("key", "Unlocks somthing.", null, true, false, true);
-        var door = new Item("door", "its shut.", "you try to open the door but it's locked.", false, true, false);
-        var clock = new Item("clock", "It's a clock, It appears to be broken.", null, false, false, false);
-        var gun = new Item("gun", "It doesn't appear to be loaded.", "You try to fire the gun but you can't.", true, true, true);
+        key = new Item("key", "Unlocks somthing.", null, true, false, true);
+        door = new Item("door", "its shut.", "you try to open the door but it's locked.", false, true, false);
+        clock = new Item("clock", "It's a clock, It appears to be broken.", null, false, false, false);
+        gun = new Item("gun", "It doesn't appear to be loaded.", "You try to fire the gun but you can't.", true, true, true);
         // parser class
-        var parser = new Parser();
+        parser = new Parser();
+    });
+    
+    $("#commandForm").submit(function(event)  {
+        event.preventDefault();
+        parse();
     });
 
 	// Function called upon submit button being pressed
-	function parse(){
+	function parse() {
 		//clear form after submitting text
 		var enteredCommand = commandForm.command.value;
-		document.getElementById("commandForm").reset();
+		$("#commandUserInput").val('');
+        
+        //echo command
+        var echoedCommand = document.createElement("p");
+        echoedCommand.appendChild(document.createTextNode(enteredCommand));
+        echoedCommand.setAttribute("class", "echo");
+        $("#terminal").append(echoedCommand);
 
 		//parse command, print whether or not the command is valid
 		if (!parser.check(enteredCommand)){
-			$("body").append(enteredCommand + " is an "+ "invalid command." + "<br>");
+			displayResponse(enteredCommand + " is an "+ "invalid command.");
 		}
+        
+        //return false;
 	}
+
+    function displayResponse(s)  {
+        var gameResponse = document.createElement("p");
+        gameResponse.appendChild(document.createTextNode(s));
+        gameResponse.setAttribute("class", "response");
+        $("#terminal").append(gameResponse);
+    }

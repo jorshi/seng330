@@ -101,3 +101,5 @@
 .navbar-inverse {
     border: 0;
 }
+
+.inner #commandForm input { background-color: #333; }
