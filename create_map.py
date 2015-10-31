@@ -23,6 +23,9 @@ class MapBuilder(object):
         door.room_a = self.rooms.get(roomA)
         door.room_b = self.rooms.get(roomB)
         door.locked  = locked
+        door.created_in = self.rooms[roomA]
+        door.name = 'Door'
+        door.examine = "Door between %s and %s" % (roomA, roomB)
         door.save()
 
         direction_map = {

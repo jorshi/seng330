@@ -2,13 +2,13 @@ from django.db import models
 
 class FixedItem(models.Model):
     created_in = models.ForeignKey('Room')
-    name = models.CharField(max_length=30)
-    examine = models.TextField()
-    hidden = models.BooleanField()
+    name = models.CharField(max_length=30, default='')
+    examine = models.TextField(default='')
+    hidden = models.BooleanField(default=False)
 
-class Door(models.Model):
+class Door(FixedItem):
     
-    locked = models.BooleanField()
+    locked = models.BooleanField(default=False)
     room_a = models.ForeignKey('Room', related_name='room_a')
     room_b = models.ForeignKey('Room', related_name='room_b')
 
