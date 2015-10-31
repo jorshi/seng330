@@ -4,6 +4,7 @@ View class for handling player sites, including login and registration
 
 from django.shortcuts import render
 from player.forms import RegistrationForm, LoginForm
+from player.models import Player
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render_to_response
@@ -30,6 +31,12 @@ def register(request):
                 username=form.cleaned_data['username'],
                 password=form.cleaned_data['password1'],
             )
+
+            # Create a new player object for user
+            player = Player()
+            player.user = user
+            player.save()
+
             return render(request, 'register/success.html')
     else:
         form = RegistrationForm()
@@ -85,6 +92,11 @@ def player_dashboard(request):
     """
 
     if request.user.is_authenticated():
+        try:
+            player = Player.objects.get(pk=request.user)
+        except Player.DoesNotExist as e:
+            print e
+            
         return render(request, 'player_dashboard.html', {'user': request.user})
     else:
         return render(request, 'welcome.html')
