@@ -4,14 +4,14 @@ $(function()  {
 	/*rooms*/
 	room1 = new Room();
 	room2 = new Room();
-	
+
 	/*player*/
 	playerInventory = new Inventory();
 	player = new Player(room1, playerInventory);
 
 	/*items*/
 	key = new PickupableAndUsable(room1,"key", "Unlocks somthing.", "You need to use it on somthing.", pattUseItem);
-	door1 = new Door(room1, room2,"door", "its shut.", "You try to open the door but it's locked.",false);
+	door1 = new Door(room1, room2,"door", "its shut.", "You try to open the door but it's locked.",true);
 	clock = new Decoration(room1,"clock", "It's a clock, It appears to be broken.", null);
 	gun = new PickupableAndUsable(room1,"gun", "It doesn't appear to be loaded.", "You try to fire the gun but you can't.", pattShootItem);
 

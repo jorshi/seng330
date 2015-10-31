@@ -153,6 +153,7 @@ function Parser(player) {
 
 		/*the item can be used so display use message*/
 		displayResponse(itemToCheck.useMessage);
+		gameState(s);
 		return true;
 	}
 
@@ -200,6 +201,7 @@ function Parser(player) {
 
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name);
+		gameState(s)
 		return true;
 	}
 
