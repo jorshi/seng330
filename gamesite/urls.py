@@ -9,4 +9,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^register/$', player.views.register),
     url(r'^accounts/login/$', player.views.login),
+    url(r'^new_game/$', player.views.new_game),
+
 )
