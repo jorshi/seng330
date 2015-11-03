@@ -28,7 +28,6 @@ function Parser(player) {
 
 		if (s == "printRoom") {
 			printArray(player.currentRoom.itemsInRoom);
-			alert(player.currentRoom);
 			return true;
 		}
 		return false;	
