@@ -1,10 +1,18 @@
-var Room = function() {
+var Room = function(beginDescription, endDescription) {
 	this.itemsInRoom = [];
 	this.doorLayout = [];
+
+	//Building room description
+	this.description = beginDescription;
+	for(i = 0; i < itemsInRoom.length(); i++){
+		this.description.concat(itemsInRoom[i].enterRoomDescription);
+	}
+	this.description.concat(endDescription);
 
 	this.setUpDoors = function(doorArray) {
 		this.doorLayout = doorArray;
 	}
+
 }
 
 var Player = function(currentRoom, inv) {
@@ -24,5 +32,8 @@ var Inventory = function() {
 		var index = this.itemsInInventory.indexOf(name);
 		/*confusing looking but all it does is move the item from the Inventory to the room*/
 		this.itemsInInventory.splice(index, 1)[0];
+	}
+	this.add = function(name) {
+		this.itemsInInventory.push(name);
 	}
 }
