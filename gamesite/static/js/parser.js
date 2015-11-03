@@ -11,7 +11,7 @@ pattFindDoor = /^\s*(north|south|east|west)\s+/i;
 pattGenericUse = /^\s*(use|fire|shoot|open)\s+(\w+)\s*$/i;
 pattUseItem = /^\s*(use)\s+(\w+)\s*$/i; /*Generic*/
 pattShootItem = /^\s*(use|fire|shoot)\s+(\w+)\s*$/i; /*shootable*/
-pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; //openable
+pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; /*openable*/
 
 /*Parser Class*/
 function Parser(player) {
@@ -28,6 +28,7 @@ function Parser(player) {
 
 		if (s == "printRoom") {
 			printArray(player.currentRoom.itemsInRoom);
+			alert(player.currentRoom);
 			return true;
 		}
 		return false;	
