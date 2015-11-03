@@ -13,6 +13,9 @@ pattUseItem = /^\s*(use)\s+(\w+)\s*$/i; /*Generic*/
 pattShootItem = /^\s*(use|fire|shoot)\s+(\w+)\s*$/i; /*shootable*/
 pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; /*openable*/
 
+
+//GIT COMMENT THING
+
 /*Parser Class*/
 function Parser(player) {
 	/*this.player = player;

@@ -1,0 +1,8 @@
+
+gamesite/wsgi.pyc
+
+gamesite/__init__.pyc
+
+*.pyc
+
+db.sqlite3
