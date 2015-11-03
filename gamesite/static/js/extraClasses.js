@@ -4,7 +4,7 @@ var Room = function(beginDescription, endDescription) {
 
 	//Building room description
 	this.description = beginDescription;
-	for(i = 0; i < this.itemsInRoom.length(); i++){
+	for(i = 0; i < this.itemsInRoom.length; i++){
 		this.description.concat(this.itemsInRoom[i].enterRoomDescription);
 	}
 	this.description.concat(endDescription);
