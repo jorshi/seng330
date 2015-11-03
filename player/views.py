@@ -4,6 +4,8 @@ View class for handling player sites, including login and registration
 
 from django.shortcuts import render
 from player.forms import RegistrationForm, LoginForm
+from player.models import Player, GameState
+from gameworld.models import Room
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render_to_response
@@ -12,6 +14,7 @@ from django.contrib.auth.models import User
 from django.forms.util import ErrorList
 import django.contrib.auth
 
+STARTING_ROOM = "Entrance Hall"
 
 @csrf_protect
 def register(request):
@@ -30,6 +33,12 @@ def register(request):
                 username=form.cleaned_data['username'],
                 password=form.cleaned_data['password1'],
             )
+
+            # Create a new player object for user
+            player = Player()
+            player.user = user
+            player.save()
+
             return render(request, 'register/success.html')
     else:
         form = RegistrationForm()
@@ -85,6 +94,43 @@ def player_dashboard(request):
     """
 
     if request.user.is_authenticated():
-        return render(request, 'player_dashboard.html', {'user': request.user})
+
+        # Get the player for this user, if they don't have one (maybe a superuser?) create one for them
+        try:
+            player = Player.objects.get(pk=request.user)
+        except Player.DoesNotExist as e:
+            player = Player()
+            player.user = request.user
+            player.save()
+
+        # Check for an existing game for the player
+        try:
+            gameState = GameState.objects.get(pk=player)
+        except GameState.DoesNotExist as e:
+            gameState = None
+
+        return render(request, 'player_dashboard.html', {'user': request.user, 'gameState': gameState})
     else:
         return render(request, 'welcome.html')
+
+@login_required
+def new_game(request):
+    """
+    Start a new game for this player
+    """
+
+    player = Player.objects.get(pk=request.user)
+
+    # Erase users current game state if they are starting a new game
+    try:
+        gameState = GameState.objects.get(pk=player)
+        gameState.delete()
+    except GameState.DoesNotExist:
+        pass
+
+    gameState = GameState()
+    gameState.player = player
+    gameState.current_room = Room.objects.get(title=STARTING_ROOM)
+    gameState.save()
+
+    return HttpResponseRedirect('/', {'user': request.user})

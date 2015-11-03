@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-<!-- template for game dashboard with parser -->
+<!-- template for player dashboard -->
 {% block content %}
-    <!-- insert room description -->
-    <p>"There's a gun, a door, a clock and a key in the room..."</p>
-    <div id="terminal">
+    {% if gameState %}
+        <div class="form-group">
+            <button id="resume-game" type="button" class="btn btn-primary">Resume Current Game</button>
+        </div>
+    {% endif %}
+    <div class="form-group">
+        <button id="start-new-game" type="button" class="btn btn-primary">Start New Game</button>
     </div>
+<<<<<<< HEAD
     <form id="commandForm"> 
         <input id="commandUserInput" type="text" name="command" /> 
         <input id="commandButton" type="submit" value="enter" /> 
@@ -20,4 +25,7 @@
   <script language="javascript" type="text/javascript" src="{% static 'js/parser.js' %}"></script>
   <script language="javascript" type="text/javascript" src="{% static 'js/script.js' %}"></script>
   <script language="javascript" type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+=======
+    <script language="javascript" type="text/javascript" src="{% static 'js/player_dashboard.js' %}"></script>
+>>>>>>> origin/master
 {% endblock %}
