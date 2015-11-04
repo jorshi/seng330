@@ -13,6 +13,15 @@ var Room = function(beginDescription, endDescription) {
 		this.doorLayout = doorArray;
 	}
 
+	this.updateDescription = function(){
+		this.description = beginDescription;
+	for(i = 0; i < this.itemsInRoom.length; i++){
+		this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription);
+	}
+	this.description = this.description.concat(endDescription);
+
+	}
+
 }
 
 var Player = function(currentRoom, inv) {

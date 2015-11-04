@@ -2,9 +2,9 @@
 
 $(function()  {
 	/*rooms*/
-	room1 = new Room("begin", "end");
-	room2 = new Room("begin", "end");
-	room3 = new Room("begin", "end");
+	room1 = new Room("begin ", " end");
+	room2 = new Room("begin ", " end");
+	room3 = new Room("begin ", " end");
 
 	/*player*/
 	playerInventory = new Inventory();
@@ -28,4 +28,7 @@ $(function()  {
 
 	/*parser class*/
 	parser = new Parser(player);
+
+	room1.updateDescription();
+	displayResponse(room1.description);
 });
