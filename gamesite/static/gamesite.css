@@ -44,7 +44,7 @@
     text-transform: uppercase;
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-weight: 700;
-    font-color: white;
+    color: white;
     background-color: rgba(0,0,0,.3);
 }
 
@@ -102,4 +102,68 @@
     border: 0;
 }
 
-.inner #commandForm input { background-color: #333; }
+/* make form elements readable with dark theme */
+/*
+.inner #commandForm input {
+    background-color: #333;
+}
+*/
+
+/*
+ * Row with equal height columns
+ * --------------------------------------------------
+ */
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+}
+
+/* game UI (terminal) styling */
+.row {
+    margin-top: 40px;
+}
+
+.terminal {
+    
+}
+
+.map {
+    
+    background-color: #222;
+}
+
+.terminal > * {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#pinnedText {
+    font-weight: bold;
+}
+
+#terminalText {
+    height: 20em; /* in relation to window? */
+    overflow: auto;
+    padding-top: 10px;
+    background-color: rgba(255, 255, 255, .2);
+}
+
+#pinnedText, #terminalText {
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: left;
+}
+
+#terminalText .echo {
+    font-weight: bold;
+    
+}
+
+#terminalText .response {
+}
+
+/* style form elements on top of default Bootstrap */
+#commandUserInput { /* make as wide as possible */
+}

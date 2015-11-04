@@ -154,9 +154,9 @@ body {
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1192px) {
   .mastfoot,
   .cover-container {
-    width: 700px;
+    width: 850px;
   }
 }

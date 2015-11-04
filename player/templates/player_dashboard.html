@@ -2,17 +2,29 @@
 {% load staticfiles %}
 <!-- template for game dashboard with parser -->
 {% block content %}
+<div class="container-fluid">
+<div class="row">
+<div class="terminal col-md-8">
+    <div id="pinnedText">
     <!-- insert room description -->
-    <p>"There's a gun, a door, a clock and a key in the room..."</p>
-    <div id="terminal">
+        <p>"There's a gun, a door, a clock and a key in the room..."</p>
     </div>
-    <form id="commandForm"> 
-        <input id="commandUserInput" type="text" name="command" /> 
-        <input id="commandButton" type="submit" value="enter" /> 
+    <div id="terminalText">
+    </div>
+    <form id="commandForm" role="form"> 
+        <input id="commandUserInput" class="form-control" type="text" name="command" /> 
+        <input id="commandButton" class="btn btn-default" type="submit" value="enter" /> 
     </form>
-    
-    
-    <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+</div>
+<div class="map col-md-4">
+    <p style="height: 300px;">map</p>
+</div>
+</div> <!-- end row -->
+</div> <!-- end container -->
+
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
     <script src="http://malsup.github.com/jquery.form.js"></script>
     <script language="javascript" type="text/javascript" src="{% static 'js/parsertest.js' %}"></script>
 {% endblock %}

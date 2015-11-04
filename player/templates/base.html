@@ -67,6 +67,8 @@
       </div>
     </div>
 
+    {% block scripts %}
+    {# be sure to call {{ block.super }} if adding scripts in child pages #}
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -74,5 +76,6 @@
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{% static 'bootstrap/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+    {% endblock %}
   </body>
 </html>

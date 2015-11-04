@@ -272,17 +272,19 @@
 		var enteredCommand = commandForm.command.value;
 		$("#commandUserInput").val('');
         
+        var container = $("#terminalText");
+        
         //echo command
-        var echoedCommand = document.createElement("p");
-        echoedCommand.appendChild(document.createTextNode(enteredCommand));
-        echoedCommand.setAttribute("class", "echo");
-        $("#terminal").append(echoedCommand);
+        container.append('<p class="echo">' + enteredCommand + '</p>');
 
 		//parse command, print whether or not the command is valid
 		if (!parser.check(enteredCommand)){
 			displayResponse(enteredCommand + " is an "+ "invalid command.");
 		}
         
+        
+        //scroll terminal to bottom
+        container.scrollTop(container.prop("scrollHeight") - container.height());
         //return false;
 	}
 
@@ -290,5 +292,5 @@
         var gameResponse = document.createElement("p");
         gameResponse.appendChild(document.createTextNode(s));
         gameResponse.setAttribute("class", "response");
-        $("#terminal").append(gameResponse);
+        $("#terminalText").append(gameResponse);
     }
