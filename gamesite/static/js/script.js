@@ -2,9 +2,9 @@
 
 $(function()  {
 	/*rooms*/
-	room1 = new Room();
-	room2 = new Room();
-	room3 = new Room();
+	room1 = new Room("begin", "end");
+	room2 = new Room("begin", "end");
+	room3 = new Room("begin", "end");
 
 	/*player*/
 	playerInventory = new Inventory();
