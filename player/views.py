@@ -2,10 +2,6 @@
 View class for handling player sites, including login and registration
 """
 
-from django.shortcuts import render
-from player.forms import RegistrationForm, LoginForm
-from player.models import Player, GameState
-from gameworld.models import Room
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render_to_response
@@ -13,6 +9,10 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.forms.util import ErrorList
 import django.contrib.auth
+from django.shortcuts import render
+from player.forms import RegistrationForm, LoginForm
+from player.models import Player, GameState
+from gameworld.models import Room
 
 STARTING_ROOM = "Entrance Hall"
 
@@ -105,7 +105,8 @@ def player_dashboard(request):
 
         # Check for an existing game for the player
         try:
-            gameState = GameState.objects.get(pk=player)
+            #gameState = GameState.objects.get(pk=player)
+            gameState = player.gamestate
         except GameState.DoesNotExist as e:
             gameState = None
 
@@ -119,11 +120,12 @@ def new_game(request):
     Start a new game for this player
     """
 
-    player = Player.objects.get(pk=request.user)
+    player = Player.objects.get(user=request.user)
 
     # Erase users current game state if they are starting a new game
     try:
-        gameState = GameState.objects.get(pk=player)
+        #gameState = GameState.objects.get(pk=player)
+        gameState = player.gamestate
         gameState.delete()
     except GameState.DoesNotExist:
         pass
@@ -133,4 +135,14 @@ def new_game(request):
     gameState.current_room = Room.objects.get(title=STARTING_ROOM)
     gameState.save()
 
-    return HttpResponseRedirect('/', {'user': request.user})
+    return HttpResponseRedirect('/resume_game/', { 'user': request.user, 'gameState': gameState })
+   
+@login_required   
+def resume_game(request):
+    """
+    Resume an existing game for this player
+    """
+    player = Player.objects.get(user=request.user)
+    gameState = player.gamestate
+    return render(request, 'game_view.html', { 'user': request.user, 'gameState': gameState })
+    

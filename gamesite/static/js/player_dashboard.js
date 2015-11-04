@@ -9,7 +9,8 @@ $(document).ready(function() {
     
     // Resume Game
     $('#resume-game').click(function() {
-        playerDashboard.resumeGame();
+        // playerDashboard.resumeGame();
+        location.href = '/resume_game/'
     });
 
     // Start a new game
