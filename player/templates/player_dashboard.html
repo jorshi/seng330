@@ -1,30 +1,21 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-<!-- template for game dashboard with parser -->
+<!-- template for player dashboard -->
 {% block content %}
-<div class="container-fluid">
-<div class="row">
-<div class="terminal col-md-8">
-    <div id="pinnedText">
-    <!-- insert room description -->
-        <p>"There's a gun, a door, a clock and a key in the room..."</p>
+
+    {% if gameState %}
+        <div class="form-group">
+            <button id="resume-game" type="button" class="btn btn-primary">Resume Current Game</button>
+        </div>
+    {% endif %}
+    <div class="form-group">
+        <button id="start-new-game" type="button" class="btn btn-primary">Start New Game</button>
     </div>
-    <div id="terminalText">
-    </div>
-    <form id="commandForm" role="form"> 
-        <input id="commandUserInput" class="form-control" type="text" name="command" /> 
-        <input id="commandButton" class="btn btn-default" type="submit" value="enter" /> 
-    </form>
-</div>
-<div class="map col-md-4">
-    <p style="height: 300px;">map</p>
-</div>
-</div> <!-- end row -->
-</div> <!-- end container -->
+
 
 {% endblock %}
+
 {% block scripts %}
     {{ block.super }}
-    <script src="http://malsup.github.com/jquery.form.js"></script>
-    <script language="javascript" type="text/javascript" src="{% static 'js/parsertest.js' %}"></script>
+    <script language="javascript" type="text/javascript" src="{% static 'js/player_dashboard.js' %}"></script>
 {% endblock %}
