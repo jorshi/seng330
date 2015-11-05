@@ -11,7 +11,8 @@ from django.forms.util import ErrorList
 import django.contrib.auth
 from django.shortcuts import render
 from player.forms import RegistrationForm, LoginForm
-from player.models import Player, GameState
+from player.models import Player
+from gamestate.models import GameState
 from gameworld.models import Room
 
 STARTING_ROOM = "Entrance Hall"

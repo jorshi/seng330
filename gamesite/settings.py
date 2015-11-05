@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'player',
     'gameworld',
+    'gamestate',
 )
 
 MIDDLEWARE_CLASSES = (
