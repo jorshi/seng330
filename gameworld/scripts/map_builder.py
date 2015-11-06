@@ -1,10 +1,10 @@
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gamesite.settings")
-import django
-django.setup()
+"""
+MapBuilder Class.
 
-from gameworld.models import Room, Door
-
+Class implements the builder pattern for creating objects in the
+DB that represent a map. i.e. Creates rooms, doors, items and connects
+them all together
+"""
 
 class MapBuilder(object):
 
@@ -56,30 +56,3 @@ class MapBuilder(object):
     def cleanMap(self):
         rooms = Room.objects.all().delete()
         doors = Door.objects.all().delete()
-
-def main():
-    
-    mapBuilder = MapBuilder()
-    mapBuilder.cleanMap()
-
-    # Make rooms
-    mapBuilder.makeRoom('Kitchen')
-    mapBuilder.makeRoom('Living Room')
-    mapBuilder.makeRoom('Den')
-    mapBuilder.makeRoom('Entrance Hall')
-
-    # Connect Rooms
-    mapBuilder.connectRooms('Entrance Hall', 'Kitchen', 'north')
-    mapBuilder.connectRooms('Entrance Hall', 'Den', 'west')
-    mapBuilder.connectRooms('Kitchen', 'Living Room', 'west')
-
-
-if __name__ == '__main__':
-
-    main()
-
-
-
-
-
-
