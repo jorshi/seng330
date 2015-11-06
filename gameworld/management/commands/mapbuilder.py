@@ -66,6 +66,6 @@ class Command(BaseCommand):
                     'gameworld.management.commands')
                 module.main()
             except ImportError:
-                raise CommandError
+                raise CommandError('%s was not found!' % script)
             print('Success: imported map from %s' % script)
             
