@@ -1,10 +1,6 @@
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gamesite.settings")
-import django
-django.setup()
-
+from django.core.management.base import BaseCommand, CommandError
+import importlib
 from gameworld.models import Room, Door
-
 
 class MapBuilder(object):
 
@@ -57,29 +53,19 @@ class MapBuilder(object):
         rooms = Room.objects.all().delete()
         doors = Door.objects.all().delete()
 
-def main():
+class Command(BaseCommand):
+    help = 'Replaces the current map stored in gameworld with a new map'
     
-    mapBuilder = MapBuilder()
-    mapBuilder.cleanMap()
-
-    # Make rooms
-    mapBuilder.makeRoom('Kitchen')
-    mapBuilder.makeRoom('Living Room')
-    mapBuilder.makeRoom('Den')
-    mapBuilder.makeRoom('Entrance Hall')
-
-    # Connect Rooms
-    mapBuilder.connectRooms('Entrance Hall', 'Kitchen', 'north')
-    mapBuilder.connectRooms('Entrance Hall', 'Den', 'west')
-    mapBuilder.connectRooms('Kitchen', 'Living Room', 'west')
-
-
-if __name__ == '__main__':
-
-    main()
-
-
-
-
-
-
+    def add_arguments(self, parser):
+        parser.add_argument('script', nargs=1)
+        
+    def handle(self, *args, **options):
+        for script in options['script']:
+            try:
+                module = importlib.import_module('.%s' % script, 
+                    'gameworld.management.commands')
+                module.main()
+            except ImportError:
+                raise CommandError
+            print('Success: imported map from %s' % script)
+            
