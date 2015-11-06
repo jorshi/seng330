@@ -22,7 +22,7 @@ class ItemUse(models.Model):
     use_script = models.CharField(max_length=200, blank=True)
     
     def __unicode__(self):
-        return ' '.join([unicode(self.keywords), unicode(self.item)])
+        return '%s %s' % (self.keywords, self.item)
     
 class Door(FixedItem):
     """ Door object """
@@ -31,7 +31,7 @@ class Door(FixedItem):
     room_b = models.ForeignKey('Room', related_name='doors_b')
     
     def __unicode__(self):
-        return "--".join([unicode(self.room_a), unicode(self.room_b)])
+        return '%s--%s' % (self.room_a, self.room_b)
 
 class Room(models.Model):
     """ Room object """
@@ -40,11 +40,15 @@ class Room(models.Model):
     desc_footer = models.TextField()
     illuminated = models.BooleanField(default=True)
     default_items = models.ManyToManyField('FixedItem')
+    door_north = models.ForeignKey('Door', null=True, blank=True, related_name='north')
+    door_east = models.ForeignKey('Door', null=True, blank=True, related_name='east')
+    door_south = models.ForeignKey('Door', null=True, blank=True, related_name='south')
+    door_west = models.ForeignKey('Door', null=True, blank=True, related_name='west')
     doors = {
-        'north': models.ForeignKey('Door', null=True, blank=True, related_name='north'),
-        'east': models.ForeignKey('Door', null=True, blank=True, related_name='east'),
-        'south': models.ForeignKey('Door', null=True, blank=True, related_name='south'),
-        'west': models.ForeignKey('Door', null=True, blank=True, related_name='west'),
+        'north': door_north,
+        'east': door_east,
+        'south': door_south,
+        'west': door_west,
     }
     
     def __unicode__(self):
