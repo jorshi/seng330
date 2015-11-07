@@ -59,13 +59,6 @@ class Room(models.Model):
     door_east = models.ForeignKey('Door', null=True, blank=True, related_name='east')
     door_south = models.ForeignKey('Door', null=True, blank=True, related_name='south')
     door_west = models.ForeignKey('Door', null=True, blank=True, related_name='west')
-    doors = {
-        'north': door_north,
-        'east': door_east,
-        'south': door_south,
-        'west': door_west,
-    }  # not sure if this works properly
-    
     
     def __unicode__(self):
         return self.title

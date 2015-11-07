@@ -11,6 +11,4 @@ def main():
     mapBuilder.makeRoom('Entrance Hall')
 
     # Connect Rooms
-    mapBuilder.connectRooms('Entrance Hall', 'Kitchen', 'north')
-    mapBuilder.connectRooms('Entrance Hall', 'Den', 'west')
-    mapBuilder.connectRooms('Kitchen', 'Living Room', 'west')
+    mapBuilder.connectRooms('Kitchen', 'Living Room', 'east')
