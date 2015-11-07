@@ -4,3 +4,5 @@ db.sqlite3
 .env
 .ropeproject/
 staticfiles/
+rm_migrations.sh
+.gitignore
