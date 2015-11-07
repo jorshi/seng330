@@ -50,8 +50,9 @@ class Door(FixedItem):
 
 class Room(models.Model):
     """ Room object """
-    title = models.CharField(max_length=30, default=None)
-    desc_header = models.TextField()
+    name = models.CharField(max_length=30, primary_key=True)
+    title = models.CharField(max_length=50, blank=True)  # optional - displayed above terminal
+    desc_header = models.TextField(default=None)
     desc_footer = models.TextField()
     illuminated = models.BooleanField(default=True)
     default_items = models.ManyToManyField('FixedItem')
@@ -60,5 +61,7 @@ class Room(models.Model):
     door_south = models.ForeignKey('Door', null=True, blank=True, related_name='south')
     door_west = models.ForeignKey('Door', null=True, blank=True, related_name='west')
     
+    
+    
     def __unicode__(self):
-        return self.title
+        return self.name

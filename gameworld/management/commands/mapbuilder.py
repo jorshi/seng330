@@ -37,18 +37,20 @@ class MapBuilder(object):
         self.rooms[roomA].save()
         self.rooms[roomB].save()
 
-    def makeRoom(self, title, illuminated=True):
+    def makeRoom(self, name, title="", illuminated=True, desc="You are in a dim room."):
 
         try:
-            room = Room.objects.get(title=title)
+            room = Room.objects.get(name=name)
         except:
             room = Room()
-            room.title = title
+            room.name = name
 
+        room.title = title
         room.illuminated = illuminated
+        room.desc_header = desc
         room.save()
         
-        self.rooms[title] = room
+        self.rooms[name] = room
 
     def cleanMap(self):
         rooms = Room.objects.all().delete()
