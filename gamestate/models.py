@@ -19,7 +19,7 @@ class UnlockedDoors(models.Model):
     room_b = models.ForeignKey('gameworld.Room', related_name='unlocked_b')
     
     def __unicode__(self):
-        return '.'.join([unicode(self.game_state), unicode(self.door)])
+        return '%s.%s' % (self.game_state, self.door)
         
 class RoomState(models.Model):
     """ Saves all the rooms the player has entered """
@@ -28,7 +28,7 @@ class RoomState(models.Model):
     illuminated = models.BooleanField()
     
     def __unicode__(self):
-        return '.'.join([unicode(self.game_state), unicode(self.room)])
+        return '%s.%s' % (self.game_state, self.room)
 
 class ItemState(models.Model):
     """ Saves all the items present in each saved room """
@@ -37,5 +37,5 @@ class ItemState(models.Model):
     hidden = models.BooleanField()
     
     def __unicode__(self):
-        return '.'.join([unicode(self.room_state), unicode(self.item)])
+        return '%s.%s' % (self.room_state, self.item)
         
