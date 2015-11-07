@@ -2,7 +2,6 @@
 {% load staticfiles %}
 <!-- template for player dashboard -->
 {% block content %}
-
     {% if gameState %}
         <div class="form-group">
             <button id="resume-game" type="button" class="btn btn-primary">Resume Current Game</button>
@@ -11,11 +10,10 @@
     <div class="form-group">
         <button id="start-new-game" type="button" class="btn btn-primary">Start New Game</button>
     </div>
-
-
 {% endblock %}
 
 {% block scripts %}
     {{ block.super }}
     <script language="javascript" type="text/javascript" src="{% static 'js/player_dashboard.js' %}"></script>
+
 {% endblock %}

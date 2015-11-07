@@ -35,7 +35,9 @@ function parse() {
 	$("#commandUserInput").val('');
         
         //echo command
-        $("#terminalText").append("<p class=\"echo\">" + echoedCommand + "</p>");
+
+        $("#terminalText").append("<p class=\"echo\">" + enteredCommand + "</p>");
+
 	//parse command, print whether or not the command is valid
 	if (!parser.check(enteredCommand)){
 		displayResponse(enteredCommand + " is an "+ "invalid command.");
