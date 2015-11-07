@@ -11,10 +11,11 @@ class GameState(models.Model):
     def __unicode__(self):
         return self.player
 
-class UnlockedDoors(models.Model):
+class DoorState(models.Model):
     """ Saves all the doors currently unlocked """
     game_state = models.ForeignKey('GameState')
     door = models.ForeignKey('gameworld.Door')
+    locked = models.BooleanField()
     room_a = models.ForeignKey('gameworld.Room', related_name='unlocked_a')
     room_b = models.ForeignKey('gameworld.Room', related_name='unlocked_b')
     
