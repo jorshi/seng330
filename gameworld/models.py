@@ -1,8 +1,12 @@
 from django.db import models
 
+# default=None: hack to enforce NOT NULL
+# http://stackoverflow.com/questions/12879256/
+
+
 class FixedItem(models.Model):
     """ concrete parent class for anything the player can interact with """
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, default=None)
     examine = models.TextField()
     hidden = models.BooleanField(default=False)
     
@@ -22,7 +26,7 @@ class ItemUse(models.Model):
     use_script = models.CharField(max_length=200, blank=True)
     
     def __unicode__(self):
-        return '%s %s' % (self.keywords, self.item)
+        return u'%s %s' % (self.keywords, self.item)
     
 class Door(FixedItem):
     """ Door object """
@@ -30,12 +34,23 @@ class Door(FixedItem):
     room_a = models.ForeignKey('Room', related_name='doors_a')
     room_b = models.ForeignKey('Room', related_name='doors_b')
     
+    def leads_to(self, this_room):
+        """ Returns a string hinting at the next room """
+        success = 'The door seems to lead to the'
+        failure = 'The door doesn\'t seem to lead anywhere.'
+        if this_room == self.room_a:
+            return '%s %s.' % (success, self.room_b)
+        elif this_room == self.room_b:
+            return '%s %s.' % (success, self.room_a)
+        else:
+            return failure
+    
     def __unicode__(self):
-        return '%s--%s' % (self.room_a, self.room_b)
+        return u'%s--%s' % (self.room_a, self.room_b)
 
 class Room(models.Model):
     """ Room object """
-    title = models.CharField(max_length=30)
+    title = models.CharField(max_length=30, default=None)
     desc_header = models.TextField()
     desc_footer = models.TextField()
     illuminated = models.BooleanField(default=True)
@@ -49,7 +64,8 @@ class Room(models.Model):
         'east': door_east,
         'south': door_south,
         'west': door_west,
-    }
+    }  # not sure if this works properly
+    
     
     def __unicode__(self):
         return self.title
