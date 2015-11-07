@@ -26,6 +26,8 @@ var PickupableAndUsable = function(room, name, description, enterRoomDescription
 	this.inInv = false;
 }
 
+/* TODO: create a key Item (for special error messages when trying to unlock a door with the wrong key)*/
+
 /*this item cannot be picked up but it can be used, it's usePattern is just a regular
 expression that is matched for the items use command.  it's needed so different items can
 be used by typing different verbs.*/

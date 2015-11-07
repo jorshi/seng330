@@ -23,8 +23,8 @@ function printArray(a){
 }
 
  $("#commandForm").submit(function(event)  {
-        event.preventDefault();
-        parse();
+	event.preventDefault();
+	parse();
  });
 
 // Function called upon submit button being pressed
@@ -34,18 +34,36 @@ function parse() {
 	var enteredCommand = commandForm.command.value;
 	$("#commandUserInput").val('');
         
-        //echo command
+		//echo command
 
-        $("#terminalText").append("<p class=\"echo\">" + enteredCommand + "</p>");
+		$("#terminalText").append("<p class=\"echo\">" + enteredCommand + "</p>");
 
 	//parse command, print whether or not the command is valid
 	if (!parser.check(enteredCommand)){
 		displayResponse(enteredCommand + " is an "+ "invalid command.");
 	}
         
-        //return false;
+	//return false;
 }
 
- function displayResponse(s)  {
-        $("#terminalText").append("<p class=\"response\">" + s + "</p>");
-    }
+function displayResponse(s)  {
+	$("#terminalText").append("<p class=\"response\">" + s + "</p>");
+}
+
+ 	/*TODO: create an update_room function*/
+ 	/* this function should fetch the room the player
+ 	   is supposed to be in from the database and
+ 	   the room's inventory */
+
+	/*TODO: create an update_player function*/
+	/* this function should fetch the player's
+ 	   inventory from the database */
+
+ 	/*TODO: create an update_inventory_pickup function*/
+ 	/* this moves the item from the room inventory to the
+ 	   player inventory and updates the database with this
+ 	   new information*/
+
+ 	/* TODO: create a gamestate_change function */
+ 	/* this updates the gamestate in the database */
+

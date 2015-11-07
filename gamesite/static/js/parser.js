@@ -1,3 +1,11 @@
+// MAX: 
+/* make door traversals make sense (only have east door, north door ect.) */
+/* get rid of drop command */
+/* create key item and edge cases */
+
+// DALLAS:
+/* update room description when changing rooms */
+
 /*Patterns*/
 pattTakeItem = /^\s*(get|grab|take|pick\s*up)\s+(\w+)\s*$/i;
 pattGo = /^\s*(go|move|walk)\s+(\w*)\s*$/i;
@@ -13,9 +21,7 @@ pattUseItem = /^\s*(use)\s+(\w+)\s*$/i; /*Generic*/
 pattShootItem = /^\s*(use|fire|shoot)\s+(\w+)\s*$/i; /*shootable*/
 pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; /*openable*/
 
-	displayResponse(room1.description);
-
-//GIT COMMENT THING
+displayResponse(room1.description);
 
 /*Parser Class*/
 function Parser(player) {
@@ -23,6 +29,7 @@ function Parser(player) {
 	Parser Method to check if a command is valid or not*/
 	this.check = function(s) {
 
+		s = s.toLowerCase();
 		if (this.pickUpCheck(s)) return true;
 		if (this.examineCheck(s)) return true;
 		if (this.goThroughCheck(s)) return true;
@@ -30,7 +37,7 @@ function Parser(player) {
 		if (this.useItemOnCheck(s)) return true;
 		if (this.dropCheck(s)) return true;
 
-		if (s == "printRoom") {
+		if (s == "printroom") {
 			printArray(player.currentRoom.itemsInRoom);
 			return true;
 		}
@@ -65,7 +72,11 @@ function Parser(player) {
 		/*Now we have to remove the item from the room and put it into the inventory*/
 		var index = player.currentRoom.itemsInRoom.indexOf(itemToCheck);
 		/*confusing looking but all it does is move the item from the room to the inventory*/
+
+		/*TODO: call a update_inventory_pickup function*/
 		player.inv.itemsInInventory.push(player.currentRoom.itemsInRoom.splice(index, 1)[0]);
+
+
 		itemToCheck.inInv = true;
 		return true;		
 	}
@@ -92,6 +103,7 @@ function Parser(player) {
 		return true;
 	}
 
+	/*TODO: remove this functionality */
 	this.dropCheck = function(s) {
 		/*this gets the group in the RE*/
 		match = pattDrop.exec(s);
@@ -202,10 +214,12 @@ function Parser(player) {
 			displayResponse("You can not use the "+itemToUse.name+" on itself");
 			return true;
 		}
+		/*TODO: case 5: you try to use a key on an unlocked door*/
+		/*TODO: case 6: you try to use the wrong key on the wrong door*/
 
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name);
-		gameState(s)
+		gameState(s);
 		return true;
 	}
 
@@ -255,6 +269,7 @@ function Parser(player) {
 		} else {
 			player.changeRoom(itemToCheck.room);
 		}
+		/* TODO: call an update_room function*/
 		displayResponse("you went through the "+match[2]+" "+match[3]);
 		return true;
 	}

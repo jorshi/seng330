@@ -1,6 +1,11 @@
  var room1, room2, room3, playerInventory, player, key1, key2, door1, door2, clock, gun, parser;
 
 $(function()  {
+
+	/*TODO: call an update_room function*/
+
+	/*TODO: call an update_player function*/
+
 	/*rooms*/
 	room1 = new Room("begin ", " end");
 	room2 = new Room("begin ", " end");
