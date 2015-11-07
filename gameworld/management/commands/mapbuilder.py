@@ -19,20 +19,21 @@ class MapBuilder(object):
         door.room_a = self.rooms.get(roomA)
         door.room_b = self.rooms.get(roomB)
         door.locked  = locked
-        door.created_in = self.rooms[roomA]
         door.name = 'Door'
-        door.examine = "Door between %s and %s" % (roomA, roomB)
+        door.examine = ''
         door.save()
 
-        direction_map = {
-            'north': 'door_south',
-            'south': 'door_north',
-            'east': 'door_west',
-            'west':'door_east',
+        reverse = {
+            'north': 'south',
+            'south': 'north',
+            'east': 'west',
+            'west':'east',
         }
 
         setattr(self.rooms[roomA], 'door_'+direction, door)
         setattr(self.rooms[roomB], direction_map[direction], door)
+        #self.rooms[roomA].set_door(direction, door)
+        #self.rooms[roomB].set_door(reverse[direction], door)
         
         self.rooms[roomA].save()
         self.rooms[roomB].save()

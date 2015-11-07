@@ -61,7 +61,16 @@ class Room(models.Model):
     door_south = models.ForeignKey('Door', null=True, blank=True, related_name='south')
     door_west = models.ForeignKey('Door', null=True, blank=True, related_name='west')
     
-    
+    def get_door(self, direction):
+        return {
+            'east': door_east,
+            'north': door_north,
+            'west': door_west,
+            'south': door_south
+            }.get(direction)
+            
+    def set_door(self, direction, Door):
+        pass
     
     def __unicode__(self):
         return self.name
