@@ -47,7 +47,7 @@ class Door(FixedItem):
     
     def __unicode__(self):
         return u'%s--%s' % (self.room_a, self.room_b)
-
+        
 class Room(models.Model):
     """ Room object """
     name = models.CharField(max_length=30, primary_key=True)
@@ -63,14 +63,20 @@ class Room(models.Model):
     
     def get_door(self, direction):
         return {
-            'east': door_east,
-            'north': door_north,
-            'west': door_west,
-            'south': door_south
+            'east': self.door_east,
+            'north': self.door_north,
+            'west': self.door_west,
+            'south': self.door_south
             }.get(direction)
             
     def set_door(self, direction, Door):
-        pass
+        d = {
+            'east': self.door_east,
+            'north': self.door_north,
+            'west': self.door_west,
+            'south': self.door_south
+            }.get(direction)
+        d = Door
     
     def __unicode__(self):
         return self.name

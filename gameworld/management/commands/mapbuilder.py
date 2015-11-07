@@ -30,10 +30,8 @@ class MapBuilder(object):
             'west':'east',
         }
 
-        setattr(self.rooms[roomA], 'door_'+direction, door)
-        setattr(self.rooms[roomB], direction_map[direction], door)
-        #self.rooms[roomA].set_door(direction, door)
-        #self.rooms[roomB].set_door(reverse[direction], door)
+        self.rooms[roomA].set_door(direction, door)
+        self.rooms[roomB].set_door(reverse[direction], door)
         
         self.rooms[roomA].save()
         self.rooms[roomB].save()
