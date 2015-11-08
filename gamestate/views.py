@@ -19,6 +19,7 @@ def get_current_room(request):
 
     Returns:
         HttpResponse with JSON serialized room object
+
     """
 
     player = Player.objects.get(user=request.user)
@@ -67,5 +68,5 @@ def get_room_inventory(request):
                 'state': itemState.state,
                 'usage': [use.use_pattern for use in itemUse],
             })
-
+            
     return JsonResponse(items, safe=False)
