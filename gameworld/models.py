@@ -22,13 +22,14 @@ class Item(FixedItem):
 
 
 class ItemUse(models.Model):
-    """ describes how the item is used, consuming it """
+    """ describes how an item can be used """
 
-    item = models.ForeignKey('Item', related_name='use_cases')
-    use_on = models.ForeignKey('FixedItem', blank=True)
+    item = models.ForeignKey('FixedItem', related_name='use_cases')
+    gone = models.BooleanField()  # set by builder
+    on_item = models.ForeignKey('FixedItem', blank=True)
     keywords = models.CharField(max_length=200, default='use')
-    use_message = models.TextField()
-    use_script = models.CharField(max_length=200, blank=True)
+    desc = models.TextField()
+    script = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return u'%s %s' % (self.keywords, self.item)

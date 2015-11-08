@@ -73,9 +73,23 @@ class MapBuilder(object):
         room.title = title
         room.illuminated = illuminated
         room.desc_header = desc
+        # set desc2
         room.save()
         
         self.rooms[name] = room
+        
+    def addItem(self, room_name, name, examine="", hidden=False):
+        """ make an Item/FixedItem and add to the room with room_name """
+        
+        # what if item w/ same name is already in db?
+        pass
+        
+    def addItemUse(self, room, item, other_item=None, keywords, use_text, use_script):
+        # keyword syntax: correspond to regex? or make it really simple/clunky?
+        # e.g. '(use|light)' vs. 'use candle,light candle' vs. somewhere in between?
+        # default keyword: 'use'
+        # if item is used on another item: default keyword 'use {item} with/on {other_item}
+        pass
 
 class Command(BaseCommand):
     """ Use Django's custom manage.py commands to call MapBuilder in the right context (syntax: manage.py mapbuilder [options] <filename>) """

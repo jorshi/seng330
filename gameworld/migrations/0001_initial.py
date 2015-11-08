@@ -23,9 +23,10 @@ class Migration(migrations.Migration):
             name='ItemUse',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('gone', models.BooleanField()),
                 ('keywords', models.CharField(default=b'use', max_length=200)),
-                ('use_message', models.TextField()),
-                ('use_script', models.CharField(max_length=200, blank=True)),
+                ('desc', models.TextField()),
+                ('script', models.CharField(max_length=200, blank=True)),
             ],
         ),
         migrations.CreateModel(
@@ -60,7 +61,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='itemuse',
-            name='use_on',
+            name='item',
+            field=models.ForeignKey(related_name='use_cases', to='gameworld.FixedItem'),
+        ),
+        migrations.AddField(
+            model_name='itemuse',
+            name='on_item',
             field=models.ForeignKey(to='gameworld.FixedItem', blank=True),
         ),
         migrations.AddField(
@@ -82,11 +88,6 @@ class Migration(migrations.Migration):
             model_name='room',
             name='door_west',
             field=models.ForeignKey(related_name='west', blank=True, to='gameworld.Door', null=True),
-        ),
-        migrations.AddField(
-            model_name='itemuse',
-            name='item',
-            field=models.ForeignKey(related_name='use_cases', to='gameworld.Item'),
         ),
         migrations.AddField(
             model_name='door',

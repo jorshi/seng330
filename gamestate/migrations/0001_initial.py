@@ -7,8 +7,8 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gameworld', '0001_initial'),
-        ('player', '0001_initial'),
+        ('gameworld', '__first__'),
+        ('player', '__first__'),
     ]
 
     operations = [
