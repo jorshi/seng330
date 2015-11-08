@@ -3,20 +3,30 @@ import importlib
 from django.core import serializers
 from gameworld.models import Room, Door
 
+JSON_MAP_PATH = 'gameworld/maps/'
+
 def clean_map():
     """ clear everything in gameworld """
     Room.objects.all().delete()
     Door.objects.all().delete()
     
-def save_map(name):
+def save_map(module_name):
     """ backup builder-generated gameworld to a JSON file """
-    all_objects =   list(Room.objects.all()) + list(Door.objects.all())
+    all_objects =  list(Room.objects.all()) + list(Door.objects.all())
     data = serializers.serialize('json', all_objects)
     
-    with open('gameworld/maps/%s.json' % name, 'w') as writer:
+    with open('%s%s.json' % (JSON_MAP_PATH, module_name), 'w') as writer:
         writer.write(data)
-        writer.close
             
+def load_map_from_json(filename):
+    """ load entire gameworld from a JSON file
+        (alternatively, use manage.py loaddata) """
+    with open('%s%s' % (JSON_MAP_PATH, filename)) as reader:
+        clean_map()
+        data = reader.read()
+        for obj in serializers.deserialize('json', data):
+            obj.save()
+    
     
 class MapBuilder(object):
 
@@ -68,21 +78,36 @@ class MapBuilder(object):
         self.rooms[name] = room
 
 class Command(BaseCommand):
-    help = 'Replaces the current map stored in gameworld with a new map'
+    """ Use Django's custom manage.py commands to call MapBuilder in the right context (syntax: manage.py mapbuilder [options] <filename>) """
+    help = 'Replaces the current map stored in gameworld with a new map.\n' + 'Specify a Python script, or use --load-json to load the map from a JSON file instead.'
+    missing_args_message = 'you need to specify a file (Python or JSON) to build from'
     
     def add_arguments(self, parser):
-        parser.add_argument('script', nargs=1)
+        parser.add_argument('--load-json', action='store_true', dest='load_json', default=False, help='Load from JSON file instead of running Python script')
+        parser.add_argument('script', nargs=1, metavar='<file>', help='.py or .json file')
         
     def handle(self, *args, **options):
         for script in options['script']:
-            try:
-                module = importlib.import_module('.%s' % script, 
-                    'gameworld.management.commands')
-            except ImportError:
-                raise CommandError('%s was not found!' % script)
-            clean_map()
-            module.main()
-            save_map(script)
+            # guess if we meant a script or JSON
+            is_json = options['load_json'] or script.endswith('.json')
+            if is_json:
+                if '.json' not in script:
+                    script = script + '.json'
+                try:
+                    load_map_from_json(script)
+                except IOError as e:
+                    raise CommandError('Unable to load %s\n(more info: %s)' % (script, e))
+            else:
+                if script.endswith('.py'):
+                    script = script[:-3]
+                try:
+                    module = importlib.import_module('.%s' % script, 
+                        'gameworld.management.commands')
+                except ImportError as e:
+                    raise CommandError('module %s was not found!' % script)
+                clean_map()
+                module.main()
+                save_map(script)
             
             print('Success: imported map from %s' % script)
             
