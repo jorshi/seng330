@@ -10,12 +10,11 @@ def clean_map():
     
 def save_map(name):
     """ backup builder-generated gameworld to a JSON file """
-    tables = []
-    tables.append(serializers.serialize('json', Room.objects.all()))
-    tables.append(serializers.serialize('json', Door.objects.all()))
+    all_objects =   list(Room.objects.all()) + list(Door.objects.all())
+    data = serializers.serialize('json', all_objects)
     
-    with open('%s.json' % name, 'w') as writer:
-        writer.writelines(tables)
+    with open('gameworld/maps/%s.json' % name, 'w') as writer:
+        writer.write(data)
         writer.close
             
     
