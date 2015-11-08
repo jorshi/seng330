@@ -21,20 +21,30 @@ class Item(FixedItem):
     pass
 
 
-class ItemUse(models.Model):
+class AbstractUseItem(models.Model):
     """ describes how an item can be used """
-
-    item = models.ForeignKey('FixedItem', related_name='use_cases')
-    gone = models.BooleanField()  # set by builder
-    on_item = models.ForeignKey('FixedItem', blank=True)
-    keywords = models.CharField(max_length=200, default='use')
+    keywords = models.CharField(max_length=200)
     desc = models.TextField()
     script = models.CharField(max_length=200, blank=True)
+    
+    class Meta:
+        abstract = True
 
+class UseInventoryItem(AbstractUseItem):
+    """ use an item from player inventory, which will be consumed """
+    item = models.ForeignKey('Item', related_name='use_cases')
+    on_item = models.ForeignKey('FixedItem', blank=True)
+    
     def __unicode__(self):
         return u'%s %s' % (self.keywords, self.item)
-
-
+    
+class UseDecoration(AbstractUseItem):
+    item = models.ForeignKey('FixedItem')
+    
+    def __unicode__(self):
+        return u'%s %s' % (self.keywords, self.item)
+    
+    
 class Door(FixedItem):
     """ Door object """
 
@@ -48,9 +58,9 @@ class Door(FixedItem):
         success = 'The door seems to lead to the'
         failure = 'The door doesn\'t seem to lead anywhere.'
         if this_room == self.room_a:
-            return '%s %s.' % (success, self.room_b)
+            return '%s %s.' % (success, self.room_b.title)
         elif this_room == self.room_b:
-            return '%s %s.' % (success, self.room_a)
+            return '%s %s.' % (success, self.room_a.title)
         else:
             return failure
 
