@@ -1,16 +1,11 @@
-var playerDashboard = {
-
-    resumeGame: function() {
-        console.log('resume game');
-    }
-};
-
+/*
+ * JS for player dashboard, turns the fresh bootstrap buttons
+ * into links
+ */
 $(document).ready(function() {
-    
     // Resume Game
     $('#resume-game').click(function() {
-        // playerDashboard.resumeGame();
-        location.href = '/resume_game/'
+        location.href = '/play/'
     });
 
     // Start a new game

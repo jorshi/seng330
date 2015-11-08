@@ -10,7 +10,6 @@ import django.contrib.auth as auth
 from django.shortcuts import render, redirect
 from player.forms import RegistrationForm, LoginForm
 from player.models import Player
-from gamestate.models import GameState
 from gameworld.models import Room
 
 @csrf_protect
@@ -165,11 +164,9 @@ def _create_game(request, player):
     gamestate.save()
     return _terminal(request, gamestate)
 
-
 def qunit_tests(request):
     """
     QUNIT TESTS
     """
 
     return render(request, 'qunit_tests.html');
-    
