@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', player.views.player_logout, name='logout'),
     url(r'^register/$', player.views.login_register, {'tab': 'register'}, name='register'),
     url(r'^qunit_tests/$', player.views.qunit_tests),
-    url(r'^delete_game/$', player.views.delete_game),
+#    url(r'^delete_game/$', player.views.delete_game),
 
     # Gamestate Views
     url(r'^get_current_room/$', gamestate.views.get_current_room),

@@ -174,12 +174,12 @@ def qunit_tests(request):
 
     return render(request, 'qunit_tests.html');
 
-def delete_game(request):
+#def delete_game(request):
     """
     Quick delete game function add for removing the players current gamestate
     """
-    player = Player.objects.get(pk=request.user)
-    gameState = player.gamestate
-    gameState.delete()
+#    player = Player.objects.get(pk=request.user)
+#    gameState = player.gamestate
+#    gameState.delete()
     
-    return redirect('/')
+#    return redirect('/')

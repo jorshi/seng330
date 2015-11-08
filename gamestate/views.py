@@ -35,6 +35,7 @@ def get_current_room(request):
 
     Returns:
         HttpResponse with JSON serialized room object
+
     """
 
     player = Player.objects.get(user=request.user)
@@ -125,7 +126,7 @@ def get_inventory(request):
                 'useMessage': [use.use_message if use else None for use in itemUses],
                 'doorToUnlock': itemUses[itemState.state].on_door.pk if itemType == "key" else None,
             })
-
+            
     return JsonResponse(items, safe=False)
 
 
