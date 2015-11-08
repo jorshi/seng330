@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.models import User
 from django.forms.util import ErrorList
-import django.contrib.auth
+import django.contrib.auth as auth
 from django.shortcuts import render, redirect
 from player.forms import RegistrationForm, LoginForm
 from player.models import Player
@@ -14,7 +14,15 @@ from gamestate.models import GameState
 from gameworld.models import Room
 
 @csrf_protect
-def register(request):
+def login_register(request, tab='login'):
+    """
+    Render combined login/registration form
+    """
+    loginform = LoginForm()
+    regform = RegistrationForm()
+    return render(request, 'login_and_register.html', {'loginform': loginform, 'registerform': regform, 'tab': tab })
+
+def _register(request):
     """
     Register a new user & player, or render the registration form
 
@@ -41,30 +49,26 @@ def register(request):
     return render(request, 'register/register.html', {'form': form})
 
 
-@csrf_protect
-def login(request):
+def _login(request):
     """
     Log a player in or return the login form
 
     Args:
         request - request object
     """
-
+    form = LoginForm()
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = django.contrib.auth.authenticate(username=username, password=password)
+            user = auth.authenticate(username=username, password=password)
             if user is not None:
-                django.contrib.auth.login(request, user)
+                auth.login(request, user)
                 return redirect('home')
-            else:
-                form.add_error(None, 'Invalid username or password')
-        else:
-            form.add_error(None, 'Invalid username or password')
-    else:
-        form = LoginForm()
+
+        form.add_error(None, 'Invalid username or password')
+
     return render(request, 'login.html', {'form':form})
 
 
@@ -76,7 +80,7 @@ def player_logout(request):
         request - request object
     """
 
-    django.contrib.auth.logout(request)
+    auth.logout(request)
     return redirect('home')
 
 
