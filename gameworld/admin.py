@@ -10,7 +10,7 @@ class RoomAdminForm(forms.ModelForm):
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ('title',)
+    list_display = ('name',)
     form = RoomAdminForm
 
 @admin.register(Door)
