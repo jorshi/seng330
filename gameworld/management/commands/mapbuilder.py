@@ -102,7 +102,7 @@ class Command(BaseCommand):
                     script = script[:-3]
                 try:
                     module = importlib.import_module('.%s' % script, 
-                        'gameworld.management.commands')
+                        'gameworld.maps')
                 except ImportError as e:
                     raise CommandError('module %s was not found!' % script)
                 clean_map()
