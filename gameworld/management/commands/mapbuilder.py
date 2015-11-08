@@ -1,7 +1,24 @@
 from django.core.management.base import BaseCommand, CommandError
 import importlib
+from django.core import serializers
 from gameworld.models import Room, Door
 
+def clean_map():
+    """ clear everything in gameworld """
+    Room.objects.all().delete()
+    Door.objects.all().delete()
+    
+def save_map(name):
+    """ backup builder-generated gameworld to a JSON file """
+    tables = []
+    tables.append(serializers.serialize('json', Room.objects.all()))
+    tables.append(serializers.serialize('json', Door.objects.all()))
+    
+    with open('%s.json' % name, 'w') as writer:
+        writer.writelines(tables)
+        writer.close
+            
+    
 class MapBuilder(object):
 
     def __init__(self):
@@ -51,10 +68,6 @@ class MapBuilder(object):
         
         self.rooms[name] = room
 
-    def cleanMap(self):
-        rooms = Room.objects.all().delete()
-        doors = Door.objects.all().delete()
-
 class Command(BaseCommand):
     help = 'Replaces the current map stored in gameworld with a new map'
     
@@ -66,8 +79,11 @@ class Command(BaseCommand):
             try:
                 module = importlib.import_module('.%s' % script, 
                     'gameworld.management.commands')
-                module.main()
             except ImportError:
                 raise CommandError('%s was not found!' % script)
+            clean_map()
+            module.main()
+            save_map(script)
+            
             print('Success: imported map from %s' % script)
             

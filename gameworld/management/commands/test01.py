@@ -2,7 +2,6 @@ from mapbuilder import MapBuilder
 
 def main():
     mapBuilder = MapBuilder()
-    mapBuilder.cleanMap()
 
     # Make rooms
     mapBuilder.makeRoom('Kitchen')
