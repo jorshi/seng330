@@ -84,7 +84,7 @@ class MapBuilder(object):
         # what if item w/ same name is already in db?
         pass
         
-    def addItemUse(self, room, item, other_item=None, keywords, use_text, use_script):
+    def addItemUse(self, room, item, keywords, use_text, use_script, other_item=None):
         # keyword syntax: correspond to regex? or make it really simple/clunky?
         # e.g. '(use|light)' vs. 'use candle,light candle' vs. somewhere in between?
         # default keyword: 'use'

@@ -1,4 +1,4 @@
-from mapbuilder import MapBuilder
+from gameworld.management.commands.mapbuilder import MapBuilder
 
 def main():
     mapBuilder = MapBuilder()
