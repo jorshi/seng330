@@ -7,6 +7,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+PASSWORD_MAXLENGTH = 60
 
 class LoginForm(forms.Form):
     """
@@ -21,7 +22,7 @@ class LoginForm(forms.Form):
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={'required': True, 'max_length':30, 'render_value':False, 'class': 'form-control'}
+            attrs={'required': True, 'max_length': PASSWORD_MAXLENGTH, 'render_value':False, 'class': 'form-control'}
         ),
         label=_("Password")
     )
@@ -45,14 +46,14 @@ class RegistrationForm(forms.Form):
 
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={
         'required': True,
-        'max_length': 30,
+        'max_length': PASSWORD_MAXLENGTH,
         'render_value': False,
         'class': 'form-control',
     }), label=_("Password"))
 
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={
         'required': True,
-        'max_length': 30,
+        'max_length': PASSWORD_MAXLENGTH,
         'render_value': False,
         'class': 'form-control',
     }), label=_("Password (again)"))
