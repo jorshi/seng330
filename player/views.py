@@ -4,12 +4,10 @@ View class for handling player sites, including login and registration
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
-from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.forms.util import ErrorList
 import django.contrib.auth
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from player.forms import RegistrationForm, LoginForm
 from player.models import Player
 from gamestate.models import GameState
@@ -23,7 +21,7 @@ def register(request):
     Args:
         request - request object
     """
-
+    form = RegistrationForm()
     # if the HTTP method is POST, then create a new user
     if request.method == "POST":
         form = RegistrationForm(request.POST)
@@ -38,9 +36,8 @@ def register(request):
             player.user = user
             player.save()
 
-            return render(request, 'register/success.html')
-    else:
-        form = RegistrationForm()
+            return redirect('login')  # TODO: add success message
+
     return render(request, 'register/register.html', {'form': form})
 
 
@@ -59,9 +56,9 @@ def login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = django.contrib.auth.authenticate(username=username, password=password)
-            if user != None:
+            if user is not None:
                 django.contrib.auth.login(request, user)
-                return HttpResponseRedirect('/', {'user': user})
+                return redirect('home')
             else:
                 form.add_error(None, 'Invalid username or password')
         else:
@@ -80,7 +77,7 @@ def player_logout(request):
     """
 
     django.contrib.auth.logout(request)
-    return render(request, 'logout_success.html')
+    return redirect('home')
 
 
 def home(request):

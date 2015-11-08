@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-{% block links %}{% endblock %}
 {% block content %}
-<h3>Player Registration</h3><br/>
+<h3>Player Registration</h3>
     <form action="/register/" method="post">
         {% csrf_token %}
         <div id="center-form">
