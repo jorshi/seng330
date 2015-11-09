@@ -36,6 +36,7 @@ def get_current_room(request):
     return HttpResponse(jsonResponse, content_type="application/json")
 
 
+
 @login_required
 def get_room_inventory(request):
     """
@@ -70,3 +71,4 @@ def get_room_inventory(request):
             })
             
     return JsonResponse(items, safe=False)
+
