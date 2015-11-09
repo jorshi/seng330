@@ -52,5 +52,4 @@ def get_room_inventory(request):
 
     print itemState
 
-
     return JsonResponse({'room_inventory': ['itemA', 'itemB']})
