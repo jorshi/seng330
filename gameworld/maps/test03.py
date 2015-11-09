@@ -7,7 +7,7 @@ def main():
     mapBuilder.makeRoom('Kitchen')
     mapBuilder.makeRoom('Living Room')
     mapBuilder.makeRoom('Den')
-    mapBuilder.makeRoom('Entrance Hall')
+    mapBuilder.makeRoom('start')
 
     # Connect Rooms
     mapBuilder.connectRooms('Kitchen', 'Living Room', 'east')

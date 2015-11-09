@@ -102,12 +102,6 @@
     border: 0;
 }
 
-/* make form elements readable with dark theme */
-/*
-.inner #commandForm input {
-    background-color: #333;
-}
-*/
 
 /*
  * Row with equal height columns
@@ -166,4 +160,15 @@
 
 /* style form elements on top of default Bootstrap */
 #commandUserInput { /* make as wide as possible */
+}
+
+/* override Django's form error message styling */
+.errorlist {
+    color: inherit;
+    text-shadow: none;
+    list-style-type: none;
+}
+
+#success {
+    
 }

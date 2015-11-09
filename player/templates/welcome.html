@@ -1,16 +1,4 @@
 {% extends "base.html" %}
-{% block links %}
-    {% if request.user.is_authenticated %}
-        <li class="page-scroll">
-            <a href="/logout/">Logout</a>
-        </li>
-    {% else %}
-        <li class="page-scroll">
-            <a href="/login/">Login</a>
-        </li>
-    {% endif %}
-    <li><a href="/register/">Register</a>
-{% endblock %}
 {% block content %}
     <div>
         <h3>Welcome to Room Escape</h3>

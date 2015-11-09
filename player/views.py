@@ -4,50 +4,72 @@ View class for handling player sites, including login and registration
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
-from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.forms.util import ErrorList
-import django.contrib.auth
-from django.shortcuts import render
+import django.contrib.auth as auth
+from django.shortcuts import render, redirect
 from player.forms import RegistrationForm, LoginForm
 from player.models import Player
 from gamestate.models import GameState
 from gameworld.models import Room
 
-STARTING_ROOM = "Entrance Hall"
-
 @csrf_protect
-def register(request):
+def login_register(request, tab='login'):
     """
-    Register and new user & player, or render the registration form
-
-    Args:
-        request - request object
+    Render combined login/registration form
     """
+    loginform = LoginForm()
+    regform = RegistrationForm()
+    
+    if request.method == 'POST':
+        if tab == 'login':
+            return _login(request)
+        if tab == 'register':
+            return _register(request)
+    
+    return render(request, 'login_and_register.html', {
+        'loginform': loginform, 
+        'registerform': regform, 
+        'tab': tab 
+        })
 
-    # if the HTTP method is POST, then create a new user
-    if request.method == "POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password1'],
-            )
+def _register(request):
+    """
+    Register a new user & player, or render the registration form
 
-            # Create a new player object for user
-            player = Player()
-            player.user = user
-            player.save()
+    """
+    
+    form = RegistrationForm(request.POST)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        user = User.objects.create_user(
+            username=username,
+            password=form.cleaned_data['password1'],
+        )
 
-            return render(request, 'register/success.html')
-    else:
-        form = RegistrationForm()
-    return render(request, 'register/register.html', {'form': form})
+        # Create a new player object for user
+        player = Player()
+        player.user = user
+        player.save()
+
+        # render the form (on login tab) with username filled in, and display a success message
+        loginform = LoginForm({'username': username})
+        return render(request, 'login_and_register.html', {
+            'registerform': form,
+            'loginform': loginform,
+            'tab': 'login',
+            'success': True
+            })
+
+    loginform = LoginForm()
+    return render(request, 'login_and_register.html', {
+        'registerform': form,
+        'loginform': loginform,
+        'tab': 'register'
+        })
 
 
-@csrf_protect
-def login(request):
+def _login(request):
     """
     Log a player in or return the login form
 
@@ -55,22 +77,23 @@ def login(request):
         request - request object
     """
 
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = django.contrib.auth.authenticate(username=username, password=password)
-            if user != None:
-                django.contrib.auth.login(request, user)
-                return HttpResponseRedirect('/', {'user': user})
-            else:
-                form.add_error(None, 'Invalid username or password')
-        else:
-            form.add_error(None, 'Invalid username or password')
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form':form})
+    form = LoginForm(request.POST)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            return redirect('home')
+
+    form.add_error(None, 'Invalid username or password')
+
+    registerform = RegistrationForm()
+    return render(request, 'login_and_register.html', {
+            'registerform': registerform,
+            'loginform': form,
+            'tab': 'login'
+            })
 
 
 def player_logout(request):
@@ -81,69 +104,64 @@ def player_logout(request):
         request - request object
     """
 
-    django.contrib.auth.logout(request)
-    return render(request, 'logout_success.html')
+    auth.logout(request)
+    return redirect('home')
 
 
-def player_dashboard(request):
+def home(request):
     """
-    Player dashboard - home page. Return a welcome page
+    Return a welcome page
     if the user is not logged in
-
-    Args:
-        request - request object
     """
-
     if request.user.is_authenticated():
-
-        # Get the player for this user, if they don't have one (maybe a superuser?) create one for them
-        try:
-            player = Player.objects.get(pk=request.user)
-        except Player.DoesNotExist as e:
-            player = Player()
-            player.user = request.user
-            player.save()
-
-        # Check for an existing game for the player
-        try:
-            #gameState = GameState.objects.get(pk=player)
-            gameState = player.gamestate
-        except GameState.DoesNotExist as e:
-            gameState = None
-
-        return render(request, 'player_dashboard.html', {'user': request.user, 'gameState': gameState})
+        return _dashboard(request)
     else:
         return render(request, 'welcome.html')
-
-@login_required
-def new_game(request):
+    # TODO: welcome.html has a big 'Start' button
+    
+def _dashboard(request):
+    """
+    Return game UI if player has existing game,
+    otherwise create a new game then return game UI
+    """
+    
+    # Get the player for this user, if they don't have one (maybe a superuser?) create one for them
+    try:
+        player = Player.objects.get(pk=request.user)
+    except Player.DoesNotExist:
+        player = Player()
+        player.user = request.user
+        player.save()
+    
+    # Check for an existing game for the player
+    try:
+        gamestate = player.gamestate
+        return _terminal(request, gamestate)
+    except GameState.DoesNotExist:
+        return _create_game(request, player)
+        
+def _terminal(request, gamestate):
+    """
+    Resume an existing game for this player
+    """
+    return render(request, 'game_view.html', { 'user': request.user, 'gameState': gamestate })
+    
+def _create_game(request, player):
     """
     Start a new game for this player
     """
 
-    player = Player.objects.get(user=request.user)
-
     # Erase users current game state if they are starting a new game
     try:
-        #gameState = GameState.objects.get(pk=player)
-        gameState = player.gamestate
-        gameState.delete()
+        gamestate = player.gamestate
+        gamestate.delete()
     except GameState.DoesNotExist:
         pass
 
-    gameState = GameState()
-    gameState.player = player
-    gameState.current_room = Room.objects.get(title=STARTING_ROOM)
-    gameState.save()
-
-    return HttpResponseRedirect('/resume_game/', { 'user': request.user, 'gameState': gameState })
-   
-@login_required   
-def resume_game(request):
-    """
-    Resume an existing game for this player
-    """
-    player = Player.objects.get(user=request.user)
-    gameState = player.gamestate
-    return render(request, 'game_view.html', { 'user': request.user, 'gameState': gameState })
+    gamestate = GameState()
+    gamestate.player = player
+    gamestate.current_room = Room.objects.get(name='start')
+    # other stuff?
+    gamestate.save()
+    return _terminal(request, gamestate)
     

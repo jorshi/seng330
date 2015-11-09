@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="tabbedFormsWrapper">
+    <!-- use Bootstrap to switch tabs -->
+    <ul class="nav nav-tabs nav-justified" style="width: 67%; margin: auto;">
+    <li id="loginTab" {% if tab == 'login' %} class="active" {% endif %}>
+        <a href="#loginPane" data-toggle="tab">Login</a>
+    </li>
+    <li id="registerTab" {% if tab == 'register' %} class="active" {% endif %}>
+        <a href="#registerPane" data-toggle="tab">Register</a>
+    </li>
+    </ul>
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="loginPane" class="tab-pane {% if tab == 'login' %} active {% endif %}">
+        <form id="loginform" action="/login/" method="post">
+            {% csrf_token %}
+            <div id="center-form">
+            {{ loginform.non_field_errors }}
+            {% if success %}
+            <div id="success">
+            Success!
+            </div>
+            {% endif %}
+                {% for field in loginform %}
+                    <div class="form-group">
+                        {{ field.label_tag }}{{ field }}
+                    </div>
+                {% endfor %}
+            </div>
+            <input type="submit" class="btn btn-default" value="Login" />
+        </form>
+        </div>
+        <div id="registerPane" class="tab-pane {% if tab == 'register' %} active {% endif %}">
+        <form id="registerform" action="/register/" method="post">
+            {% csrf_token %}
+            <div id="center-form">
+            {{ registerform.non_field_errors }}
+            {% for field in registerform %}
+                <div class="form-group">
+                    {{ field.errors }}
+                    {{ field.label_tag }}{{ field }}
+                </div>
+            {% endfor %}
+            </div>
+            <input type="submit" class="btn btn-default" value="Register" />
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
