@@ -30,7 +30,6 @@ class GameState(models.Model):
         return "%s.GameState" % self.player
 
 
-
 class DoorState(models.Model):
     """ Saves all the doors the player has seen """
 
