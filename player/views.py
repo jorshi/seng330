@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 from player.forms import RegistrationForm, LoginForm
 from player.models import Player
 from gameworld.models import Room
+from gamestate.models import GameState
 
 @csrf_protect
 def login_register(request, tab='login'):

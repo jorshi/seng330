@@ -3,7 +3,6 @@ from django.db import models
 # default=None: hack to enforce NOT NULL
 # http://stackoverflow.com/questions/12879256/
 
-
 class FixedItem(models.Model):
     """ concrete parent class for anything the player can interact with """
 
@@ -33,7 +32,6 @@ class AbstractUseItem(models.Model):
     keywords = models.CharField(max_length=200)
     # longer text describing the result of performing the action
     desc = models.TextField()
-    
     script = models.CharField(max_length=200, blank=True)
 
     class Meta:
@@ -118,6 +116,12 @@ class Room(models.Model):
             'south': lambda x: setattr(self, 'door_south', x),
         }.get(direction)(Door)
 
+    def update_state(self, state):
+        """
+        Temporarily update the state of this room during game play
+        """
+
+        self.illuminated = state.illuminated
 
     def __unicode__(self):
         return self.name

@@ -24,7 +24,7 @@ class GameState(models.Model):
         roomState.save()
 
     def __unicode__(self):
-        return self.player
+        return "%s.GameState" % self.player
 
 
 class DoorState(models.Model):
@@ -41,7 +41,7 @@ class DoorState(models.Model):
     room_b = models.ForeignKey('gameworld.Room', related_name='unlocked_b')
 
     def __unicode__(self):
-        return u'%s.%s' % (self.game_state, self.door)
+        return '%s.%s' % (self.game_state, self.door)
 
 class RoomState(models.Model):
     """ Saves all the rooms the player has entered """
@@ -50,6 +50,10 @@ class RoomState(models.Model):
     room = models.ForeignKey('gameworld.Room')
     # whether the room is currently lit
     illuminated = models.BooleanField()
+
+    def get_room(self):
+        self.room.update_state(self)
+        return self.room
 
     def __unicode__(self):
         return u'%s.%s' % (self.game_state, self.room)

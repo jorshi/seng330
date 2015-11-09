@@ -5,6 +5,6 @@ from django.contrib import admin
 class Player(models.Model):
     """ Player Object """
     user = models.OneToOneField(User, primary_key=True)
-    
+
     def __unicode__(self):
-        return user
+        return "%s" % self.user
