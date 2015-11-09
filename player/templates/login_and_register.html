@@ -3,12 +3,12 @@
 {% block content %}
 <div id="tabbedFormsWrapper">
     <!-- use Bootstrap to switch tabs -->
-    <ul class="nav nav-tabs nav-justified" style="width: 67%; margin: auto;">
+    <ul class="nav nav-tabs nav-justified login-reg-tabs">
     <li id="loginTab" {% if tab == 'login' %} class="active" {% endif %}>
-        <a href="#loginPane" data-toggle="tab">Login</a>
+        <a href="#loginPane" data-toggle="tab" class="gamesite-tab">Login</a>
     </li>
     <li id="registerTab" {% if tab == 'register' %} class="active" {% endif %}>
-        <a href="#registerPane" data-toggle="tab">Register</a>
+        <a href="#registerPane" data-toggle="tab" class="gamesite-tab">Register</a>
     </li>
     </ul>
     <div class="tab-content" style="padding-top: 15px;">
