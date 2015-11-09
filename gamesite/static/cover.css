@@ -162,24 +162,3 @@ body {
     width: 850px;
   }
 }
-
-/*
- * Tabbed Form
- */
-
-#tabbedFormsWrapper {
-    margin: auto;
-    width: 67%;
-    padding-bottom: 15px;
-    background-color: rgb(64,64,64);
-    border-radius: 4px 4px 4px 4px;
-}
-
-.login-reg-tabs {
-    background-color: rgba(36, 36, 36, 0.93);
-    border-radius: 4px 4px 0 0;
-}
-
-#tabbedFormsWrapper > ul > li > a {
-    border-bottom: 1px solid #242424;
-}
