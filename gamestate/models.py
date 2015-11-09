@@ -2,6 +2,7 @@ from django.db import models
 from player.models import Player
 from gameworld.models import Room, Door, FixedItem, Item
 
+
 class GameState(models.Model):
     """ Saves the state of player's current game """
     
@@ -10,8 +11,21 @@ class GameState(models.Model):
     # list of items the player has taken from rooms
     inventory = models.ManyToManyField('gameworld.Item')
 
+    def add_room(self, room):
+        """
+        Creates a new room state for this GameState, should
+        be called upon player first entering a room
+        """
+
+        roomState = RoomState()
+        roomState.game_state = self
+        roomState.room = room
+        roomState.illuminated = room.illuminated
+        roomState.save()
+
     def __unicode__(self):
         return self.player
+
 
 class DoorState(models.Model):
     """ Saves all the doors the player has seen """
@@ -60,4 +74,4 @@ class Statistics(models.Model):
     items_taken = models.PositiveSmallIntegerField(default=0)
     
     def __unicode__(self):
-        return self.game_state
+        return '%s.%s' % (self.room_state, self.item)
