@@ -71,6 +71,7 @@ def get_doors(request):
     return JsonResponse(doors, safe=False)
 
 
+
 @login_required
 def get_inventory(request):
     """
