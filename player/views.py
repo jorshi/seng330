@@ -20,33 +20,53 @@ def login_register(request, tab='login'):
     """
     loginform = LoginForm()
     regform = RegistrationForm()
-    return render(request, 'login_and_register.html', {'loginform': loginform, 'registerform': regform, 'tab': tab })
+    
+    if request.method == 'POST':
+        if tab == 'login':
+            return _login(request)
+        if tab == 'register':
+            return _register(request)
+    
+    return render(request, 'login_and_register.html', {
+        'loginform': loginform, 
+        'registerform': regform, 
+        'tab': tab 
+        })
 
 def _register(request):
     """
     Register a new user & player, or render the registration form
 
-    Args:
-        request - request object
     """
-    form = RegistrationForm()
-    # if the HTTP method is POST, then create a new user
-    if request.method == "POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password1'],
-            )
+    
+    form = RegistrationForm(request.POST)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        user = User.objects.create_user(
+            username=username,
+            password=form.cleaned_data['password1'],
+        )
 
-            # Create a new player object for user
-            player = Player()
-            player.user = user
-            player.save()
+        # Create a new player object for user
+        player = Player()
+        player.user = user
+        player.save()
 
-            return redirect('login')  # TODO: add success message
+        # render the form (on login tab) with username filled in, and display a success message
+        loginform = LoginForm({'username': username})
+        return render(request, 'login_and_register.html', {
+            'registerform': form,
+            'loginform': loginform,
+            'tab': 'login',
+            'success': True
+            })
 
-    return render(request, 'register/register.html', {'form': form})
+    loginform = LoginForm()
+    return render(request, 'login_and_register.html', {
+        'registerform': form,
+        'loginform': loginform,
+        'tab': 'register'
+        })
 
 
 def _login(request):
@@ -56,20 +76,24 @@ def _login(request):
     Args:
         request - request object
     """
-    form = LoginForm()
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = auth.authenticate(username=username, password=password)
-            if user is not None:
-                auth.login(request, user)
-                return redirect('home')
 
-        form.add_error(None, 'Invalid username or password')
+    form = LoginForm(request.POST)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            return redirect('home')
 
-    return render(request, 'login.html', {'form':form})
+    form.add_error(None, 'Invalid username or password')
+
+    registerform = RegistrationForm()
+    return render(request, 'login_and_register.html', {
+            'registerform': registerform,
+            'loginform': form,
+            'tab': 'login'
+            })
 
 
 def player_logout(request):
