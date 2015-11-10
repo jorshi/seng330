@@ -1,3 +1,7 @@
+"""
+Gamesite Views
+"""
+
 from django.shortcuts import render, redirect
 import django.contrib.staticfiles.views as static_server
 
