@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.10"/>
-<title>Room Escape Game: Member List</title>
+<title>Room Escape Game: gamestate.models.Statistics Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -83,22 +83,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>gamestate</b></li><li class="navelem"><b>models</b></li><li class="navelem"><a class="el" href="classgamestate_1_1models_1_1_game_state.html">GameState</a></li>  </ul>
+<li class="navelem"><b>gamestate</b></li><li class="navelem"><b>models</b></li><li class="navelem"><a class="el" href="classgamestate_1_1models_1_1_statistics.html">Statistics</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="classgamestate_1_1models_1_1_statistics-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">gamestate.models.GameState Member List</div>  </div>
+<div class="title">gamestate.models.Statistics Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>This is the complete list of members for <a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a>, including all inherited members.</p>
-<table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>__unicode__</b>(self) (defined in <a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a>)</td><td class="entry"><a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>current_room</b> (defined in <a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a>)</td><td class="entry"><a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>inventory</b> (defined in <a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a>)</td><td class="entry"><a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>player</b> (defined in <a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a>)</td><td class="entry"><a class="el" href="classgamestate_1_1models_1_1_game_state.html">gamestate.models.GameState</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-</table></div><!-- contents -->
+<div class="dynheader">
+Inheritance diagram for gamestate.models.Statistics:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classgamestate_1_1models_1_1_statistics.png" usemap="#gamestate.models.Statistics_map" alt=""/>
+  <map id="gamestate.models.Statistics_map" name="gamestate.models.Statistics_map">
+</map>
+ </div></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:ac8c94f38bf67fb3e1f3dc6e6e579084c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac8c94f38bf67fb3e1f3dc6e6e579084c"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>game_state</b> = models.OneToOneField('<a class="el" href="classgamestate_1_1models_1_1_game_state.html">GameState</a>', primary_key=True)</td></tr>
+<tr class="separator:ac8c94f38bf67fb3e1f3dc6e6e579084c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73149337b0be64da8df9d7cc92e9db9b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a73149337b0be64da8df9d7cc92e9db9b"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>rooms_unlocked</b> = models.PositiveSmallIntegerField(default=0)</td></tr>
+<tr class="separator:a73149337b0be64da8df9d7cc92e9db9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfe06fba139a7fc2d6115c7cd12f0b3d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adfe06fba139a7fc2d6115c7cd12f0b3d"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>items_taken</b> = models.PositiveSmallIntegerField(default=0)</td></tr>
+<tr class="separator:adfe06fba139a7fc2d6115c7cd12f0b3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><pre class="fragment">Tracks statistics for the player's current game </pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
+<li>gamestate/models.py</li>
+</ul>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
