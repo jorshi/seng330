@@ -26,7 +26,7 @@ class AbstractUseItem(models.Model):
     keywords = models.CharField(max_length=200)
     desc = models.TextField()
     script = models.CharField(max_length=200, blank=True)
-    
+
     class Meta:
         abstract = True
 
@@ -34,17 +34,17 @@ class UseInventoryItem(AbstractUseItem):
     """ use an item from player inventory, which will be consumed """
     item = models.ForeignKey('Item', related_name='use_cases')
     on_item = models.ForeignKey('FixedItem', blank=True)
-    
+
     def __unicode__(self):
         return u'%s %s' % (self.keywords, self.item)
-    
+
 class UseDecoration(AbstractUseItem):
     item = models.ForeignKey('FixedItem')
-    
+
     def __unicode__(self):
         return u'%s %s' % (self.keywords, self.item)
-    
-    
+
+
 class Door(FixedItem):
     """ Door object """
 
@@ -76,7 +76,7 @@ class Room(models.Model):
     desc_header = models.TextField(default=None)
     desc_footer = models.TextField()
     illuminated = models.BooleanField(default=True)
-    default_items = models.ManyToManyField('FixedItem')
+    default_items = models.ManyToManyField('FixedItem', related_name="found_in")
     door_north = models.ForeignKey('Door', null=True, blank=True, related_name='north')
     door_east = models.ForeignKey('Door', null=True, blank=True, related_name='east')
     door_south = models.ForeignKey('Door', null=True, blank=True, related_name='south')
