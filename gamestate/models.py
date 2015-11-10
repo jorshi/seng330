@@ -6,8 +6,8 @@ class GameState(models.Model):
     """ Saves the state of player's current game """
     player = models.OneToOneField('player.Player', primary_key=True)
     current_room = models.ForeignKey('gameworld.Room')
-    items = models.ManyToManyField('gameworld.Item')
-    
+    inventory = models.ManyToManyField('gameworld.Item')
+
     def __unicode__(self):
         return self.player
 
@@ -18,16 +18,16 @@ class DoorState(models.Model):
     locked = models.BooleanField()
     room_a = models.ForeignKey('gameworld.Room', related_name='unlocked_a')
     room_b = models.ForeignKey('gameworld.Room', related_name='unlocked_b')
-    
+
     def __unicode__(self):
         return '%s.%s' % (self.game_state, self.door)
-        
+
 class RoomState(models.Model):
     """ Saves all the rooms the player has entered """
     game_state = models.ForeignKey('GameState')
     room = models.ForeignKey('gameworld.Room')
     illuminated = models.BooleanField()
-    
+
     def __unicode__(self):
         return '%s.%s' % (self.game_state, self.room)
 
@@ -36,7 +36,12 @@ class ItemState(models.Model):
     room_state = models.ForeignKey('RoomState')
     item = models.ForeignKey('gameworld.FixedItem')
     hidden = models.BooleanField()
-    
+
     def __unicode__(self):
         return '%s.%s' % (self.room_state, self.item)
-        
+
+class Statistics(models.Model):
+    """ Tracks statistics for the player's current game """
+    game_state = models.OneToOneField('GameState', primary_key=True)
+    rooms_unlocked = models.PositiveSmallIntegerField(default=0)
+    items_taken = models.PositiveSmallIntegerField(default=0)
