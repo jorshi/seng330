@@ -3,9 +3,6 @@
 /* get rid of drop command */
 /* create key item and edge cases */
 
-// DALLAS:
-/* update room description when changing rooms */
-
 /*Patterns*/
 pattTakeItem = /^\s*(get|grab|take|pick\s*up)\s+(\w+)\s*$/i;
 pattGo = /^\s*(go|move|walk)\s+(\w*)\s*$/i;
@@ -20,8 +17,6 @@ pattGenericUse = /^\s*(use|fire|shoot|open)\s+(\w+)\s*$/i;
 pattUseItem = /^\s*(use)\s+(\w+)\s*$/i; /*Generic*/
 pattShootItem = /^\s*(use|fire|shoot)\s+(\w+)\s*$/i; /*shootable*/
 pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; /*openable*/
-
-displayResponse(room1.description);
 
 /*Parser Class*/
 function Parser(player) {
@@ -266,11 +261,14 @@ function Parser(player) {
 		/*now figure out the new room*/
 		if (itemToCheck.room == player.currentRoom) {
 			player.changeRoom(itemToCheck.room2);
+
 		} else {
 			player.changeRoom(itemToCheck.room);
 		}
 		/* TODO: call an update_room function*/
 		displayResponse("you went through the "+match[2]+" "+match[3]);
+		player.currentRoom.updateDescription();
+		displayResponse(player.currentRoom.description);
 		return true;
 	}
 }
