@@ -50,10 +50,6 @@ function displayResponse(s)  {
 	$("#terminalText").append("<p class=\"response\">" + s + "</p>");
 }
 
-//This function updates the description of the room that is passed in
-function updateRoomDescription(r){
-	r.updateDescription();
-}
 
  	/*TODO: create an update_room function*/
  	/* this function should fetch the room the player
