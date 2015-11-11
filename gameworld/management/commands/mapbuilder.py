@@ -9,7 +9,8 @@ JSON_MAP_PATH = 'gameworld/maps/'
 class MapBuilder(object):
 
     def __init__(self):
-        self.rooms = {}
+        self.room_heap = {}  # room name: room (all rooms, connected or not)
+        self.room_map = {}  # 2D map indexed by (x,y) to room name
 
 
     def connectRooms(self, roomA, roomB, direction, locked=False):
@@ -18,12 +19,23 @@ class MapBuilder(object):
         placement of the door in roomA!
         """
 
+        try:
+            room_a = self.room_heap[roomA]
+            room_b = self.room_heap[roomB]
+        except KeyError as e:
+            print("Error creating door: room does not exist")
+            print(e)
+            return
+            
+        # TODO: check if already connected to each other in a different way        
+        #if roomA in self.room_map.values():
+        
         # Create door connecting the two rooms
         door = Door()
-        door.room_a = self.rooms.get(roomA)
-        door.room_b = self.rooms.get(roomB)
+        door.room_a = room_a
+        door.room_b = room_b
         door.locked  = locked
-        door.name = 'Door'
+        door.name    = 'door'
         door.examine = ''
         door.save()
 
@@ -34,17 +46,17 @@ class MapBuilder(object):
             'west':'east',
         }
 
-        self.rooms[roomA].set_door(direction, door)
-        self.rooms[roomB].set_door(reverse[direction], door)
+        room_a.set_door(direction, door)
+        room_b.set_door(reverse[direction], door)
 
-        self.rooms[roomA].save()
-        self.rooms[roomB].save()
+        room_a.save()
+        room_b.save()
 
     def makeRoom(self, name, title="", illuminated=True, 
                  desc="You are in a dim room."):
 
         try:
-            room = Room.objects.get(name=name)
+            room = self.room_heap[name]
             print("Warning: %s already exists... overwriting" % name)
         except:
             room = Room()
@@ -56,12 +68,15 @@ class MapBuilder(object):
         # set desc2
         room.save()
 
-        self.rooms[name] = room
+        self.room_heap[name] = room
+        # don't remove from heap even if adding to map
+        if (name == 'start'):
+            self.room_map[(0,0)] = room
 
     def addItem(self, room, name, fixed, examine="", hidden=False):
         """ make an Item/FixedItem and add to an existing room """
         try:
-            r = self.rooms[room]
+            r = self.room_heap[room]
         except KeyError:
             print("Unable to add %s: room %s does not exist" % (name, room))
             return
