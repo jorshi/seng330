@@ -7,9 +7,9 @@ $(function()  {
 	/*TODO: call an update_player function*/
 
 	/*rooms*/
-	room1 = new Room("Room 1: ", " end");
-	room2 = new Room("Rooom 2: ", " end");
-	room3 = new Room("Room 3: ", " end");
+	room1 = new Room("Room 1: ", "end");
+	room2 = new Room("Room 2: ", "end");
+	room3 = new Room("Room 3: ", "end");
 
 	/*player*/
 	playerInventory = new Inventory();

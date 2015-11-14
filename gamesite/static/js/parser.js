@@ -19,16 +19,6 @@ pattShootItem = /^\s*(use|fire|shoot)\s+(\w+)\s*$/i; /*shootable*/
 pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; /*openable*/
 
 /*Parser Class*/
-QUnit.test( "hello test", function( assert ) {
-  assert.ok( 1 == "1", "Passed!" );
-  QUnit,log("test", "test","test");
-});
-
-QUnit.test('Parser()',function(assert) {
-	ok(Parser("3"), 'this should not work');
-})
-
-QUnit.start();	
 
 function Parser(player) {
 	/*this.player = player;
@@ -81,7 +71,7 @@ function Parser(player) {
 
 		/*TODO: call a update_inventory_pickup function*/
 		player.inv.itemsInInventory.push(player.currentRoom.itemsInRoom.splice(index, 1)[0]);
-
+		player.currentRoom.updateDescription();
 
 		itemToCheck.inInv = true;
 		return true;		
