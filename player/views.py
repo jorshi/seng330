@@ -146,4 +146,11 @@ def resume_game(request):
     player = Player.objects.get(user=request.user)
     gameState = player.gamestate
     return render(request, 'game_view.html', { 'user': request.user, 'gameState': gameState })
+
+def qunit_tests(request):
+    """
+    QUNIT TESTS
+    """
+
+    return render(request, 'qunit_tests.html');
     

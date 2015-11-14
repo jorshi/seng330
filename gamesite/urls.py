@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', player.views.login),
     url(r'^new_game/$', player.views.new_game),
     url(r'^resume_game/$', player.views.resume_game),
+    url(r'^qunit_tests/$', player.views.qunit_tests),
 
 )
