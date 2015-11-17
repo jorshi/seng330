@@ -24,6 +24,7 @@ class MapBuilder(object):
         door.room_b = self.rooms.get(roomB)
         door.locked  = locked
         door.name = 'Door'
+        door.shortdesc = ''
         door.examine = ''
         door.save()
 
@@ -58,7 +59,7 @@ class MapBuilder(object):
 
         self.rooms[name] = room
 
-    def addItem(self, room, name, fixed, examine="", hidden=False):
+    def addItem(self, room, name, fixed, shortdesc="", examine="", hidden=False):
         """ make an Item/FixedItem and add to an existing room """
         try:
             r = self.rooms[room]
@@ -85,6 +86,13 @@ class MapBuilder(object):
         item.name = name
         item.hidden = hidden
         item.examine = examine
+        if shortdesc == "":
+            if name[0] in "aeio":
+                item.shortdesc = "an " + name
+            else:
+                item.shortdesc = "a " + name
+        else:
+            item.shortdesc = shortdesc
         item.save()
         
         r.default_items.add(item)
