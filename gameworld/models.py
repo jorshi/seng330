@@ -7,8 +7,13 @@ from django.db import models
 class FixedItem(models.Model):
     """ concrete parent class for anything the player can interact with """
 
+    # name the player uses to refer to the item, e.g. "painting"
     name = models.CharField(max_length=30, default=None)
+    # a few words displayed when listing the items in the room, e.g. "an oil painting"
+    shortdesc = models.CharField(max_length=30, default=None)
+    # longer text displayed when the player types "examine <name>"
     examine = models.TextField()
+    # whether the item is initially hidden
     hidden = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -23,8 +28,12 @@ class Item(FixedItem):
 
 class AbstractUseItem(models.Model):
     """ describes how an item can be used """
+    
+    # comma-separated list of keywords, e.g. "use,move"
     keywords = models.CharField(max_length=200)
+    # longer text describing the result of performing the action
     desc = models.TextField()
+    
     script = models.CharField(max_length=200, blank=True)
 
     class Meta:
