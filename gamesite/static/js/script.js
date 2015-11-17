@@ -36,4 +36,5 @@ $(function()  {
 
 	room1.updateDescription();
 	displayResponse(room1.description);
+	$("#pinnedText").html(player.currentRoom.description);
 });

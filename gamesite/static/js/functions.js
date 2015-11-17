@@ -48,6 +48,8 @@ function parse() {
 
 function displayResponse(s)  {
 	$("#terminalText").append("<p class=\"response\">" + s + "</p>");
+	//scroll down chat window
+	$("#terminalText").scrollTop($("#terminalText")[0].scrollHeight);
 }
 
 

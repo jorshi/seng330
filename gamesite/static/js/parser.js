@@ -18,12 +18,16 @@ pattUseItem = /^\s*(use)\s+(\w+)\s*$/i; /*Generic*/
 pattShootItem = /^\s*(use|fire|shoot)\s+(\w+)\s*$/i; /*shootable*/
 pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; /*openable*/
 
+
 /*Parser Class*/
 
 function Parser(player) {
 	/*this.player = player;
 	Parser Method to check if a command is valid or not*/
 	this.check = function(s) {
+
+		//scroll down chat window
+		$('#terminalText').scrollTop(1000000);
 
 		s = s.toLowerCase();
 		if (this.pickUpCheck(s)) return true;
@@ -269,7 +273,7 @@ function Parser(player) {
 		/* TODO: call an update_room function*/
 		displayResponse("you went through the "+match[2]+" "+match[3]);
 		player.currentRoom.updateDescription();
-		displayResponse(player.currentRoom.description);
+		$("#pinnedText").html(player.currentRoom.description);
 		return true;
 	}
 }
