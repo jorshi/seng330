@@ -79,6 +79,8 @@ class MapBuilder(object):
                 print("Warning: %s already exists in room %s... overwriting"
                 % (name, room))
                 # don't assign item = match bc the type won't be modified
+                # delete so duplicates don't show up
+                match.delete()
             
         item.name = name
         item.hidden = hidden
@@ -101,11 +103,14 @@ def clean_map():
     """ clear everything in gameworld """
     Room.objects.all().delete()
     Door.objects.all().delete()
+    Item.objects.all().delete()
     FixedItem.objects.all().delete()  
 
 def save_map(module_name):
     """ backup builder-generated gameworld to a JSON file """
-    all_objects =  list(Room.objects.all()) + list(Door.objects.all())
+    all_objects = list(Room.objects.all()) + list(Door.objects.all()) \
+                + list(Item.objects.all()) + list(FixedItem.objects.all())
+    # TODO: include ItemUse classes
     data = serializers.serialize('json', all_objects)
 
     with open('%s%s.json' % (JSON_MAP_PATH, module_name), 'w') as writer:
