@@ -35,6 +35,6 @@ $(function()  {
 	parser = new Parser(player);
 
 	room1.updateDescription();
-	displayResponse(room1.description);
+	displayResponse("How would you like to proceed?");
 	$("#pinnedText").html(player.currentRoom.description);
 });
