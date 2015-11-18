@@ -65,3 +65,10 @@ Run the following commands:
 python manage.py migrate
 python manage.py makemigrations
 python manage.py mapbuilder test03
+python manage.py runserver
+Should start up and tell you where it is running at (ie. 127.0.0.1:8000)
+Open a browser and navigate to the given address
+You’ll notice that through all this git sees that you have new untracked files, we want to ignore these.
+Create a file called ‘.gitignore’ in the seng330 directory
+Add ‘*.pyc’, ‘venv’ & ‘.gitignore’ to this file, in a list separated by new lines
+Bravo! Dev environment is ready to go :)
