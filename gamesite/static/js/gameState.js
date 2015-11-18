@@ -1,5 +1,5 @@
-pattState1Change = /^\s*(use)\s+(key1)\s+(on|with)\s+(door)\s*$/i;
-pattState2Change = /^\s*(use)\s+(key2)\s+(on|with)\s+(door2)\s*$/i;
+pattState1Change = /^\s*(use)\s+(key1)\s+(on|with)\s+(south door)\s*$/i;
+pattState2Change = /^\s*(use)\s+(key2)\s+(on|with)\s+(east door)\s*$/i;
 
 function gameState(s) {
 	/* TODO: make this better (proper error messages)*/

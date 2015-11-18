@@ -9,6 +9,7 @@ pattGo = /^\s*(go|move|walk)\s+(\w*)\s*$/i;
 pattExamine = /^\s*(examine|check|look at)\s+(\w*)\s*$/i;
 pattDrop = /^\s*(discard|drop|throw away|throw out)\s+(\w*)\s*$/i;
 pattUseOn = /^\s*(use)\s+(\w+)\s+(on|with)\s+(\w+)\s*$/i;
+pattUseOnDoor = /^\s*(use)\s+(\w+)\s+(on|with)\s+(east|west|south|north)\s*door\s*$/i;
 /*door related patterns*/
 pattGoThrough = /^\s*(go through|enter|use|open)\s+(east|west|south|north)\s+(\w+)\s*$/i;
 pattFindDoor = /^\s*(north|south|east|west)\s+/i;
@@ -35,6 +36,7 @@ function Parser(player) {
 		if (this.goThroughCheck(s)) return true;
 		if (this.useItemCheck(s)) return true;
 		if (this.useItemOnCheck(s)) return true;
+		if (this.useItemOnDoor(s)) return true;
 		if (this.dropCheck(s)) return true;
 
 		if (s == "printroom") {
@@ -214,14 +216,80 @@ function Parser(player) {
 			displayResponse("You can not use the "+itemToUse.name+" on itself");
 			return true;
 		}
-		/*TODO: case 5: you try to use a key on an unlocked door*/
-		/*TODO: case 6: you try to use the wrong key on the wrong door*/
 
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name);
 		gameState(s);
 		return true;
 	}
+
+
+/*parser method to use a key on a door*/
+	this.useItemOnCheck = function(s) {
+		/*this gets the group in the RE*/
+		match = pattUseOnDoor.exec(s);
+		/*no match*/
+		if (match == null) return false;
+		/*match[2] is string containing <item> that the user inputted
+		  match[4] is the wall that the door is on (east,south, ect.)*/
+		itemToUse = itemIsInRoomOrInv(player.currentRoom, player.inv, match[2], "ri");
+		doorDirection = match[4];
+
+		/*now that we have the item check edge cases:*/
+
+		/*case 1: item doesent exist*/
+		if (itemToUse == null) {
+			/*print out message saying item is not in room*/
+			displayResponse("There is no " + match[2]);
+			return true;
+		}
+
+		/*case 2: there is no door on the wall*/
+		if (match[4] == "north") {
+			itemToCheck = player.currentRoom.doorLayout[0];
+			doorLayoutIndex = 0;
+		} else if (match[4] == "east") {
+			itemToCheck = player.currentRoom.doorLayout[1];
+			doorLayoutIndex = 1;
+		} else if (match[4] == "south") {
+			itemToCheck = player.currentRoom.doorLayout[2];
+			doorLayoutIndex = 2;
+		} else if (match[4] == "west") {
+			itemToCheck = player.currentRoom.doorLayout[3];
+			doorLayoutIndex = 3;
+		}
+		if (itemToCheck == null) {
+			displayResponse("There is no "+match[4]+" door");
+			return true;
+		}
+
+		/*case 3: item can't be used*/
+		if (!(itemToUse instanceof Key)) {
+			displayResponse("You can not use the " + itemToUse.name + " on that");
+			return true;
+		}
+
+		/*case 4: item is useable but is not in your inventory*/
+		if ((itemToUse instanceof Key) && (itemToUse.inInv == false)) {
+			displayResponse("The "+itemToUse.name+" is not in your inventory");
+			return true;
+		}
+
+
+		/*case 5: you try to use a key on an unlocked door*/
+		if (player.currentRoom.doorLayout[doorLayoutIndex].locked == false) {
+			displayResponse("The "+match[4]+" door is unlocked already");
+			return true;
+		}
+		/*TODO: case 6: you try to use the wrong key on the wrong door*/
+
+		/*the item can be used so display use message*/
+		displayResponse("You try to use the " + itemToUse.name + " on the " + match[4] + "door");
+		gameState(s);
+		return true;
+	}
+
+
 
 	this.goThroughCheck = function(s) {
 		/*this gets the group in the RE*/
@@ -266,7 +334,6 @@ function Parser(player) {
 		/*now figure out the new room*/
 		if (itemToCheck.room == player.currentRoom) {
 			player.changeRoom(itemToCheck.room2);
-
 		} else {
 			player.changeRoom(itemToCheck.room);
 		}
