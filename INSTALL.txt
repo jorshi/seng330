@@ -1,0 +1,67 @@
+
+MAC OS X INSTRUCTIONS
+Make sure you have git installed and setup
+https://help.github.com/articles/set-up-git/
+Get the repository
+git clone https://github.com/jorshi/seng330
+Get python setup
+https://www.python.org/downloads/
+Install PIP for package management, if you don’t have it already. Python 2.7.10 should ship with it included.
+https://pip.pypa.io/en/stable/installing/
+Install virtualenv
+pip install virtualenv
+Get Database setup
+http://www.postgresql.org/download/
+On Mac OS I used postgres.app
+Start an instance of postgres
+Can check on the command line by running psql, should log you into the postgres command line interface. \q to exit
+On windows I believe the equivalent to psql is the postgres executable
+http://stackoverflow.com/questions/15869808/postgres-psql-command-is-not-recognized-in-windows-environment 
+Run the database setup script for the gamesite application
+psql < seng330/setup_db.sql
+Setup a virtualenv
+Navigate in seng330
+cd seng330
+Create a new virtualenv called venv
+virtualenv venv
+Activate the virtualenv
+source venv/bin/activate
+Install the dependencies
+pip install -r requirements.txt
+Run migrations to setup DB
+python manage.py migrate
+python manage.py makemigrations
+python manage.py mapbuilder test03
+Will probably ask you to create a superuser, follow prompts to setup a user for yourself
+If it doesn’t ask you for a superuser, not a bad idea to do it anyways by running ‘python manage.py createsuperuser’
+Start the development server
+python manage.py runserver
+Should start up and tell you where it is running at (ie. 127.0.0.1:8000)
+Open a browser and navigate to the given address
+You’ll notice that through all this git sees that you have new untracked files, we want to ignore these.
+Create a file called ‘.gitignore’ in the seng330 directory
+Add ‘*.pyc’, ‘venv’ & ‘.gitignore’ to this file, in a list separated by new lines
+Bravo! Dev environment is ready to go :)
+
+WINDOWS INSTRUCTIONS
+Install Git (Git For Windows or GitHub Desktop are good choices)
+Install Python 2.7 (I installed to C:\Python27 without adding to my PATH)
+Run pip:
+C:\Python27\Scripts\pip install virtualenv
+Install and run Postgres
+install Visual C++ compiler for Python: 
+install Postgres (enter a password for the postgres account)
+Clone the project from GitHub into a folder of your choice
+Install project requirements
+cd into the project (seng330) and create a virtualenv in it:
+C:\Python27\Scripts\virtualenv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+Set up database
+“%PROGRAMFILES(x86)%\Postgres\bin\psql.exe” -U postgres < setup_db.sql
+enter the password you set when installing Postgres
+(I’m running 64-bit Windows, omit the (x86) otherwise)
+Run the following commands:
+python manage.py migrate
+python manage.py makemigrations
+python manage.py mapbuilder test03
