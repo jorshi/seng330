@@ -1,3 +1,4 @@
 # SENG 330 Team 5 Project
 
-Online Multi-player turn based game using python Django
+Online Multi-Player turn based escape the room style game.
+Developed using Python, Django, and JavaScript.
