@@ -4,6 +4,7 @@ var Item = function(name, description, enterRoomDescription, useMessage) {
 	this.description = description;
 	this.enterRoomDescription = enterRoomDescription;
 	this.useMessage = useMessage;
+	this.hidden = false;
 	/*adds a new item into the room array when the item is created*/
 }
 

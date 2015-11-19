@@ -1,6 +1,4 @@
 // MAX: 
-/* make door traversals make sense (only have east door, north door ect.) */
-/* get rid of drop command */
 /* create key item and edge cases */
 
 /*Patterns*/
@@ -9,9 +7,9 @@ pattGo = /^\s*(go|move|walk)\s+(\w*)\s*$/i;
 pattExamine = /^\s*(examine|check|look at)\s+(\w*)\s*$/i;
 pattDrop = /^\s*(discard|drop|throw away|throw out)\s+(\w*)\s*$/i;
 pattUseOn = /^\s*(use)\s+(\w+)\s+(on|with)\s+(\w+)\s*$/i;
-pattUseOnDoor = /^\s*(use)\s+(\w+)\s+(on|with)\s+(east|west|south|north)\s*door\s*$/i;
+pattUseOnDoor = /^\s*(use)\s+(\w+)\s+(on|with)\s+(east|west|south|north)\s+door\s*$/i;
 /*door related patterns*/
-pattGoThrough = /^\s*(go through|enter|use|open)\s+(east|west|south|north)\s+(\w+)\s*$/i;
+pattGoThrough = /^\s*(go through|enter|use|open)\s+(east|west|south|north)\s+door\s*$/i;
 pattFindDoor = /^\s*(north|south|east|west)\s+/i;
 /*Patterns for use Items*/
 pattGenericUse = /^\s*(use|fire|shoot|open)\s+(\w+)\s*$/i;
@@ -26,7 +24,6 @@ function Parser(player) {
 	/*this.player = player;
 	Parser Method to check if a command is valid or not*/
 	this.check = function(s) {
-
 		//scroll down chat window
 		$('#terminalText').scrollTop(1000000);
 
@@ -36,8 +33,7 @@ function Parser(player) {
 		if (this.goThroughCheck(s)) return true;
 		if (this.useItemCheck(s)) return true;
 		if (this.useItemOnCheck(s)) return true;
-		if (this.useItemOnDoor(s)) return true;
-		if (this.dropCheck(s)) return true;
+		if (this.useItemOnDoorCheck(s)) return true;
 
 		if (s == "printroom") {
 			printArray(player.currentRoom.itemsInRoom);
@@ -49,37 +45,19 @@ function Parser(player) {
 	this.pickUpCheck = function(s) {
 		/*this gets the group in the RE*/
 		match = pattTakeItem.exec(s);
-		/*no match */
+		/*no match*/
 		if (match == null) return false;
 		/*match[2] is string containing <item> that the user inputted*/
 		itemToCheck = itemIsInRoomOrInv(player.currentRoom, player.inv, match[2], "r");
-
 		/*now that we have the item check edge cases:*/
-
-		/*case 1: item doesent exist*/
-		if (itemToCheck == null)  {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no " + match[2]);
-			return true;
-		}
-
+		/*case 1: item doesent exist or is hidden*/
+		if (doesNotExist(itemToCheck,match[2])) return true;
+		if (isHidden(itemToCheck,match[2])) return true;
 		/*case 2: item is unpickupable*/
-		if (itemToCheck instanceof NonPickupable) {
-			displayResponse("You can not pick up the " + itemToCheck.name);
-			return true;
-		}
-
-		/*now we know item must be pickupable*/
-		displayResponse("You just picked up the " + itemToCheck.name);
-		/*Now we have to remove the item from the room and put it into the inventory*/
-		var index = player.currentRoom.itemsInRoom.indexOf(itemToCheck);
-		/*confusing looking but all it does is move the item from the room to the inventory*/
-
-		/*TODO: call a update_inventory_pickup function*/
-		player.inv.itemsInInventory.push(player.currentRoom.itemsInRoom.splice(index, 1)[0]);
-		player.currentRoom.updateDescription();
-
-		itemToCheck.inInv = true;
+		if (cantBePickedUp(itemToCheck)) return true;
+		/*cases passed item can be picked up!*/
+		moveToInventory(itemToCheck);
+		updateRoomDescription();	
 		return true;		
 	}
 
@@ -90,46 +68,12 @@ function Parser(player) {
 		if (match == null) return false;
 		/*match[2] is string containing <item> that the user inputted*/
 		itemToCheck = itemIsInRoomOrInv(player.currentRoom, player.inv, match[2], "ri");
-
 		/*now that we have the item check edge cases:*/
-
-		/*case 1: item doesent exist*/
-		if (itemToCheck == null) {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no " + match[2]);
-			return true;
-		}
-
+		/*case 1: item doesent exist or is hidden*/
+		if (doesNotExist(itemToCheck,match[2])) return true;
+		if (isHidden(itemToCheck,match[2])) return true;
 		/*It must exist so examine it*/
 		displayResponse(itemToCheck.description);
-		return true;
-	}
-
-	/*TODO: remove this functionality */
-	this.dropCheck = function(s) {
-		/*this gets the group in the RE*/
-		match = pattDrop.exec(s);
-		/*no match */
-		if (match == null) return false;
-		/*match[2] is string containing <item> that the user inputted*/
-		itemToCheck = itemIsInRoomOrInv(player.currentRoom, player.inv, match[2], "i");
-
-		/*now that we have the item check edge cases:*/
-
-		/*case 1: item doesent exist*/
-		if (itemToCheck == null) {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no " + match[2] + " in your inventory");
-			return true;
-		}
-
-		/*item is in the room, so see if it can be picked up*/
-		displayResponse("You dropped the " + itemToCheck.name);
-		/*Now we have to remove the item from the room and put it into the inventory*/
-		var index = player.inv.itemsInInventory.indexOf(itemToCheck);
-		/*confusing looking but all it does is move the item from the Inventory to the room*/
-		player.currentRoom.itemsInRoom.push(player.inv.itemsInInventory.splice(index, 1)[0]);
-		itemToCheck.inInv = false;
 		return true;
 	}
 
@@ -141,34 +85,16 @@ function Parser(player) {
 		if (match == null) return false;
 		/*match[2] is string containing <item> that the user inputted*/
 		itemToCheck = itemIsInRoomOrInv(player.currentRoom, player.inv, match[2], "ri");
-
 		/*now that we have the item check edge cases:*/
-
-		/*case 1: item doesent exist*/
-		if (itemToCheck == null) {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no " + match[2]);
-			return true;
-		}
-
+		/*case 1: item doesent exist or is hidden*/
+		if (doesNotExist(itemToCheck,match[2])) return true;
+		if (isHidden(itemToCheck,match[2])) return true;
 		/*case 2: item can't be used*/
-		if (!(itemToCheck instanceof NonPickupableAndUsable) && !(itemToCheck instanceof PickupableAndUsable)) {
-			displayResponse("You can not "+match[1]+" the " + itemToCheck.name);
-			return true;
-		}
-
+		if (cantBeUsed(itemToCheck,match[1])) return true;
 		/*case 3: improper use of RE*/
-		if (itemToCheck.usePattern.exec(s) == null) {
-			displayResponse("You can not "+match[1]+" the " + itemToCheck.name);
-			return true;
-		}
-
+		if (wrongVerbInputed(itemToCheck, match[1])) return true;
 		/*case 4: item is useable but is not in your inventory*/
-		if ((itemToCheck instanceof PickupableAndUsable) && (itemToCheck.inInv == false)) {
-			displayResponse("The "+match[2]+" is not in your inventory");
-			return true;
-		}
-
+		if (notInInventory(itemToCheck)) return true;
 		/*the item can be used so display use message*/
 		displayResponse(itemToCheck.useMessage);
 		gameState(s);
@@ -184,48 +110,26 @@ function Parser(player) {
 		/*match[2] is string containing <item> that the user inputted*/
 		itemToUse = itemIsInRoomOrInv(player.currentRoom, player.inv, match[2], "ri");
 		itemToGetUsedOn = itemIsInRoomOrInv(player.currentRoom, player.inv, match[4], "ri");
-
 		/*now that we have the item check edge cases:*/
-
 		/*case 1: item doesent exist*/
-		if (itemToUse == null) {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no " + match[2]);
-			return true;
-		}
-		if (itemToGetUsedOn == null) {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no " + match[4]);
-			return true;
-		}
-
-		/*case 2: item can't be used*/
-		if (!(itemToUse instanceof PickupableAndUsable) || (!(itemToGetUsedOn instanceof Door) && !(itemToGetUsedOn instanceof PickupableAndUsable) && !(itemToGetUsedOn instanceof NonPickupableAndUsable))) {
-			displayResponse("You can not use the " + itemToUse.name + " on that");
-			return true;
-		}
-
+		if (doesNotExist(itemToUse,match[2])) return true;
+		if (isHidden(itemToUse,match[2])) return true;
+		if (doesNotExist(itemToGetUsedOn,match[2])) return true;
+		if (isHidden(itemToGetUsedOn,match[2])) return true;
+		/*case 2: item can't be used on that item*/
+		if (cantBeUsedOn(itemToUse,itemToGetUsedOn)) return true;
 		/*case 3: item is useable but is not in your inventory*/
-		if ((itemToUse instanceof PickupableAndUsable) && (itemToUse.inInv == false)) {
-			displayResponse("The "+itemToUse.name+" is not in your inventory");
-			return true;
-		}
-
+		if (notInInventory(itemToUse)) return true;
 		/*case 4: you try to use an item on itself*/
-		if (itemToUse.name == itemToGetUsedOn.name) {
-			displayResponse("You can not use the "+itemToUse.name+" on itself");
-			return true;
-		}
-
+		if (useOnSelf(itemToUse,itemToGetUsedOn)) return true;
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name);
 		gameState(s);
 		return true;
 	}
 
-
-/*parser method to use a key on a door*/
-	this.useItemOnCheck = function(s) {
+	/*parser method to use a key on a door*/
+	this.useItemOnDoorCheck = function(s) {
 		/*this gets the group in the RE*/
 		match = pattUseOnDoor.exec(s);
 		/*no match*/
@@ -234,113 +138,164 @@ function Parser(player) {
 		  match[4] is the wall that the door is on (east,south, ect.)*/
 		itemToUse = itemIsInRoomOrInv(player.currentRoom, player.inv, match[2], "ri");
 		doorDirection = match[4];
-
 		/*now that we have the item check edge cases:*/
-
 		/*case 1: item doesent exist*/
-		if (itemToUse == null) {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no " + match[2]);
-			return true;
-		}
-
+		if (doesNotExist(itemToUse,match[2])) return true;
+		if (isHidden(itemToUse,match[2])) return true;
 		/*case 2: there is no door on the wall*/
-		if (match[4] == "north") {
-			itemToCheck = player.currentRoom.doorLayout[0];
-			doorLayoutIndex = 0;
-		} else if (match[4] == "east") {
-			itemToCheck = player.currentRoom.doorLayout[1];
-			doorLayoutIndex = 1;
-		} else if (match[4] == "south") {
-			itemToCheck = player.currentRoom.doorLayout[2];
-			doorLayoutIndex = 2;
-		} else if (match[4] == "west") {
-			itemToCheck = player.currentRoom.doorLayout[3];
-			doorLayoutIndex = 3;
-		}
-		if (itemToCheck == null) {
-			displayResponse("There is no "+match[4]+" door");
-			return true;
-		}
-
-		/*case 3: item can't be used*/
-		if (!(itemToUse instanceof Key)) {
-			displayResponse("You can not use the " + itemToUse.name + " on that");
-			return true;
-		}
-
+		doorToCheck = getDoor(doorDirection);
+		if (doesNotExist(doorToCheck,doorDirection+" door")) return true;
+		/*case 3: item isnt a key*/
+		if (itemIsNotKey(itemToUse)) return true;
 		/*case 4: item is useable but is not in your inventory*/
-		if ((itemToUse instanceof Key) && (itemToUse.inInv == false)) {
-			displayResponse("The "+itemToUse.name+" is not in your inventory");
-			return true;
-		}
-
-
+		if (notInInventory(itemToUse)) return true;
 		/*case 5: you try to use a key on an unlocked door*/
-		if (player.currentRoom.doorLayout[doorLayoutIndex].locked == false) {
-			displayResponse("The "+match[4]+" door is unlocked already");
-			return true;
-		}
+		if (doorAlreadyUnlocked(doorToCheck,doorDirection)) return true;
 		/*TODO: case 6: you try to use the wrong key on the wrong door*/
-
 		/*the item can be used so display use message*/
-		displayResponse("You try to use the " + itemToUse.name + " on the " + match[4] + "door");
+		displayResponse("You try to use the "+itemToUse.name+" on the "+doorDirection+"door");
 		gameState(s);
 		return true;
 	}
-
-
 
 	this.goThroughCheck = function(s) {
 		/*this gets the group in the RE*/
 		match = pattGoThrough.exec(s);
 		/*no match*/
 		if (match == null) return false;
-
-		/*now figure out if the door exists*/
-		if (!(match[3] == "door")) {
-			/*print out message saying item is not in room*/
-			displayResponse(match[3] + " is not a door");
-			return true;
-		}
-
+		doorDirection = match[2];
 		/*now we have the item in the door array*/
-		if (match[2] == "north") {
-			itemToCheck = player.currentRoom.doorLayout[0];
-		} else if (match[2] == "east") {
-			itemToCheck = player.currentRoom.doorLayout[1];
-		} else if (match[2] == "south") {
-			itemToCheck = player.currentRoom.doorLayout[2];
-		} else if (match[2] == "west") {
-			itemToCheck = player.currentRoom.doorLayout[3];
-		}
-
-
+		doorToCheck = getDoor(doorDirection);
 		/*now that we have the door check edge cases:*/
-
 		/*case 1: door doesent exist*/
-		if (itemToCheck == null) {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no "+match[2]+" "+match[3]);
-			return true;
-		}
-
+		if (doesNotExist(doorToCheck,doorDirection+" door")) return true;
 		/*case 2: the door is locked*/
-		if (itemToCheck.locked) {
-			displayResponse("you try to go through the "+match[2]+" "+match[3]+" but its locked");
-			return true;
-		}
-
+		if (doorIsLocked(doorToCheck,doorDirection)) return true;
 		/*now figure out the new room*/
-		if (itemToCheck.room == player.currentRoom) {
-			player.changeRoom(itemToCheck.room2);
-		} else {
-			player.changeRoom(itemToCheck.room);
-		}
+		moveRoom(doorToCheck);
 		/* TODO: call an update_room function*/
-		displayResponse("you went through the "+match[2]+" "+match[3]);
-		player.currentRoom.updateDescription();
+		displayResponse("you went through the "+doorDirection+" door");
+		updateRoomDescription();
 		$("#pinnedText").html(player.currentRoom.description);
 		return true;
 	}
+
+	/*EDGE CASE FUNCTIONS*/
+	doesNotExist = function(item, name) {
+		if (item == null) {
+			/*print out message saying item is not in room*/
+			displayResponse("There is no "+name);
+			return true;
+		}
+	}
+
+	isHidden = function(item, name) {
+		if (item.hidden == true) {
+			/*print out message saying item is not in room*/
+			displayResponse("There is no "+name);
+			return true;
+		}
+	}
+
+	cantBePickedUp = function(item) {
+		if (item instanceof NonPickupable) {
+			displayResponse("You can not pick up the " + item.name);
+			return true;
+		}
+	}
+
+	cantBeUsed = function(item, verb) {
+		if (!(item instanceof NonPickupableAndUsable) && !(item instanceof PickupableAndUsable)) {
+			displayResponse("You can not "+verb+" the " + item.name);
+			return true;
+		}
+	}
+
+	wrongVerbInputed = function(item, verb) {
+		if (item.usePattern.exec(s) == null) {
+			displayResponse("You can not "+verb+" the " + item.name);
+			return true;
+		}
+	}
+
+	notInInventory = function(item) {
+		if ((item instanceof PickupableAndUsable) && (item.inInv == false)) {
+			displayResponse("The "+item.name+" is not in your inventory");
+			return true;
+		}
+	}
+
+	cantBeUsedOn = function(itemToUse,itemToGetUsedOn) {
+		if (!(itemToUse instanceof PickupableAndUsable) || (!(itemToGetUsedOn instanceof Door) && !(itemToGetUsedOn instanceof PickupableAndUsable) && !(itemToGetUsedOn instanceof NonPickupableAndUsable))) {
+			displayResponse("You can not use the " + itemToUse.name + " on that");
+			return true;
+		}
+	}
+
+	useOnSelf = function(itemToUse,itemToGetUsedOn) {
+		if (itemToUse.name == itemToGetUsedOn.name) {
+			displayResponse("You can not use the "+itemToUse.name+" on itself");
+			return true;
+		}
+	}
+
+	itemIsNotKey = function(item) {
+		if (!(item instanceof Key)) {
+			displayResponse("You can not use the " + item.name + " on that");
+			return true;
+		}
+	}
+
+	doorAlreadyUnlocked = function(doorToCheck, doorDirection) {
+		if (doorToCheck.locked == false) {
+			displayResponse("The "+doorDirection+" door is unlocked already");
+			return true;
+		}
+	}
+
+	doorIsLocked = function(doorToCheck, doorDirection) {
+		if (doorToCheck.locked) {
+			displayResponse("you try to go through the "+doorDirection+" door but its locked");
+			return true;
+		}
+	}
+
+
+	/*OTHER FUNCTIONS*/
+	moveToInventory = function(item) {
+		/*now we know item must be pickupable*/
+		displayResponse("You just picked up the " + item.name);
+		/*Now we have to remove the item from the room and put it into the inventory*/
+		var index = player.currentRoom.itemsInRoom.indexOf(item);
+		/*confusing looking but all it does is move the item from the room to the inventory*/
+
+		/*TODO: call a update_inventory_pickup function*/
+		player.inv.itemsInInventory.push(player.currentRoom.itemsInRoom.splice(index, 1)[0]);
+		itemToCheck.inInv = true;
+	}
+
+	updateRoomDescription = function() {
+		player.currentRoom.updateDescription();
+	}
+
+	moveRoom = function(doorToCheck) {
+		if (doorToCheck.room == player.currentRoom) {
+			player.changeRoom(doorToCheck.room2);
+		} else {
+			player.changeRoom(doorToCheck.room);
+		}
+	}
+
+	getDoor = function(doorDirection) {
+		if (doorDirection == "north") {
+			return player.currentRoom.doorLayout[0];
+		} else if (doorDirection == "east") {
+			return player.currentRoom.doorLayout[1];
+		} else if (doorDirection == "south") {
+			return player.currentRoom.doorLayout[2];
+		} else if (doorDirection == "west") {
+			return player.currentRoom.doorLayout[3];
+		}
+	}
+
 }
