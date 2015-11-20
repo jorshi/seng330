@@ -59,7 +59,7 @@ function mapUpdate(currentRoom){
 	else if (currentRoom == room2){
 		$("#map").html("<svg width=\"800\" height=\"570\"><rect x=\"650\" y=\"80\"width=\"40\" height=\"40\" style=\"fill:rgb(000,000,000);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"2000\"><rect x=\"650\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"200\"><rect x=\"695\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)\" /></div>");
 	}
-	else if (currentRoom = room2){
+	else if (currentRoom == room3){
 				$("#map").html("<svg width=\"800\" height=\"570\"><rect x=\"650\" y=\"80\"width=\"40\" height=\"40\" style=\"fill:rgb(000,000,000);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"2000\"><rect x=\"650\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"200\"><rect x=\"695\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(0,0,0)\" /></div>");
 
 	}
