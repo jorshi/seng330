@@ -2,13 +2,33 @@
 {% load staticfiles %}
 <!-- template for game dashboard with parser -->
 {% block content %}
+<style type="text/css">
+#map {
+    float: right;
+    position: absolute;
+    z-index: 0;
+}
+#commandForm {
+    z-index: 3;
+    position: relative;
+}
+
+#terminalText {
+    z-index: 4;
+    position: relative;
+}
+#mapBox {
+    z-index: 0;
+    position: relative;
+}
+</style>
 
 <div class="container-fluid">
 <div class="row">
 <div class="terminal col-md-8">
     <div id="pinnedText">
     <!-- insert room description -->
-        <p>"There's a gun, a door, a clock and a key in the room..."</p>
+        <p>""</p>
     </div>
     <div id="terminalText">
     </div>
@@ -17,9 +37,20 @@
         <input id="commandButton" class="btn btn-default" type="submit" value="enter" /> 
     </form>
 </div>
-<div class="map col-md-4">
-    <p style="height: 300px;">map</p>
+<div  id="mapBox" class="map col-md-4">
+    <p style="height: 300px;">Map</p>
+    </div>
+<div id="map">
+        <svg width="800" height="570">
+  <rect x="650" y="80"width="40" height="40" style="fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(0,0,0)" />
+
+    <svg width="800" height="570">
+  <rect x="650" y="125" width="40" height="40" style="fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)" />
+    <svg width="800" height="570">
+  <rect x="695" y="125" width="40" height="40" style="fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)" />
 </div>
+
+</svg></div>
 </div> <!-- end row -->
 </div> <!-- end container -->
 

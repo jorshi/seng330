@@ -177,6 +177,7 @@ function Parser(player) {
 		displayResponse("you went through the "+doorDirection+" door");
 		updateRoomDescription();
 		$("#pinnedText").html(player.currentRoom.description);
+		mapUpdate(player.currentRoom);
 		return true;
 	}
 
