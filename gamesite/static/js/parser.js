@@ -92,10 +92,11 @@ function Parser(player) {
 		/*case 2: item can't be used*/
 		if (cantBeUsed(itemToCheck,match[1])) return true;
 		/*case 3: improper use of RE*/
-		if (wrongVerbInputed(itemToCheck, match[1])) return true;
+		if (wrongVerbInputed(itemToCheck, match[1],s)) return true;
 		/*case 4: item is useable but is not in your inventory*/
 		if (notInInventory(itemToCheck)) return true;
 		/*the item can be used so display use message*/
+	
 		displayResponse(itemToCheck.useMessage);
 		gameState(s);
 		return true;
@@ -153,7 +154,7 @@ function Parser(player) {
 		if (doorAlreadyUnlocked(doorToCheck,doorDirection)) return true;
 		/*TODO: case 6: you try to use the wrong key on the wrong door*/
 		/*the item can be used so display use message*/
-		displayResponse("You try to use the "+itemToUse.name+" on the "+doorDirection+"door");
+		displayResponse("You try to use the "+itemToUse.name+" on the "+doorDirection+" door");
 		gameState(s);
 		return true;
 	}
@@ -212,8 +213,9 @@ function Parser(player) {
 		}
 	}
 
-	wrongVerbInputed = function(item, verb) {
+	wrongVerbInputed = function(item, verb, s) {
 		if (item.usePattern.exec(s) == null) {
+			alert(1);
 			displayResponse("You can not "+verb+" the " + item.name);
 			return true;
 		}

@@ -17,12 +17,12 @@ $(function()  {
 
 	/*items*/
 	// need to make it so keys are linked to doors in some way
-	key1 = new Key("key1", "Unlocks somthing.", "there is a key on the ground (called 'key1'), ", "You need to use it on somthing.");
-	key2 = new Key("key2", "Unlocks somthing.", "there is a key on the ground (called 'key2'), ", "You need to use it on somthing.");
+	key1 = new Key("key1", "Unlocks somthing.", "there is a key on the ground (called 'key1'), ");
+	key2 = new Key("key2", "Unlocks somthing.", "there is a key on the ground (called 'key2'), ");
 
-	door1 = new Door(room1, room2, "door", "its shut.", "there is a door on the south wall, ", "You try to open the door but it's locked.", true);
-	door2 = new Door(room2, room3, "door2", "its shut.", "there is a door on the east wall, ", "You try to open the door but it's locked.", true);
-	clock = new Decoration("clock", "It's a clock, It appears to be broken.", "there is a clock on the wall, ", null);
+	door1 = new Door(room1, room2, "door", "its shut.", "there is a door on the south wall, ", true);
+	door2 = new Door(room2, room3, "door2", "its shut.", "there is a door on the east wall, ", true);
+	clock = new Decoration("clock", "It's a clock, It appears to be broken.", "there is a clock on the wall, ");
 	gun = new PickupableAndUsable("gun", "It doesn't appear to be loaded.", "there is a gun on the floor, ", "You try to fire the gun but you can't.", pattShootItem);
 
 	/*this array will be [north,east,south,west] null means no door
