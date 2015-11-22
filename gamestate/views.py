@@ -30,6 +30,7 @@ def get_current_room(request):
         room=player.gamestate.current_room
     )[0]
 
+
     jsonResponse = serializers.serialize('json', [room_state.get_room(),])
     return HttpResponse(jsonResponse, content_type="application/json")
 
