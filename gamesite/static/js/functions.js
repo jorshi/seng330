@@ -23,8 +23,8 @@ function printArray(a){
 }
 
  $("#commandForm").submit(function(event)  {
-        event.preventDefault();
-        parse();
+	event.preventDefault();
+	parse();
  });
 
 // Function called upon submit button being pressed
@@ -34,18 +34,54 @@ function parse() {
 	var enteredCommand = commandForm.command.value;
 	$("#commandUserInput").val('');
         
-        //echo command
+		//echo command
 
-        $("#terminalText").append("<p class=\"echo\">" + enteredCommand + "</p>");
+		$("#terminalText").append("<p class=\"echo\">" + enteredCommand + "</p>");
 
 	//parse command, print whether or not the command is valid
 	if (!parser.check(enteredCommand)){
 		displayResponse(enteredCommand + " is an "+ "invalid command.");
 	}
         
-        //return false;
+	//return false;
 }
 
- function displayResponse(s)  {
-        $("#terminalText").append("<p class=\"response\">" + s + "</p>");
-    }
+function displayResponse(s)  {
+	$("#terminalText").append("<p class=\"response\">" + s + "</p>");
+	//scroll down chat window
+	$("#terminalText").scrollTop($("#terminalText")[0].scrollHeight);
+}
+
+function mapUpdate(currentRoom){
+	$("#map").html("");
+	if (currentRoom == room1){
+		$("#map").html("<svg width=\"800\" height=\"500\"><rect x=\"650\" y=\"80\"width=\"40\" height=\"40\" style=\"fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"500\"><rect x=\"650\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"500\"><rect x=\"695\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)\" /></div>");
+	}
+	else if (currentRoom == room2){
+		$("#map").html("<svg width=\"800\" height=\"500\"><rect x=\"650\" y=\"80\"width=\"40\" height=\"40\" style=\"fill:rgb(000,000,000);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"500\"><rect x=\"650\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"500\"><rect x=\"695\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)\" /></div>");
+	}
+	else if (currentRoom == room3){
+		$("#map").html("<svg width=\"800\" height=\"500\"><rect x=\"650\" y=\"80\"width=\"40\" height=\"40\" style=\"fill:rgb(000,000,000);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"500\"><rect x=\"650\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)\" /><svg width=\"2000\" height=\"500\"><rect x=\"695\" y=\"125\" width=\"40\" height=\"40\" style=\"fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(0,0,0)\" /></div>");
+
+	}
+
+}
+
+
+ 	/*TODO: create an update_room function*/
+ 	/* this function should fetch the room the player
+ 	   is supposed to be in from the database and
+ 	   the room's inventory */
+
+	/*TODO: create an update_player function*/
+	/* this function should fetch the player's
+ 	   inventory from the database */
+
+ 	/*TODO: create an update_inventory_pickup function*/
+ 	/* this moves the item from the room inventory to the
+ 	   player inventory and updates the database with this
+ 	   new information*/
+
+ 	/* TODO: create a gamestate_change function */
+ 	/* this updates the gamestate in the database */
+

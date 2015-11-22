@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', player.views.login_register, {'tab': 'login'}), # use with @login_required
     url(r'^logout/$', player.views.player_logout, name='logout'),
     url(r'^register/$', player.views.login_register, {'tab': 'register'}, name='register'),
-
+    url(r'^qunit_tests/$', player.views.qunit_tests),
 )
 
 # Serve Doxygen static files in development #TODO look into serving for production

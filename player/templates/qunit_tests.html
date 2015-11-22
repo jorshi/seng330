@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+   <head>
+      <meta charset="utf-8">
+      <title>QUnit Example</title>
+      <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.20.0.css">
+   </head>
+   <body>
+
+{% load staticfiles %}
+<!-- template for game dashboard with parser -->
+{% block content %}
+
+{% endblock %}
+
+      <div id="qunit"></div>
+      <div id="qunit-fixture"></div>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script src="//code.jquery.com/qunit/qunit-1.20.0.js"></script>
+
+      {% block scripts %}
+      <script language="javascript" type="text/javascript" src="{% static 'js/item.js' %}"></script>
+      <script language="javascript" type="text/javascript" src="{% static 'js/extraClasses.js' %}"></script>
+      <script language="javascript" type="text/javascript" src="{% static 'js/parser.js' %}"></script>
+      <script language="javascript" type="text/javascript" src="{% static 'js/script.js' %}"></script>
+      <script language="javascript" type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+      <script language="javascript" type="text/javascript" src="{% static 'js/gameState.js' %}"></script>
+      <script language="javascript" type="text/javascript" src="{% static 'js/tests.js' %}"></script>
+	{% endblock %}
+
+   </body>
+</html>
+

@@ -2,24 +2,21 @@ var Room = function(beginDescription, endDescription) {
 	this.itemsInRoom = [];
 	this.doorLayout = [];
 
-	//Building room description
-	this.description = beginDescription;
-	for(i = 0; i < this.itemsInRoom.length; i++){
-		this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription);
-	}
-	this.description = this.description.concat(endDescription);
-
 	this.setUpDoors = function(doorArray) {
 		this.doorLayout = doorArray;
 	}
-
-	this.updateDescription = function(){
-		this.description = beginDescription;
-	for(i = 0; i < this.itemsInRoom.length; i++){
-		this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription);
+	// putting the items in the room
+	this.setUpItems = function(itemArray) {
+		this.itemsInRoom = itemArray;
 	}
-	this.description = this.description.concat(endDescription);
 
+	//Building room description
+	this.updateDescription = function() {
+		this.description = beginDescription;
+		for (i = 0; i < this.itemsInRoom.length; i++){
+			this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription);
+		}
+		this.description = this.description.concat(endDescription);
 	}
 
 }

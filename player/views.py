@@ -164,4 +164,12 @@ def _create_game(request, player):
     # other stuff?
     gamestate.save()
     return _terminal(request, gamestate)
+
+
+def qunit_tests(request):
+    """
+    QUNIT TESTS
+    """
+
+    return render(request, 'qunit_tests.html');
     
