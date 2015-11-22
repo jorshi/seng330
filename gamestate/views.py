@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.core import serializers
 from player.models import Player
-from gamestate.models import GameState, RoomState
+from gamestate.models import GameState, RoomState, ItemState
 from gameworld.models import Room
 
 
@@ -48,5 +48,9 @@ def get_room_inventory(request):
     player = Player.objects.get(user=request.user)
     room = request.GET.get('room', None)
     roomState = RoomState.objects.get(room=room, game_state=player.gamestate)
+    itemState = ItemState.objects.get(room_state=RoomState)
+
+    print itemState
+
 
     return JsonResponse({'room_inventory': ['itemA', 'itemB']})
