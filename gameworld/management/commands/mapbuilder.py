@@ -42,7 +42,7 @@ class MapBuilder(object):
         self.rooms[roomB].save()
 
     def makeRoom(self, name, title="", illuminated=True, 
-                 desc="You are in a dim room."):
+                 desc="You are in a dim room.", desc2=""):
 
         try:
             room = Room.objects.get(name=name)
@@ -54,7 +54,7 @@ class MapBuilder(object):
         room.title = title
         room.illuminated = illuminated
         room.desc_header = desc
-        # set desc2
+        room.desc_footer = desc2
         room.save()
 
         self.rooms[name] = room
