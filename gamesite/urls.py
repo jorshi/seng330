@@ -3,6 +3,7 @@ from django.contrib import admin
 import player.views
 import gamesite.views
 import gamesite.settings
+import gamestate.views
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
@@ -14,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^qunit_tests/$', player.views.qunit_tests),
     url(r'^get_current_room/$', gamestate.views.get_current_room),
     url(r'^get_room_inventory/$', gamestate.views.get_room_inventory),
+    url(r'^delete_game/$', player.views.delete_game),
 )
 
 # Serve Doxygen static files in development #TODO look into serving for production

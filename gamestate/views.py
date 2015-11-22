@@ -11,46 +11,6 @@ from player.models import Player
 from gamestate.models import GameState, RoomState
 from gameworld.models import Room
 
-# Hardcode the starting room for now
-# TODO - Maybe have a map object that references the starting room for a map?
-STARTING_ROOM = "Entrance Hall"
-
-@login_required
-def new_game(request):
-    """
-    Start a new game for this player
-    """
-
-    player = Player.objects.get(user=request.user)
-
-    # Erase users current game state if they are starting a new game
-    try:
-        gameState = player.gamestate
-        gameState.delete()
-    except GameState.DoesNotExist:
-        pass
-
-    # Create a GameState object for this game
-    gameState = GameState()
-    gameState.player = player
-    gameState.current_room = Room.objects.get(name=STARTING_ROOM)
-    gameState.save()
-
-    # Add room state for first room
-    gameState.add_room(gameState.current_room)
-
-    return HttpResponseRedirect('/play/', { 'user': request.user, 'gameState': gameState })
-
-
-@login_required
-def resume_game(request):
-    """
-    Resume an existing game for this player
-    """
-    player = Player.objects.get(user=request.user)
-    gameState = player.gamestate
-    return render(request, 'game_view.html', { 'user': request.user, 'gameState': gameState })
-
 
 @login_required
 def get_current_room(request):
@@ -69,6 +29,7 @@ def get_current_room(request):
     ).filter(
         room=player.gamestate.current_room
     )[0]
+
 
     jsonResponse = serializers.serialize('json', [room_state.get_room(),])
     return HttpResponse(jsonResponse, content_type="application/json")

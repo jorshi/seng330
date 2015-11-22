@@ -20,17 +20,17 @@ def login_register(request, tab='login'):
     """
     loginform = LoginForm()
     regform = RegistrationForm()
-    
+
     if request.method == 'POST':
         if tab == 'login':
             return _login(request)
         if tab == 'register':
             return _register(request)
-    
+
     return render(request, 'login_and_register.html', {
-        'loginform': loginform, 
-        'registerform': regform, 
-        'tab': tab 
+        'loginform': loginform,
+        'registerform': regform,
+        'tab': tab
         })
 
 def _register(request):
@@ -38,7 +38,7 @@ def _register(request):
     Register a new user & player, or render the registration form
 
     """
-    
+
     form = RegistrationForm(request.POST)
     if form.is_valid():
         username = form.cleaned_data['username']
@@ -118,13 +118,13 @@ def home(request):
     else:
         return render(request, 'welcome.html')
     # TODO: welcome.html has a big 'Start' button
-    
+
 def _dashboard(request):
     """
     Return game UI if player has existing game,
     otherwise create a new game then return game UI
     """
-    
+
     # Get the player for this user, if they don't have one (maybe a superuser?) create one for them
     try:
         player = Player.objects.get(pk=request.user)
@@ -132,20 +132,20 @@ def _dashboard(request):
         player = Player()
         player.user = request.user
         player.save()
-    
+
     # Check for an existing game for the player
     try:
         gamestate = player.gamestate
         return _terminal(request, gamestate)
     except GameState.DoesNotExist:
         return _create_game(request, player)
-        
+
 def _terminal(request, gamestate):
     """
     Resume an existing game for this player
     """
     return render(request, 'game_view.html', { 'user': request.user, 'gameState': gamestate })
-    
+
 def _create_game(request, player):
     """
     Start a new game for this player
@@ -160,9 +160,11 @@ def _create_game(request, player):
 
     gamestate = GameState()
     gamestate.player = player
-    gamestate.current_room = Room.objects.get(name='start')
+    currentRoom = Room.objects.get(name='start')
+    gamestate.current_room = currentRoom
     # other stuff?
     gamestate.save()
+    gamestate.add_room(currentRoom)
     return _terminal(request, gamestate)
 
 def qunit_tests(request):
@@ -171,3 +173,13 @@ def qunit_tests(request):
     """
 
     return render(request, 'qunit_tests.html');
+
+def delete_game(request):
+    """
+    Quick delete game function add for removing the players current gamestate
+    """
+    player = Player.objects.get(pk=request.user)
+    gameState = player.gamestate
+    gameState.delete()
+
+    #TODO if we actually want implement this for reals then make it return real HTTP
