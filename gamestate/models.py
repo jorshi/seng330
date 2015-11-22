@@ -59,6 +59,8 @@ class RoomState(models.Model):
     illuminated = models.BooleanField()
 
     def get_room(self):
+        """ Returns a Room object that has been updated with this RoomState """
+
         self.room.update_state(self)
         return self.room
 

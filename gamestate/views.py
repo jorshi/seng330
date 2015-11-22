@@ -30,7 +30,6 @@ def get_current_room(request):
         room=player.gamestate.current_room
     )[0]
 
-
     jsonResponse = serializers.serialize('json', [room_state.get_room(),])
     return HttpResponse(jsonResponse, content_type="application/json")
 
@@ -45,5 +44,9 @@ def get_room_inventory(request):
     Returns:
         JSON Response Object - list of items
     """
+
+    player = Player.objects.get(user=request.user)
+    room = request.GET.get('room', None)
+    roomState = RoomState.objects.get(room=room, game_state=player.gamestate)
 
     return JsonResponse({'room_inventory': ['itemA', 'itemB']})

@@ -27,7 +27,7 @@ class Item(FixedItem):
 
 class AbstractUseItem(models.Model):
     """ describes how an item can be used """
-    
+
     # comma-separated list of keywords, e.g. "use,move"
     keywords = models.CharField(max_length=200)
     # longer text describing the result of performing the action
