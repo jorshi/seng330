@@ -23,7 +23,20 @@ $(function()  {
 	door1 = new Door(room1, room2, "door", "its shut.", "there is a door on the south wall, ", true);
 	door2 = new Door(room2, room3, "door2", "its shut.", "there is a door on the east wall, ", true);
 	clock = new Decoration("clock", "It's a clock, It appears to be broken.", "there is a clock on the wall, ");
-	gun = new PickupableAndUsable("gun", "It doesn't appear to be loaded.", "there is a gun on the floor, ", "You try to fire the gun but you can't.", pattShootItem);
+	gun = new PickupableAndUsable("gun", ["It doesn't appear to be loaded.", "The gun is loaded"], 
+										 ["there is a gun on the floor, ","there is a loaded gun on the floor, "], 
+										 ["You try to fire the gun but you can't.", "You fire the gun, It makes a loud BANG"],
+										 [pattShootItem,pattShootItem], 1);
+	ammo = new PickupableAndUsable("ammo", ["Ammo for a gun"], ["there is a cartrige of ammo on the floor, "],
+										   ["You need to use it with somthing"], [pattUseItem], 1);
+
+	firePlace = new NonPickupableAndUsable("fireplace", ["It is not lit", "there is a fire burning in it"],
+														["there is an unlit fireplace on the west wall, ","there is a fireplace on the west wall with a fire burning in it, "],
+														["You need to light it with somthing","you try to put out the fire"],
+														[pattUseItem,pattUnlightItem], 1);
+	lighter = new PickupableAndUsable("lighter", ["used to make fires"], ["there is a lighter on the floor, "],
+										   ["You flicker it on and off, prehaps you should use it on somthing?"], 
+										   [pattUseItem], 1);
 
 	/*this array will be [north,east,south,west] null means no door
 	might make this automatically happen in the constructor later*/
@@ -32,8 +45,8 @@ $(function()  {
 	room3.setUpDoors([null,null,null,door2]);
 
 	room1.setUpItems([key1,door1,clock,gun]);
-	room2.setUpItems([key2,door1,door2]);
-	room3.setUpItems([door2]);
+	room2.setUpItems([key2,door1,door2,ammo,firePlace]);
+	room3.setUpItems([door2,lighter]);
 
 	/*parser class*/
 	parser = new Parser(player);

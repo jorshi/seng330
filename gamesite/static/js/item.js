@@ -1,10 +1,4 @@
 var Item = function(name, description, enterRoomDescription) {
-
-	/* Array of information on the item
-	  0 name
-	  1 enterroom
-	  
-
 	/*strings*/
 	this.name = name;
 	this.description = description;
@@ -24,26 +18,40 @@ var NonPickupable = function(name, description, enterRoomDescription) {
 /*this item can be picked up and used if it is picked up, it's usePattern is just a regular
 expression that is matched for the items use command.  it's needed so different items can
 be used by typing different verbs.*/
-var PickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern) {
-	Pickupable.call(this, name, description, enterRoomDescription);
-	this.usePattern = usePattern;
+var PickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, state) {
+	Pickupable.call(this, name, description[state-1], enterRoomDescription[state-1]);
+	this.usePattern = usePattern[state-1];
 	this.inInv = false;
-	this.useMessage = useMessage;
+	this.useMessage = useMessage[state-1];
+
+	this.stateChange = function(newState) {
+		this.usePattern = usePattern[newState-1];
+		this.useMessage = useMessage[newState-1];
+		this.description = description[newState-1];
+		this.enterRoomDescription = enterRoomDescription[newState-1];
+	}
 }
 
 
 /* TODO: create a key Item (for special error messages when trying to unlock a door with the wrong key)*/
 var Key = function(name, description, enterRoomDescription) {
 	regx = /^\s*(use)\s+(\w+)\s*$/i;
-	PickupableAndUsable.call(this, name, description, enterRoomDescription, "You need to use it on something.", regx);
+	PickupableAndUsable.call(this, name, [description], [enterRoomDescription], ["You need to use it on something."], [regx], 1);
 }
 /*this item cannot be picked up but it can be used, it's usePattern is just a regular
 expression that is matched for the items use command.  it's needed so different items can
 be used by typing different verbs.*/
-var NonPickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern) {
-	NonPickupable.call(this, name, description, enterRoomDescription);
-	this.usePattern = usePattern;
-	this.useMessage = useMessage;
+var NonPickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, state) {
+	NonPickupable.call(this, name, description[state-1], enterRoomDescription[state-1]);
+	this.usePattern = usePattern[state-1];
+	this.useMessage = useMessage[state-1];
+
+	this.stateChange = function(newState) {
+		this.usePattern = usePattern[newState-1];
+		this.useMessage = useMessage[newState-1];
+		this.description = description[newState-1];
+		this.enterRoomDescription = enterRoomDescription[newState-1];
+	}
 }
 
 /*this item can be examined but it can't be used or picked up*/
