@@ -26,6 +26,15 @@ class GameState(models.Model):
             roomState.illuminated = room.illuminated
             roomState.save()
 
+            # Add all default room items as ItemStates for this room
+            for item in room.default_items.all():
+                itemState = ItemState()
+                itemState.room_state = roomState
+                itemState.item = item
+                itemState.hidden = item.hidden
+                itemState.state = item.default_state
+                itemState.save()
+
     def __unicode__(self):
         return "%s.GameState" % self.player
 
@@ -75,6 +84,7 @@ class ItemState(models.Model):
     item = models.ForeignKey('gameworld.FixedItem')
     # whether the item is currently hidden
     hidden = models.BooleanField()
+    state = models.IntegerField()
 
     def __unicode__(self):
         return u'%s.%s' % (self.room_state, self.item)

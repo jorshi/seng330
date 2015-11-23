@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 import importlib
 from django.core import serializers
-from gameworld.models import Room, Door, FixedItem, Item
+from gameworld.models import Room, Door, FixedItem, Item, ItemUseState, UsePickupableItem, UseDecoration
 
 JSON_MAP_PATH = 'gameworld/maps/'
 
@@ -41,7 +41,7 @@ class MapBuilder(object):
         self.rooms[roomA].save()
         self.rooms[roomB].save()
 
-    def makeRoom(self, name, title="", illuminated=True, 
+    def makeRoom(self, name, title="", illuminated=True,
                  desc="You are in a dim room.", desc2=""):
 
         try:
@@ -59,19 +59,19 @@ class MapBuilder(object):
 
         self.rooms[name] = room
 
-    def addItem(self, room, name, fixed, shortdesc="", examine="", hidden=False):
+    def addItem(self, room, name, fixed, hidden=False, default_state=0):
         """ make an Item/FixedItem and add to an existing room """
         try:
             r = self.rooms[room]
         except KeyError:
             print("Unable to add %s: room %s does not exist" % (name, room))
             return
-            
+
         if fixed:
             item = FixedItem()
         else:
             item = Item()
-            
+
         # check if item already exists in the room
         # since FixedItem is parent class of Item, it holds both
         samename = FixedItem.objects.filter(name=name)
@@ -82,37 +82,74 @@ class MapBuilder(object):
                 # don't assign item = match bc the type won't be modified
                 # delete so duplicates don't show up
                 match.delete()
-            
+
         item.name = name
         item.hidden = hidden
-        item.examine = examine
-        if shortdesc == "":
-            if name[0] in "aeio":
-                item.shortdesc = "an " + name
-            else:
-                item.shortdesc = "a " + name
-        else:
-            item.shortdesc = shortdesc
+        item.default_state = default_state
         item.save()
-        
+
         r.default_items.add(item)
         r.save()
 
-        
-    def addItemUse(self, room, item, keywords, use_text, use_script, other_item=None):
-        # keyword syntax: correspond to regex? or make it really simple/clunky?
-        # e.g. '(use|light)' vs. 'use candle,light candle' vs. somewhere in between?
-        # default keyword: 'use'
-        # if item is used on another item: default keyword 'use {item} with/on {other_item}
-        pass
+        return item
 
-        
+
+    def addItemUseState(self, item, state, shortdesc="", examine=""):
+
+        itemUseState = ItemUseState()
+        itemUseState.item = item
+        itemUseState.examine = examine
+        itemUseState.state = state
+
+        if shortdesc == "":
+            if name[0] in "aeio":
+                itemUseState.short_desc = "an " + name
+            else:
+                itemUseState.short_desc = "a " + name
+        else:
+            itemUseState.short_desc = shortdesc
+
+        itemUseState.save()
+
+        return itemUseState
+
+
+    def addItemUse(
+            self,
+            item_use_state,
+            pickup=True,
+            use_message="",
+            use_pattern="",
+            on_item=None,
+            on_item_change=None,
+            item_change=None,
+            consumed=False
+        ):
+
+        if pickup:
+            itemUse = UsePickupableItem()
+            itemUse.on_item = on_item
+            itemUse.on_item_change = on_item_change
+            itemUse.item_change = item_change
+            itemUse.consumed = consumed
+
+        else:
+            itemUse = UseDecoration()
+
+        itemUse.item_use_state = item_use_state
+        itemUse.use_message = use_message
+        itemUse.use_pattern = use_pattern
+
+        itemUse.save()
+
+
 def clean_map():
     """ clear everything in gameworld """
     Room.objects.all().delete()
     Door.objects.all().delete()
     Item.objects.all().delete()
-    FixedItem.objects.all().delete()  
+    FixedItem.objects.all().delete()
+    ItemUseState.objects.all().delete()
 
 def save_map(module_name):
     """ backup builder-generated gameworld to a JSON file """
@@ -133,9 +170,9 @@ def load_map_from_json(filename):
         for obj in serializers.deserialize('json', data):
             obj.save()
 
-            
+
 class Command(BaseCommand):
-    """ Use Django's custom manage.py commands to call MapBuilder in the right 
+    """ Use Django's custom manage.py commands to call MapBuilder in the right
         context (syntax: manage.py mapbuilder [options] <filename>) """
     help = 'Replaces the current map stored in gameworld with a new map.\n' \
            'Specify a Python script, or use --load-json to load the map from ' \
@@ -143,10 +180,10 @@ class Command(BaseCommand):
     missing_args_message = 'you need to specify a file (Python or JSON) to build from'
 
     def add_arguments(self, parser):
-        parser.add_argument('--load-json', action='store_true', 
-                            dest='load_json', default=False, 
+        parser.add_argument('--load-json', action='store_true',
+                            dest='load_json', default=False,
             help='Load from JSON file instead of running Python script')
-        parser.add_argument('script', nargs=1, metavar='<file>', 
+        parser.add_argument('script', nargs=1, metavar='<file>',
                             help='.py or .json file')
 
     def handle(self, *args, **options):

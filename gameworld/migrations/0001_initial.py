@@ -15,18 +15,18 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(default=None, max_length=30)),
-                ('examine', models.TextField()),
                 ('hidden', models.BooleanField(default=False)),
+                ('default_state', models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='ItemUse',
+            name='ItemUseState',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('gone', models.BooleanField()),
-                ('keywords', models.CharField(default=b'use', max_length=200)),
-                ('desc', models.TextField()),
-                ('script', models.CharField(max_length=200, blank=True)),
+                ('examine', models.TextField()),
+                ('short_desc', models.CharField(default=None, max_length=30)),
+                ('alt_use_text', models.TextField()),
+                ('state', models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
@@ -38,6 +38,33 @@ class Migration(migrations.Migration):
                 ('desc_footer', models.TextField()),
                 ('illuminated', models.BooleanField(default=True)),
             ],
+        ),
+        migrations.CreateModel(
+            name='UseDecoration',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('use_message', models.TextField()),
+                ('use_pattern', models.CharField(max_length=200, blank=True)),
+                ('item_use_state', models.ForeignKey(to='gameworld.ItemUseState')),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='UseInventoryItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('use_message', models.TextField()),
+                ('use_pattern', models.CharField(max_length=200, blank=True)),
+                ('on_item_change', models.IntegerField(null=True)),
+                ('item_change', models.IntegerField(null=True)),
+                ('consumed', models.BooleanField(default=False)),
+                ('item_use_state', models.ForeignKey(to='gameworld.ItemUseState')),
+            ],
+            options={
+                'abstract': False,
+            },
         ),
         migrations.CreateModel(
             name='Door',
@@ -55,19 +82,19 @@ class Migration(migrations.Migration):
             bases=('gameworld.fixeditem',),
         ),
         migrations.AddField(
-            model_name='room',
-            name='default_items',
-            field=models.ManyToManyField(to='gameworld.FixedItem'),
-        ),
-        migrations.AddField(
-            model_name='itemuse',
-            name='item',
-            field=models.ForeignKey(related_name='use_cases', to='gameworld.FixedItem'),
-        ),
-        migrations.AddField(
-            model_name='itemuse',
+            model_name='useinventoryitem',
             name='on_item',
             field=models.ForeignKey(to='gameworld.FixedItem', blank=True),
+        ),
+        migrations.AddField(
+            model_name='room',
+            name='default_items',
+            field=models.ManyToManyField(related_name='found_in', to='gameworld.FixedItem'),
+        ),
+        migrations.AddField(
+            model_name='itemusestate',
+            name='item',
+            field=models.ForeignKey(to='gameworld.FixedItem'),
         ),
         migrations.AddField(
             model_name='room',

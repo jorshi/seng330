@@ -8,12 +8,9 @@ class FixedItem(models.Model):
 
     # name the player uses to refer to the item, e.g. "painting"
     name = models.CharField(max_length=30, default=None)
-    # a few words displayed when listing the items in the room, e.g. "an oil painting"
-    shortdesc = models.CharField(max_length=30, default=None)
-    # longer text displayed when the player types "examine <name>"
-    examine = models.TextField()
     # whether the item is initially hidden
     hidden = models.BooleanField(default=False)
+    default_state = models.IntegerField()
 
     def __unicode__(self):
         return self.name
@@ -25,31 +22,50 @@ class Item(FixedItem):
     pass
 
 
+class ItemUseState(models.Model):
+    """
+    Describes items as they change over the course of game play
+    """
+
+    item = models.ForeignKey("FixedItem")
+    examine = models.TextField()
+    short_desc = models.CharField(max_length=30, default=None)
+    state = models.IntegerField()
+
+
 class AbstractUseItem(models.Model):
     """ describes how an item can be used """
 
-    # comma-separated list of keywords, e.g. "use,move"
-    keywords = models.CharField(max_length=200)
     # longer text describing the result of performing the action
-    desc = models.TextField()
-    script = models.CharField(max_length=200, blank=True)
+    use_message = models.TextField()
+    # Regex for use in JavaScript
+    use_pattern = models.CharField(max_length=200, blank=True)
+    item_use_state = models.ForeignKey("ItemUseState")
 
     class Meta:
         abstract = True
 
-class UseInventoryItem(AbstractUseItem):
-    """ use an item from player inventory, which will be consumed """
-    item = models.ForeignKey('Item', related_name='use_cases')
+
+class UsePickupableItem(AbstractUseItem):
+    """ Describes usage patterns for a pickable item """
+
     on_item = models.ForeignKey('FixedItem', blank=True)
 
+    # State to change the on_item to after usage
+    on_item_change = models.IntegerField(null=True)
+
+    # State to change this item to after usage
+    item_change = models.IntegerField(null=True)
+    consumed = models.BooleanField(default=False)
+
     def __unicode__(self):
-        return u'%s %s' % (self.keywords, self.item)
+        return u'%s' % (self.use_message)
+
 
 class UseDecoration(AbstractUseItem):
-    item = models.ForeignKey('FixedItem')
 
     def __unicode__(self):
-        return u'%s %s' % (self.keywords, self.item)
+        return u'%s' % (self.use_message)
 
 
 class Door(FixedItem):
