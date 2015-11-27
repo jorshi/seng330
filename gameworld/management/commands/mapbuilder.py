@@ -5,7 +5,6 @@ from gameworld.models import Room, Door, FixedItem, Item, ItemUseState, UsePicku
 
 JSON_MAP_PATH = 'gameworld/maps/'
 
-
 class MapBuilder(object):
 
     def __init__(self):
@@ -34,7 +33,7 @@ class MapBuilder(object):
             'east': 'west',
             'west':'east',
         }
-
+        
         self.rooms[roomA].set_door(direction, door)
         self.rooms[roomB].set_door(reverse[direction], door)
 
