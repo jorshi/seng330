@@ -45,7 +45,7 @@ class AbstractUseItem(models.Model):
     use_pattern = models.CharField(max_length=200, blank=True)
     item_use_state = models.ForeignKey("ItemUseState", related_name='%(class)s_action')
     # State to change this item to after usage
-    item_change = models.ForeignKey('ItemUseState', blank=True, related_name='%(class)s_cause')
+    item_change = models.ForeignKey('ItemUseState', null=True, related_name='%(class)s_cause')
 
     class Meta:
         abstract = True
