@@ -44,6 +44,8 @@ class AbstractUseItem(models.Model):
     # Regex for use in JavaScript
     use_pattern = models.CharField(max_length=200, blank=True)
     item_use_state = models.ForeignKey("ItemUseState")
+    # State to change this item to after usage
+    item_change = models.ForeignKey('ItemUseState', blank=True)
 
     class Meta:
         abstract = True
@@ -52,13 +54,11 @@ class AbstractUseItem(models.Model):
 class UsePickupableItem(AbstractUseItem):
     """ Describes usage patterns for a pickable item """
 
-    on_item = models.ForeignKey('FixedItem', blank=True)
+    on_item = models.ForeignKey('ItemUseState', blank=True)
 
     # State to change the on_item to after usage
-    on_item_change = models.IntegerField(null=True)
-
-    # State to change this item to after usage
-    item_change = models.IntegerField(null=True)
+    on_item_change = models.ForeignKey('ItemUseState', blank=True)
+    # whether the item disappears after being used
     consumed = models.BooleanField(default=False)
 
     def __unicode__(self):
