@@ -50,15 +50,36 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Door',
             fields=[
+<<<<<<< HEAD
                 ('fixeditem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.FixedItem')),
                 ('locked', models.BooleanField(default=False)),
+=======
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('use_message', models.TextField()),
+                ('use_pattern', models.CharField(max_length=200, blank=True)),
+                ('item_change', models.ForeignKey(related_name='usedecoration_cause', blank=True, to='gameworld.ItemUseState')),
+                ('item_use_state', models.ForeignKey(related_name='usedecoration_action', to='gameworld.ItemUseState')),
+>>>>>>> todo: puzzles01 doesn't work
             ],
             bases=('gameworld.fixeditem',),
         ),
         migrations.CreateModel(
+<<<<<<< HEAD
             name='UseDecoration',
             fields=[
                 ('abstractuseitem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.AbstractUseItem')),
+=======
+            name='UsePickupableItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('use_message', models.TextField()),
+                ('use_pattern', models.CharField(max_length=200, blank=True)),
+                ('consumed', models.BooleanField(default=False)),
+                ('item_change', models.ForeignKey(related_name='usepickupableitem_cause', blank=True, to='gameworld.ItemUseState')),
+                ('item_use_state', models.ForeignKey(related_name='usepickupableitem_action', to='gameworld.ItemUseState')),
+                ('on_item', models.ForeignKey(related_name='action_on_self', blank=True, to='gameworld.ItemUseState')),
+                ('on_item_change', models.ForeignKey(related_name='indirect_cause', blank=True, to='gameworld.ItemUseState')),
+>>>>>>> todo: puzzles01 doesn't work
             ],
             bases=('gameworld.abstractuseitem',),
         ),
@@ -79,7 +100,11 @@ class Migration(migrations.Migration):
                 ('consumed', models.BooleanField(default=False)),
                 ('on_item', models.ForeignKey(to='gameworld.FixedItem', null=True)),
             ],
+<<<<<<< HEAD
             bases=('gameworld.abstractuseitem',),
+=======
+            bases=('gameworld.fixeditem',),
+>>>>>>> todo: puzzles01 doesn't work
         ),
         migrations.AddField(
             model_name='room',

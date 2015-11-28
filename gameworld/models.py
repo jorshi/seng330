@@ -44,20 +44,20 @@ class AbstractUseItem(models.Model):
     use_message = models.TextField()
     # Regex for use in JavaScript
     use_pattern = models.CharField(max_length=200, blank=True)
-    item_use_state = models.ForeignKey("ItemUseState")
+    item_use_state = models.ForeignKey("ItemUseState", related_name='%(class)s_action')
     # State to change this item to after usage - ie, what is the affect
     # on this item after it has been used?
-    item_change = models.ForeignKey('ItemUseState', null=True)
+    item_change = models.ForeignKey('ItemUseState', null=True, related_name='%(class)s_cause')
 
 
 class UsePickupableItem(AbstractUseItem):
     """ Describes usage patterns for a pickable item """
 
-    on_item = models.ForeignKey('ItemUseState', null=True)
+    on_item = models.ForeignKey('ItemUseState', null=True, related_name='action_on_self')
 
     # State to change the on_item to after usage - ie, what affect
     # does this action have on the item it is being used on?
-    on_item_change = models.ForeignKey('ItemUseState', null=True)
+    on_item_change = models.ForeignKey('ItemUseState', null=True, related_name='indirect_cause')
 
     # Does this item disappear from the users inventory after it has
     # been used?
