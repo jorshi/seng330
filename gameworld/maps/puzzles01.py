@@ -7,9 +7,10 @@ def main():
     mapBuilder.makeRoom(
         'start',
         title='Attic',
-        desc="You wake up in a dimly lit room, not entirely sure where you are or how you got there. The paint on the
-        walls is cracked and peeling, yellowed stains stretching from the ceiling to the floor. There is a window to the
-        South, the curtains hang tattered, light from the sunset casting shadows across the floor.",
+        desc="You wake up in a dimly lit room, not entirely sure where you are \
+        or how you got there. The paint on the walls is cracked and peeling, \
+        yellowed stains stretching from the ceiling to the floor. There is a window \
+        to the South, the curtains hang tattered, light from the sunset casting shadows across the floor.",
         desc2="You look around the room and notice the door to the East. There's a painting on the North Wall, and a lighter on the floor."
     )
 

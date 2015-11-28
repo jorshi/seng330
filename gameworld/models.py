@@ -43,9 +43,9 @@ class AbstractUseItem(models.Model):
     use_message = models.TextField()
     # Regex for use in JavaScript
     use_pattern = models.CharField(max_length=200, blank=True)
-    item_use_state = models.ForeignKey("ItemUseState")
+    item_use_state = models.ForeignKey("ItemUseState", related_name='%(class)s_action')
     # State to change this item to after usage
-    item_change = models.ForeignKey('ItemUseState', blank=True)
+    item_change = models.ForeignKey('ItemUseState', blank=True, related_name='%(class)s_cause')
 
     class Meta:
         abstract = True
@@ -54,10 +54,10 @@ class AbstractUseItem(models.Model):
 class UsePickupableItem(AbstractUseItem):
     """ Describes usage patterns for a pickable item """
 
-    on_item = models.ForeignKey('ItemUseState', blank=True)
-
+    on_item = models.ForeignKey('ItemUseState', blank=True, related_name='action_on_self')
     # State to change the on_item to after usage
-    on_item_change = models.ForeignKey('ItemUseState', blank=True)
+    on_item_change = models.ForeignKey('ItemUseState', blank=True, related_name='indirect_cause')
+    
     # whether the item disappears after being used
     consumed = models.BooleanField(default=False)
 
@@ -66,7 +66,7 @@ class UsePickupableItem(AbstractUseItem):
 
 
 class UseDecoration(AbstractUseItem):
-
+    
     def __unicode__(self):
         return u'use %s' % (self.item_use_state.item)
 

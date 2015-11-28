@@ -64,7 +64,7 @@ class DoorState(models.Model):
         obj = { 
             'locked': self.locked,
             'next_room': self.door.other_room(room),
-            'shortdesc': # todo 'a door to the [dir]'
+            'shortdesc': None, # todo 'a door to the [dir]'
             'examine': self.door.desc(room)
         }
         return obj
