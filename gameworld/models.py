@@ -24,7 +24,11 @@ class Item(FixedItem):
 
 class ItemUseState(models.Model):
     """
-    Describes items as they change over the course of game play
+    Describes items as they change over the course of game play. We need this
+    to store the various text / descriptions that a particular item may have
+    in it's various states throughout game play. ex) A fire could be lit or
+    unlit. Depending on this we want to be able to return a different description
+    status.
     """
 
     item = models.ForeignKey("FixedItem")
@@ -34,7 +38,7 @@ class ItemUseState(models.Model):
 
 
 class AbstractUseItem(models.Model):
-    """ describes how an item can be used """
+    """ Describes how an item can be used """
 
     # longer text describing the result of performing the action
     use_message = models.TextField()
@@ -51,11 +55,16 @@ class UsePickupableItem(AbstractUseItem):
 
     on_item = models.ForeignKey('FixedItem', blank=True)
 
-    # State to change the on_item to after usage
+    # State to change the on_item to after usage - ie, what affect
+    # does this action have on the item it is being used on?
     on_item_change = models.IntegerField(null=True)
 
-    # State to change this item to after usage
+    # State to change this item to after usage - ie, what is the affect
+    # on this item after it has been used?
     item_change = models.IntegerField(null=True)
+
+    # Does this item disapear from the users inventory after it has
+    # been used?
     consumed = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -63,6 +72,7 @@ class UsePickupableItem(AbstractUseItem):
 
 
 class UseDecoration(AbstractUseItem):
+    """ Usage patterns for using a decoration """
 
     def __unicode__(self):
         return u'%s' % (self.use_message)

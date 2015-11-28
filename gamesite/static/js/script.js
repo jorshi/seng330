@@ -1,5 +1,11 @@
-$(function()  {
- 
+$(document).ready(function()  {
+        
+        // Game Manager class will handle requests to the
+        // backend and loading room / inventory / among
+        // other fuctionality relate to server communication
+        gameManager = new GameManager();
+        gameManager.load_current_room();
+
         /*TODO: call an update_room function*/
         $.get('/get_current_room/', function(data) {
                 console.log(data);
