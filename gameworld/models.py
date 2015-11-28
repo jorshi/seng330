@@ -9,7 +9,7 @@ class FixedItem(models.Model):
 
     # name the player uses to refer to the item, e.g. "painting"
     name = models.CharField(max_length=30, default=None)
-    # whether the item is initially hidden
+	
     pickupable = models.BooleanField(default=False)
     default_state = models.IntegerField(default=0)
 
@@ -75,15 +75,6 @@ class UseDecoration(AbstractUseItem):
         return u'use %s' % (self.item_use_state.item)
 
 
-class UseKey(AbstractUseItem):
-    """ Usage pattern for a key """
-
-    on_door = models.ForeignKey("Door")
-
-    def __unicode__(self):
-        return u"key: opens %s" % self.on_door
-
-
 class Door(FixedItem):
     """ Door object """
 
@@ -91,7 +82,11 @@ class Door(FixedItem):
     room_a = models.ForeignKey('Room', related_name='doors_a')
     room_b = models.ForeignKey('Room', related_name='doors_b')
 
-    def leads_to(self, this_room):
+    def shortdesc(self, this_room):
+        """ Returns a string describing the door's position """
+        
+        
+    def examine(self, this_room):
         """ Returns a string hinting at the next room """
 
         success = 'The door seems to lead to the'
@@ -103,6 +98,15 @@ class Door(FixedItem):
         else:
             return failure
 
+    def other_room(self, this_room):
+        """ Returns pk of the other room """
+        if this_room == self.room_a:
+            return self.room_b
+        elif this_room == self.room_b:
+            return self.room_a
+        else:
+            return None
+        
     def __unicode__(self):
         return u'%s--%s' % (self.room_a, self.room_b)
 
@@ -148,12 +152,7 @@ class Room(models.Model):
             'south': lambda x: setattr(self, 'door_south', x),
         }.get(direction)(Door)
 
-    def update_state(self, state):
-        """
-        Temporarily update the state of this room during game play
-        """
-
-        self.illuminated = state.illuminated
+    
 
     def __unicode__(self):
         return self.name

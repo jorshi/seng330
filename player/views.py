@@ -144,6 +144,7 @@ def _terminal(request, gamestate):
     """
     Resume an existing game for this player
     """
+    # TODO do we need to return gamestate?
     return render(request, 'game_view.html', { 'user': request.user, 'gameState': gamestate })
 
 def _create_game(request, player):
@@ -163,8 +164,8 @@ def _create_game(request, player):
     currentRoom = Room.objects.get(name='start')
     gamestate.current_room = currentRoom
     # other stuff?
-    gamestate.save()
     gamestate.add_room(currentRoom)
+    gamestate.save()
     return _terminal(request, gamestate)
 
 def qunit_tests(request):
