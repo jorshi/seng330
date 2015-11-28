@@ -35,6 +35,9 @@ class ItemUseState(models.Model):
     examine = models.TextField()
     short_desc = models.CharField(max_length=30, default=None)
     state = models.IntegerField()
+    
+    def __unicode__(self):
+        return u'%s(%s)' % (self.item, self.state)
 
 
 class AbstractUseItem(models.Model):
@@ -68,14 +71,14 @@ class UsePickupableItem(AbstractUseItem):
     consumed = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return u'%s' % (self.use_message)
+        return u'use %s on %s' % (self.item_use_state.item, self.on_item)
 
 
 class UseDecoration(AbstractUseItem):
     """ Usage patterns for using a decoration """
 
     def __unicode__(self):
-        return u'%s' % (self.use_message)
+        return u'use %s' % (self.item_use_state.item)
 
 
 class Door(FixedItem):
