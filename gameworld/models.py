@@ -78,7 +78,11 @@ class Door(FixedItem):
     room_a = models.ForeignKey('Room', related_name='doors_a')
     room_b = models.ForeignKey('Room', related_name='doors_b')
 
-    def leads_to(self, this_room):
+    def shortdesc(self, this_room):
+        """ Returns a string describing the door's position """
+        
+        
+    def examine(self, this_room):
         """ Returns a string hinting at the next room """
 
         success = 'The door seems to lead to the'
@@ -90,6 +94,15 @@ class Door(FixedItem):
         else:
             return failure
 
+    def other_room(self, this_room):
+        """ Returns pk of the other room """
+        if this_room == self.room_a:
+            return self.room_b
+        elif this_room == self.room_b:
+            return self.room_a
+        else:
+            return None
+        
     def __unicode__(self):
         return u'%s--%s' % (self.room_a, self.room_b)
 
@@ -135,12 +148,7 @@ class Room(models.Model):
             'south': lambda x: setattr(self, 'door_south', x),
         }.get(direction)(Door)
 
-    def update_state(self, state):
-        """
-        Temporarily update the state of this room during game play
-        """
-
-        self.illuminated = state.illuminated
+    
 
     def __unicode__(self):
         return self.name

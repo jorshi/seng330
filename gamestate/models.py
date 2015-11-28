@@ -1,6 +1,7 @@
 from django.db import models
 from player.models import Player
 from gameworld.models import Room, Door, FixedItem, Item
+import json
 
 
 class GameState(models.Model):
@@ -35,6 +36,8 @@ class GameState(models.Model):
                 itemState.state = item.default_state
                 itemState.save()
 
+        # TODO: add all the doors (as DoorStates)
+
     def __unicode__(self):
         return "%s.GameState" % self.player
 
@@ -57,6 +60,15 @@ class DoorState(models.Model):
     # room_b of the door
     room_b = models.ForeignKey('gameworld.Room', related_name='unlocked_b')
 
+    def json(self, room):
+        obj = { 
+            'locked': self.locked,
+            'next_room': self.door.other_room(room),
+            'shortdesc': # todo 'a door to the [dir]'
+            'examine': self.door.desc(room)
+        }
+        return obj
+        
     def __unicode__(self):
         return '%s.%s' % (self.game_state, self.door)
 
@@ -68,11 +80,25 @@ class RoomState(models.Model):
     # whether the room is currently lit
     illuminated = models.BooleanField()
 
-    def get_room(self):
-        """ Returns a Room object that has been updated with this RoomState """
-
-        self.room.update_state(self)
-        return self.room
+    def json(self):
+        obj = { 
+            'title': self.room.title,
+            'desc_header': self.room.desc_header,
+            'desc_footer': self.room.desc_footer,
+            'illuminated': self.illuminated,
+            }
+        # TODO add items, doors to obj
+        obj['items'] = []
+        # this is awful please fix it
+        obj['doors'] = { 
+            'north': DoorState.objects.filter(
+                game_state = self.game_state
+                ).get(
+                door = self.room.door_north
+                ).json(self.room),
+            # etc.
+        }
+        return json.dumps(obj)
 
     def __unicode__(self):
         return u'%s.%s' % (self.game_state, self.room)

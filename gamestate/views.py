@@ -27,12 +27,13 @@ def get_current_room(request):
     # Get the room state for the players current room
     room_state = RoomState.objects.filter(
         game_state=player.gamestate
-    ).filter(
+    ).get(
         room=player.gamestate.current_room
-    )[0]
+    )
+    
 
 
-    jsonResponse = serializers.serialize('json', [room_state.get_room(),])
+    jsonResponse = room_state.json # TODO implement JSON in each gamestate.model
     return HttpResponse(jsonResponse, content_type="application/json")
 
 
