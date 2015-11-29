@@ -33,8 +33,7 @@ class GameState(models.Model):
             for item in room.default_items.all():
                 itemState = ItemState()
                 itemState.room_state = roomState
-                itemState.item = item
-                itemState.state = item.default_state
+                itemState.item = item.states.get(state=item.default_state)
                 itemState.save()
 
             # Add all doors as DoorStates for this room - unless they have already been added
@@ -65,6 +64,7 @@ class DoorState(models.Model):
     room_a = models.ForeignKey('gameworld.Room', related_name='unlocked_a')
     room_b = models.ForeignKey('gameworld.Room', related_name='unlocked_b')
 
+    # TODO still needs a lot of work
     def json(self, room):
         obj = { 
             'locked': self.locked,
