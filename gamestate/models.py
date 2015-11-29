@@ -39,7 +39,6 @@ class GameState(models.Model):
             # by another room that has been visited
             for door in Door.objects.filter(models.Q(room_a=room) | models.Q(room_b=room)):
                 if not DoorState.objects.filter(door=door).count():
-                    print door
                     doorState = DoorState()
                     doorState.game_state = self
                     doorState.door = door

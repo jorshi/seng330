@@ -33,7 +33,7 @@ class MapBuilder(object):
             'east': 'west',
             'west':'east',
         }
-        
+
         self.rooms[roomA].set_door(direction, door)
         self.rooms[roomB].set_door(reverse[direction], door)
 
@@ -65,7 +65,7 @@ class MapBuilder(object):
         except KeyError:
             print("Unable to add %s: room %s does not exist" % (name, room))
             return
-        
+
         item = FixedItem()
 
         # check if item already exists in the room
