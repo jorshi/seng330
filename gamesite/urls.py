@@ -19,7 +19,8 @@ urlpatterns = patterns('',
 
     # Gamestate Views
     url(r'^get_current_room/$', gamestate.views.get_current_room),
-    url(r'^get_room_inventory/$', gamestate.views.get_room_inventory),
+    #url(r'^get_room_inventory/$', gamestate.views.get_room_inventory),
+    url(r'^post_player_action/$', gamestate.views.post_player_action),
     url(r'^delete_game/$', player.views.delete_game),
 )
 

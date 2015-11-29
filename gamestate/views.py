@@ -5,11 +5,9 @@ related to game play
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.core import serializers
+from django.http import JsonResponse
 from player.models import Player
 from gamestate.models import GameState, RoomState, ItemState
-from gameworld.models import Room, ItemUseState, UseDecoration
 
 
 @login_required
@@ -30,40 +28,12 @@ def get_current_room(request):
     
     return JsonResponse(room_state.json())
 
-
-
 @login_required
-def get_room_inventory(request):
-    """
-    Get the inventory of the requested room
-
-    Args: room name
-
-    Returns:
-        JSON Response Object - list of items
-    """
+def post_player_action(request):
 
     player = Player.objects.get(user=request.user)
-    room = request.GET.get('room', None)
-    items = []
-
-    if room:
-        roomState = RoomState.objects.get(room=room, game_state=player.gamestate)
-        itemStates = ItemState.objects.filter(room_state=roomState)
-
-        # Update the item object and add it to a list of room items
-        for itemState in itemStates:
-            thisItem = itemState.item
-            useState = ItemUseState.objects.get(item=thisItem, state=itemState.state)
-            itemUse = UseDecoration.objects.filter(item_use_state=useState)
-            items.append({
-                'name': thisItem.name,
-                'hidden': itemState.hidden,
-                'examine': useState.examine,
-                'short_dec': useState.short_desc,
-                'state': itemState.state,
-                'usage': [use.use_pattern for use in itemUse],
-            })
-            
-    return JsonResponse(items, safe=False)
-
+    game = player.gamestate
+    if request.method == 'POST':
+        print(request.POST)
+        # TODO lookup the action performed & update the gamestate db
+        
