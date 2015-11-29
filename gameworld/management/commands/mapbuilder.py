@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 import importlib
 from django.core import serializers
-from gameworld.models import Room, Door, FixedItem, ItemUseState, UsePickupableItem, UseDecoration
+from gameworld.models import Room, Door, FixedItem, ItemUseState, UsePickupableItem, UseDecoration, UseKey
 
 JSON_MAP_PATH = 'gameworld/maps/'
 
@@ -40,6 +40,9 @@ class MapBuilder(object):
         self.rooms[roomA].save()
         self.rooms[roomB].save()
 
+        return door
+
+
     def makeRoom(self, name, title="", illuminated=True,
                  desc="You are in a dim room.", desc2=""):
 
@@ -58,7 +61,7 @@ class MapBuilder(object):
 
         self.rooms[name] = room
 
-    def addItem(self, room, name, fixed, hidden=False, default_state=0):
+    def addItem(self, room, name, pickupable, default_state=0):
         """ make an Item/FixedItem and add to an existing room """
         try:
             r = self.rooms[room]
@@ -79,7 +82,7 @@ class MapBuilder(object):
                 # delete so duplicates don't show up
                 match.delete()
         item.name = name
-        item.pickupable = fixed
+        item.pickupable = pickupable
         item.default_state = default_state
         item.save()
 
@@ -110,17 +113,10 @@ class MapBuilder(object):
         return itemUseState
 
 
-    def addItemUse(
-            self,
-            item_use_state,
-            pickup=True,
-            use_message="",
-            use_pattern="",
-            on_item=None,
-            on_item_change=None,
-            item_change=None,
-            consumed=False
-        ):
+    def addItemUse(self, item_use_state, pickup=True, use_message="",
+                   use_pattern="", on_item=None, on_item_change=None,
+                   item_change=None, consumed=False):
+        """ Add an item use to an item """
 
         if pickup:
             itemUse = UsePickupableItem()
@@ -139,22 +135,43 @@ class MapBuilder(object):
         itemUse.save()
 
 
+    def addKeyUse(self, item_use_state, on_door, use_message="", use_pattern=""):
+        """ Usage for keys """
+
+        keyUse = UseKey()
+        keyUse.item_use_state = item_use_state
+        keyUse.on_door = on_door
+        keyUse.use_message = use_message
+        keyUse.use_pattern = use_pattern
+        keyUse.save()
+
+
 def clean_map():
     """ clear everything in gameworld """
     Room.objects.all().delete()
     Door.objects.all().delete()
     FixedItem.objects.all().delete()
     ItemUseState.objects.all().delete()
+    UsePickupableItem.objects.all().delete()
+    UseDecoration.objects.all().delete()
+    UseKey.objects.all().delete()
+
 
 def save_map(module_name):
     """ backup builder-generated gameworld to a JSON file """
-    all_objects = list(Room.objects.all()) + list(Door.objects.all()) \
-                + list(FixedItem.objects.all())
-    # TODO: include ItemUse classes
+    all_objects = list(Room.objects.all()) \
+                + list(Door.objects.all()) \
+                + list(FixedItem.objects.all()) \
+                + list(ItemUseState.objects.all()) \
+                + list(UsePickupableItem.objects.all()) \
+                + list(UseDecoration.objects.all()) \
+                + list(UseKey.objects.all())
+
     data = serializers.serialize('json', all_objects)
 
     with open('%s%s.json' % (JSON_MAP_PATH, module_name), 'w') as writer:
         writer.write(data)
+
 
 def load_map_from_json(filename):
     """ load entire gameworld from a JSON file

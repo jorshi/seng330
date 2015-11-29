@@ -63,6 +63,14 @@ class Migration(migrations.Migration):
             bases=('gameworld.abstractuseitem',),
         ),
         migrations.CreateModel(
+            name='UseKey',
+            fields=[
+                ('abstractuseitem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.AbstractUseItem')),
+                ('on_door', models.ForeignKey(to='gameworld.Door')),
+            ],
+            bases=('gameworld.abstractuseitem',),
+        ),
+        migrations.CreateModel(
             name='UsePickupableItem',
             fields=[
                 ('abstractuseitem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.AbstractUseItem')),
@@ -76,7 +84,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='room',
             name='default_items',
-            field=models.ManyToManyField(to='gameworld.FixedItem'),
+            field=models.ManyToManyField(related_name='found_in', to='gameworld.FixedItem'),
         ),
         migrations.AddField(
             model_name='itemusestate',

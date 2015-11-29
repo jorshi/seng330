@@ -3,7 +3,7 @@ import gameworld.management.commands.mapbuilder as mapbuilder
 def main():
     mapBuilder = mapbuilder.MapBuilder()
     mapbuilder.clean_map()
-    
+
 
     # Make rooms
     mapBuilder.makeRoom(
@@ -23,18 +23,22 @@ def main():
         desc2="""Yup that is a smelly fridge.""",
     )
 
-    mapBuilder.connectRooms(
+    doorA = mapBuilder.connectRooms(
         'start',
         'kitchen',
         'north',
     )
 
     # Add items
-    item = mapBuilder.addItem('start', 'Fireplace', True)
+    item = mapBuilder.addItem('start', 'Fireplace', False)
     itemState = mapBuilder.addItemUseState(item, 0, False, "Fieplace is lit", "Yo I'm on fire")
     mapBuilder.addItemUse(itemState, False, use_pattern="regexxx")
     itemState = mapBuilder.addItemUseState(item, 1, False, "Fireplace is not lit", "Yo I'm not lit")
 
-    item = mapBuilder.addItem('start', 'Matches', False)
+    item = mapBuilder.addItem('start', 'Matches', True)
     itemState = mapBuilder.addItemUseState(item, 0, False, "Match short description 1", "Examine matches 1")
     mapBuilder. addItemUse(itemState, use_pattern="matchRegex")
+
+    key = mapBuilder.addItem('start', 'Tarnished Key', True)
+    itemState = mapBuilder.addItemUseState(key, 0, False, "Tarnished Key", "You found a tarnished key")
+    mapBuilder.addKeyUse(itemState, doorA)

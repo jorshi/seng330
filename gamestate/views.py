@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.core import serializers
 from player.models import Player
 from gamestate.models import GameState, RoomState, ItemState, DoorState
-from gameworld.models import Room, ItemUseState, UseDecoration, AbstractUseItem
+from gameworld.models import Room, ItemUseState, UseDecoration, AbstractUseItem, UseKey
 
 
 @login_required
@@ -104,9 +104,12 @@ def get_inventory(request):
                 itemUse = AbstractUseItem.objects.filter(item_use_state=useState).select_subclasses()
                 itemUses.append(itemUse[0] if itemUse else None)
 
+            # Special Case for Keys
+            itemType = "key" if all(type(use) == UseKey for use in itemUses) else None
+
             # Put it all into a dictionary based on front end requirements
             items.append({
-                'type': type_map.get((thisItem.pickupable, not all(i == None for i in itemUses))),
+                'type': itemType or type_map.get((thisItem.pickupable, not all(i == None for i in itemUses))),
                 'name': thisItem.name,
                 'hidden': useStates[itemState.state].hidden,
                 'examineDescription': [useState.examine for useState in useStates],
@@ -114,6 +117,7 @@ def get_inventory(request):
                 'state': itemState.state,
                 'usePattern': [use.use_pattern if use else None for use in itemUses],
                 'useMessage': [use.use_message if use else None for use in itemUses],
+                'doorToUnlock': itemUses[itemState.state].on_door.pk if itemType == "key" else None,
             })
 
     return JsonResponse(items, safe=False)
