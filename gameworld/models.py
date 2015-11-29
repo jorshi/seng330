@@ -10,6 +10,63 @@ class FixedItem(models.Model):
     name = models.CharField(max_length=30, default=None)
     default_state = models.IntegerField()
 
+    def addState(self, num=0, hidden=False, shortdesc="", examine=""):
+        existing = self.states.filter(state=num)
+        for dup in existing:
+            print("Warning: %s state %s already exists... overwriting"
+            % (self, num))
+            dup.delete()
+            
+        state = ItemUseState()
+        state.state = num
+        state.item = self
+        state.examine = examine
+        state.hidden = hidden
+        if shortdesc:
+            state.short_desc = shortdesc
+        else:
+            if name[0] in "aeio":
+                state.short_desc = "an " + name
+            else:
+                state.short_desc = "a " + name
+        state.save()
+    
+    def addItemUse(self, state, pickup, use_pattern, use_message, consumed=False, on_item=None, change_self=None, change_other=None):
+        if pickup:
+            itemUse = UsePickupableItem()
+            itemUse.consumed = consumed
+        else:
+            itemUse = UseDecoration()
+        itemUse.item = self  
+        try:
+            itemUse.item_use_state = self.states.get(state=state)
+            if change_self:
+                itemUse.item_change = self.states.get(state=change_self)
+        except:
+            print("Error trying to add item use: %s state %s doesn't exist" % (self, state))
+            return
+        
+        itemUse.use_message = use_message
+        fpatt = use_pattern.replace("NAME", self.name)
+        if on_item:
+            try:
+                other = FixedItem.objects.get(name=on_item)
+                itemUse.on_item = other
+                if change_other:
+                    try:
+                        itemUse.on_item_change = other.states.get(state=change_other)
+                    except:
+                        print("Error: change_other %s doesn't exist for %s" % (change_other, other))
+                        return
+            except:
+                print("Error: on_item %s doesn't exist or is ambiguous" % (on_item,))
+                return
+            
+            fpatt = fpatt.replace("OTHER", on_item)
+        itemUse.use_pattern = "^\s*" + "\s+".join(fpatt.split()) + "\s*$"
+        
+        itemUse.save()
+        
     def __unicode__(self):
         return self.name
 
@@ -26,7 +83,7 @@ class ItemUseState(models.Model):
     """
     
     state = models.IntegerField()
-    item = models.ForeignKey("FixedItem")
+    item = models.ForeignKey("FixedItem", related_name="states")
     examine = models.TextField()
     short_desc = models.CharField(max_length=30, default=None)
     # whether the item is initially hidden
@@ -54,9 +111,9 @@ class AbstractUseItem(models.Model):
 class UsePickupableItem(AbstractUseItem):
     """ Describes usage patterns for a pickable item """
 
-    on_item = models.ForeignKey('ItemUseState', blank=True, related_name='action_on_self')
+    on_item = models.ForeignKey('ItemUseState', null=True, related_name='action_on_self')
     # State to change the on_item to after usage
-    on_item_change = models.ForeignKey('ItemUseState', blank=True, related_name='indirect_cause')
+    on_item_change = models.ForeignKey('ItemUseState', null=True, related_name='indirect_cause')
     
     # whether the item disappears after being used
     consumed = models.BooleanField(default=False)

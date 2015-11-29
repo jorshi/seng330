@@ -1,12 +1,12 @@
 import gameworld.management.commands.mapbuilder as mapbuilder
 
 def main():
-    mapBuilder = mapbuilder.MapBuilder()
+    m = mapbuilder.MapBuilder()
     mapbuilder.clean_map()
     
 
     # Make rooms
-    mapBuilder.makeRoom(
+    m.makeRoom(
         'start',
         title='Attic',
         desc="""You wake up in a dimly lit room, not entirely sure where you are or how you got there. The paint on the
@@ -18,7 +18,9 @@ def main():
 
 
     # Add items
-    item = mapBuilder.addItem('start', 'Fireplace', True)
-    itemState = mapBuilder.addItemUseState(item, 0, "Fieplace is lit", "Yo I'm on fire")
-    mapBuilder.addItemUse(itemState, False, use_pattern="regexxx")
-    itemState = mapBuilder.addItemUseState(item, 1, "Fireplace is not lit", "Yo I'm not lit")
+    item = m.addItem('start', 'Fireplace', True)
+    
+    item.addState(1, hidden=False, shortdesc="Fireplace is lit", examine="Yo I'm on fire")
+    item.addState(0, shortdesc="Fireplace is not lit", examine="Yo I'm not lit")
+    item.addItemUse(0, False, use_pattern="light fire(place)?", use_message="The fireplace comes to life.", change_self=1)
+    
