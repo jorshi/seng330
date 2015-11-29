@@ -21,6 +21,7 @@ class GameState(models.Model):
         """
         #self.current_room = room
         
+        # TODO this could probably be more Django-like
         visited = RoomState.objects.filter(game_state=self)
         if not room in [rm.room for rm in visited]:
             roomState = RoomState()
@@ -127,13 +128,20 @@ class ItemState(models.Model):
         }
         obj['type'] = "pickupableAndUsable" if self.item.item in Item.objects.all() else "fixedAndUsable"
         
-        usecases = self.item.usedecoration_action.all() + self.item.usepickupableitem_action.all()
+        usecases1 = self.item.usedecoration_action.all() 
+        usecases2 = self.item.usepickupableitem_action.all()
         obj['useCases'] = [
             {
                 'ref': usecase.pk,
                 'usePattern': usecase.use_pattern,
                 'useMessage': usecase.use_message
-            } for usecase in usecases]
+            } for usecase in usecases1]
+        obj['useCases'] += [
+            {
+                'ref': usecase.pk,
+                'usePattern': usecase.use_pattern,
+                'useMessage': usecase.use_message
+            } for usecase in usecases2]
         return obj
 
     def __unicode__(self):

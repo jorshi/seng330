@@ -46,7 +46,7 @@ def get_current_room(request):
         room=player.gamestate.current_room
     )
     
-    return JsonResponse(room_state.json)
+    return JsonResponse(room_state.json())
 
 
 @login_required
