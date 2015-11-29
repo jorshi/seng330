@@ -13,6 +13,21 @@ from gamestate.models import GameState, RoomState, ItemState, DoorState
 from gameworld.models import Room, ItemUseState, UseDecoration, AbstractUseItem, UseKey
 
 
+def player_current_room(player):
+    """
+    Returns the current room object for a player
+    """
+
+    # Get the room state for the players current room
+    room_state = RoomState.objects.filter(
+        game_state=player.gamestate
+    ).filter(
+        room=player.gamestate.current_room
+    )[0]
+
+    return room_state.get_room()
+
+
 @login_required
 def get_current_room(request):
     """
@@ -23,16 +38,7 @@ def get_current_room(request):
     """
 
     player = Player.objects.get(user=request.user)
-
-    # Get the room state for the players current room
-    room_state = RoomState.objects.filter(
-        game_state=player.gamestate
-    ).filter(
-        room=player.gamestate.current_room
-    )[0]
-
-
-    jsonResponse = serializers.serialize('json', [room_state.get_room(),])
+    jsonResponse = serializers.serialize('json', [player_current_room(player),])
     return HttpResponse(jsonResponse, content_type="application/json")
 
 
@@ -46,7 +52,7 @@ def get_doors(request):
     """
 
     player = Player.objects.get(user=request.user)
-    room = Room.objects.get(pk=request.GET.get('room', None))
+    room = Room.objects.get(pk=request.GET.get('room'))
     doors = []
 
     for direction in ['north', 'south', 'east', 'west']:
@@ -76,7 +82,7 @@ def get_inventory(request):
     """
 
     player = Player.objects.get(user=request.user)
-    room = request.GET.get('room', None)
+    room = request.GET.get('room')
     items = []
 
     # Map the type name based on whether the item is pickupable or not,
@@ -121,3 +127,30 @@ def get_inventory(request):
             })
 
     return JsonResponse(items, safe=False)
+
+
+@login_required
+def use_door(request):
+
+    player = Player.objects.get(user=request.user)
+    gameState = player.gamestate
+    currentRoom = player_current_room(player)
+    door = DoorState.objects.get(door=request.GET.get('id'))
+
+    # Check for a couple error cases
+    if door.locked:
+        raise Exception("Door is locked!")
+
+    if currentRoom not in [door.room_a, door.room_b]:
+        raise Exception("This is not is this room!")
+
+    # Get next room, add to game state and set as player's current room
+    nextRoom = door.room_a if currentRoom == door.room_b else door.room_b
+    gameState.add_room(nextRoom)
+    gameState.current_room = nextRoom
+    gameState.save()
+
+    print gameState
+    # Return this room to the front end
+    jsonResponse = serializers.serialize('json', [player_current_room(player),])
+    return HttpResponse(jsonResponse, content_type="application/json")
