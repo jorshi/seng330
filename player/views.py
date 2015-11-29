@@ -161,9 +161,9 @@ def _create_game(request, player):
 
     gamestate = GameState()
     gamestate.player = player
+    # TODO: anything else?
     currentRoom = Room.objects.get(name='start')
     gamestate.current_room = currentRoom
-    # other stuff?
     gamestate.add_room(currentRoom)
     gamestate.save()
     return _terminal(request, gamestate)

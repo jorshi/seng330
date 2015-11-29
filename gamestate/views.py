@@ -31,10 +31,7 @@ def get_current_room(request):
         room=player.gamestate.current_room
     )
     
-
-
-    jsonResponse = room_state.json # TODO implement JSON in each gamestate.model
-    return HttpResponse(jsonResponse, content_type="application/json")
+    return JsonResponse(room_state.json)
 
 
 

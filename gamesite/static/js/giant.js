@@ -1,17 +1,16 @@
 /* script.js */
 var inventory, currentRoom, parser;
 $(function()  {
-	inventory = [];
-	currentRoom = {};
-
-	/*TODO: call an update_room function*/
-	currentRoom = getRoom();
-	/*TODO: call an update_inventory function*/
-	inventory = getInventory();
+	getRoom();
+	getInventory();
 	
 	/*parser class*/
 	parser = new Parser();
 
+	/* TODO: use currentRoom's fields to update HTML 
+	if it's not illuminated, the player can't do much. */
+	
+	
 	/*
 	currentRoom.updateDescription();
 	displayResponse("How would you like to proceed?");
@@ -23,12 +22,15 @@ $(function()  {
 // returns a room object with description fields, room contents,
 // doors, etc.
 function getRoom()  {
-	return {};
+	$.get('/get_current_room/', function(data) {
+		displayResponse("Got current room.");
+		currentRoom = data;
+	});
 }
 
 // returns a list of player's inventory items
 function getInventory()  {
-	return [];
+	
 }
 
 // tells the backend the player picked up an item
@@ -157,12 +159,14 @@ function parse() {
 	//clear form after submitting text
 	var enteredCommand = commandForm.command.value;
 	$("#commandUserInput").val('');
-        
-	//echo command
-	$("#terminalText").append("<p class=\"echo\">" + enteredCommand + "</p>");
 
-	//parse command, print whether or not the command is valid
-	parser.check(enteredCommand);
+	if (enteredCommand != "")  {
+		//echo command
+		$("#terminalText").append("<p class=\"echo\">" + enteredCommand + "</p>");
+
+		//parse command, print whether or not the command is valid
+		parser.check(enteredCommand);
+	}
 }
 
 function displayResponse(s)  {

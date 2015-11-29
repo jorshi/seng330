@@ -8,8 +8,6 @@ class FixedItem(models.Model):
 
     # name the player uses to refer to the item, e.g. "painting"
     name = models.CharField(max_length=30, default=None)
-    # whether the item is initially hidden
-    hidden = models.BooleanField(default=False)
     default_state = models.IntegerField()
 
     def __unicode__(self):
@@ -26,11 +24,13 @@ class ItemUseState(models.Model):
     """
     Describes items as they change over the course of game play
     """
-
+    
+    state = models.IntegerField()
     item = models.ForeignKey("FixedItem")
     examine = models.TextField()
     short_desc = models.CharField(max_length=30, default=None)
-    state = models.IntegerField()
+    # whether the item is initially hidden
+    hidden = models.BooleanField(default=False)
     
     def __unicode__(self):
         return u'%s(%s)' % (self.item, self.state)
