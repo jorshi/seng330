@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('state', models.IntegerField()),
-                ('item', models.ForeignKey(to='gameworld.FixedItem')),
+                ('item', models.ForeignKey(to='gameworld.ItemUseState')),
             ],
         ),
         migrations.CreateModel(
