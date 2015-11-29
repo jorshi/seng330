@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^get_inventory/$', gamestate.views.get_inventory),
     url(r'^get_doors/$', gamestate.views.get_doors),
     url(r'^use_door/$', gamestate.views.use_door),
+    url(r'^post_player_action/$', gamestate.views.post_player_action),
 )
 
 # Serve Doxygen static files in development #TODO look into serving for production

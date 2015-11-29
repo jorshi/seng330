@@ -55,8 +55,11 @@ function postInventoryChange()  {
 }
 
 // tells the backend the player used an item
-function postPlayerAction(ref)  {
-	displayResponse("POSTing action " + ref);
+function postPlayerAction(data)  {
+	displayResponse("POSTing action " + data.ref);
+	// TODO add a handler
+	$.post('/post_player_action/', data);
+	
 	// backend returns a string describing the result
 	// room contents may be updated
 	// player inventory may be updated
@@ -121,7 +124,10 @@ function Parser()  {
 			var match = pattList[i].patt.exec(s);
 			if (match == null)  continue;
 			displayResponse(pattList[i].message);
-			postPlayerAction(pattList[i].ref);
+			postPlayerAction({
+				name: pattList[i].name,
+				ref: pattList[i].ref
+				});
 			return;
 		}
 		
@@ -136,6 +142,7 @@ function Parser()  {
 			for (j = 0; j < items[i].useCases.length; j++)  {
 				var useCase = items[i].useCases[j];
 				this.roomItemPatterns.push({
+					name: items[i].name,
 					patt: new RegExp(useCase.usePattern, ""),
 					message: useCase.useMessage,
 					ref: useCase.ref
@@ -203,20 +210,5 @@ function displayResponse(s)  {
 }
 
 //function mapUpdate(currentRoom)
-/*TODO: create an update_room function*/
- 	/* this function should fetch the room the player
- 	   is supposed to be in from the database and
- 	   the room's inventory */
 
-	/*TODO: create an update_player function*/
-	/* this function should fetch the player's
- 	   inventory from the database */
-
- 	/*TODO: create an update_inventory_pickup function*/
- 	/* this moves the item from the room inventory to the
- 	   player inventory and updates the database with this
- 	   new information*/
-
- 	/* TODO: create a gamestate_change function */
- 	/* this updates the gamestate in the database */
 	

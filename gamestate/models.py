@@ -126,7 +126,7 @@ class ItemState(models.Model):
             'examineDescription': self.item.examine,
             'enterRoomDescription': self.item.short_desc
         }
-        obj['type'] = "pickupableAndUsable" if self.item.item in Item.objects.all() else "fixedAndUsable"
+        obj['type'] = "pickupableAndUsable" if Item.objects.filter(pk=self.item.item.pk).exists() else "fixedAndUsable"
         
         usecases1 = self.item.usedecoration_action.all() 
         usecases2 = self.item.usepickupableitem_action.all()
