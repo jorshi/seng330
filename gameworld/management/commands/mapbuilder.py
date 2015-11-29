@@ -92,48 +92,6 @@ class MapBuilder(object):
         return item
 
 
-    def addItemUseState(self, item, state, hidden, shortdesc="", examine=""):
-
-        itemUseState = ItemUseState()
-        itemUseState.item = item
-        itemUseState.examine = examine
-        itemUseState.state = state
-        itemUseState.hidden = hidden
-
-        if shortdesc == "":
-            if name[0] in "aeio":
-                itemUseState.short_desc = "an " + name
-            else:
-                itemUseState.short_desc = "a " + name
-        else:
-            itemUseState.short_desc = shortdesc
-
-        itemUseState.save()
-
-        return itemUseState
-
-
-    def addItemUse(self, item_use_state, pickup=True, use_message="",
-                   use_pattern="", on_item=None, on_item_change=None,
-                   item_change=None, consumed=False):
-        """ Add an item use to an item """
-
-        if pickup:
-            itemUse = UsePickupableItem()
-            itemUse.on_item = on_item
-            itemUse.on_item_change = on_item_change
-            itemUse.item_change = item_change
-            itemUse.consumed = consumed
-
-        else:
-            itemUse = UseDecoration()
-
-        itemUse.item_use_state = item_use_state
-        itemUse.use_message = use_message
-        itemUse.use_pattern = use_pattern
-
-        itemUse.save()
-
 
     def addKeyUse(self, item_use_state, on_door, use_message="", use_pattern=""):
         """ Usage for keys """

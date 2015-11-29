@@ -92,17 +92,20 @@ class RoomState(models.Model):
             'desc_footer': self.room.desc_footer,
             'illuminated': self.illuminated,
             }
-        # TODO add items, doors to obj
-        obj['items'] = []
-        # this is awful please fix it
-        obj['doors'] = { 
-            'north': DoorState.objects.filter(
-                game_state = self.game_state
-                ).get(
-                door = self.room.door_north
-                ).json(self.room),
-            # etc.
-        }
+        items = self.itemstate_set.all()
+        obj['items'] = [item.json() for item in items if not item.item.hidden]
+        
+        
+        
+        # this is awful please fix it-
+        # obj['doors'] = { 
+            # 'north': DoorState.objects.filter(
+                # game_state = self.game_state
+                # ).get(
+                # door = self.room.door_north
+                # ).json(self.room),
+            # # etc.
+        # }
         return obj
 
     def __unicode__(self):
@@ -112,26 +115,26 @@ class RoomState(models.Model):
 class ItemState(models.Model):
     """ Saves all the items present in each saved room """
 
-<<<<<<< HEAD
     room_state = models.ForeignKey('RoomState')         # RoomState reference
-    item = models.ForeignKey('gameworld.FixedItem')     # Item reference
+    item = models.ForeignKey('gameworld.ItemUseState')     # Item reference
     state = models.IntegerField()                       # current state of item
-=======
-    room_state = models.ForeignKey('RoomState')
-    # the item
-    item = models.ForeignKey('gameworld.ItemUseState')
     
     def json(self):
         obj = {
             'name': self.item.item.name,
-            'hidden': self.item.hidden,
             'examineDescription': self.item.examine,
             'enterRoomDescription': self.item.short_desc
         }
-        usecases = self.item.usedecoration_action.all()
-        obj['useCases'] = [{'usePattern': usecase.use_pattern, 'useMessage': usecase.use_message} for usecase in usecases]
+        obj['type'] = "pickupableAndUsable" if self.item.item in Item.objects.all() else "fixedAndUsable"
         
->>>>>>> untested ItemState and usecase stuff
+        usecases = self.item.usedecoration_action.all() + self.item.usepickupableitem_action.all()
+        obj['useCases'] = [
+            {
+                'ref': usecase.pk,
+                'usePattern': usecase.use_pattern,
+                'useMessage': usecase.use_message
+            } for usecase in usecases]
+        return obj
 
     def __unicode__(self):
         return u'%s.%s' % (self.room_state, self.item)
