@@ -1,5 +1,7 @@
 function GameManager()  {
 	this.currentRoom;
+	this.roomItems;
+	this.roomDoors;
 	this.inventory;
 	
 	// returns a room object with description fields, room contents,
@@ -7,6 +9,8 @@ function GameManager()  {
 	this.getRoom = function()  {
 		$.get('/get_current_room/', function(data) {
 			manager.currentRoom = data;
+			manager.roomItems = data.items;
+			
 			$("#pinnedText").html(data.title);
 			printRoom(data);
 			
@@ -70,7 +74,6 @@ function postInventoryChange()  {
 
 // tells the backend the player used an item
 function postPlayerAction(data)  {
-	displayResponse("POSTing action " + data.ref);
 	// TODO add a handler
 	$.post('/post_player_action/', data);
 	
@@ -224,6 +227,7 @@ function displayResponse(s)  {
 }
 
 //function mapUpdate(currentRoom)
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
