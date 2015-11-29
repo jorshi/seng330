@@ -36,4 +36,4 @@ def post_player_action(request):
     if request.method == 'POST':
         print(request.POST)
         # TODO lookup the action performed & update the gamestate db
-        
+    return JsonResponse({})
