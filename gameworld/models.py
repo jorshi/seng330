@@ -25,12 +25,14 @@ class FixedItem(models.Model):
         if shortdesc:
             state.short_desc = shortdesc
         else:
-            if name[0] in "aeio":
-                state.short_desc = "an " + name
+            if self.name[0] in "aeio":
+                state.short_desc = "an " + self.name
             else:
-                state.short_desc = "a " + name
+                state.short_desc = "a " + self.name
         state.save()
+        return self
     
+    # TODO make on_item be the pk, not the name
     def addItemUse(self, state, pickup, use_pattern, use_message, consumed=False, on_item=None, change_self=None, change_other=None):
         if pickup:
             itemUse = UsePickupableItem()
