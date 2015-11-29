@@ -16,9 +16,25 @@ def main():
         lighter on the floor."""
     )
 
+    mapBuilder.makeRoom(
+        'kitchen',
+        'Kitchen',
+        desc="""You've entered the Kitchen. The fridge door is slightly ajar and smells like bologni.""",
+        desc2="""Yup that is a smelly fridge.""",
+    )
+
+    mapBuilder.connectRooms(
+        'start',
+        'kitchen',
+        'north',
+    )
 
     # Add items
     item = mapBuilder.addItem('start', 'Fireplace', True)
-    itemState = mapBuilder.addItemUseState(item, 0, "Fieplace is lit", "Yo I'm on fire")
+    itemState = mapBuilder.addItemUseState(item, 0, False, "Fieplace is lit", "Yo I'm on fire")
     mapBuilder.addItemUse(itemState, False, use_pattern="regexxx")
-    itemState = mapBuilder.addItemUseState(item, 1, "Fireplace is not lit", "Yo I'm not lit")
+    itemState = mapBuilder.addItemUseState(item, 1, False, "Fireplace is not lit", "Yo I'm not lit")
+
+    item = mapBuilder.addItem('start', 'Matches', False)
+    itemState = mapBuilder.addItemUseState(item, 0, False, "Match short description 1", "Examine matches 1")
+    mapBuilder. addItemUse(itemState, use_pattern="matchRegex")

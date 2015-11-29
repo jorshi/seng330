@@ -181,5 +181,5 @@ def delete_game(request):
     player = Player.objects.get(pk=request.user)
     gameState = player.gamestate
     gameState.delete()
-
-    #TODO if we actually want implement this for reals then make it return real HTTP
+    
+    return redirect('/')

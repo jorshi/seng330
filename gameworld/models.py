@@ -1,4 +1,5 @@
 from django.db import models
+from model_utils.managers import InheritanceManager
 
 # default=None: hack to enforce NOT NULL
 # http://stackoverflow.com/questions/12879256/
@@ -9,17 +10,11 @@ class FixedItem(models.Model):
     # name the player uses to refer to the item, e.g. "painting"
     name = models.CharField(max_length=30, default=None)
     # whether the item is initially hidden
-    hidden = models.BooleanField(default=False)
-    default_state = models.IntegerField()
+    pickupable = models.BooleanField(default=False)
+    default_state = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
-
-
-class Item(FixedItem):
-    """ items that can be picked up and used """
-
-    pass
 
 
 class ItemUseState(models.Model):
@@ -32,6 +27,7 @@ class ItemUseState(models.Model):
     """
 
     item = models.ForeignKey("FixedItem")
+    hidden = models.BooleanField()
     examine = models.TextField()
     short_desc = models.CharField(max_length=30, default=None)
     state = models.IntegerField()
@@ -43,20 +39,18 @@ class ItemUseState(models.Model):
 class AbstractUseItem(models.Model):
     """ Describes how an item can be used """
 
+    objects = InheritanceManager()
     # longer text describing the result of performing the action
     use_message = models.TextField()
     # Regex for use in JavaScript
     use_pattern = models.CharField(max_length=200, blank=True)
-    item_use_state = models.ForeignKey("ItemUseState")
-
-    class Meta:
-        abstract = True
+    item_use_state = models.OneToOneField("ItemUseState")
 
 
 class UsePickupableItem(AbstractUseItem):
     """ Describes usage patterns for a pickable item """
 
-    on_item = models.ForeignKey('FixedItem', blank=True)
+    on_item = models.ForeignKey('FixedItem', null=True)
 
     # State to change the on_item to after usage - ie, what affect
     # does this action have on the item it is being used on?

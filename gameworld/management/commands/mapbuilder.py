@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 import importlib
 from django.core import serializers
-from gameworld.models import Room, Door, FixedItem, Item, ItemUseState, UsePickupableItem, UseDecoration
+from gameworld.models import Room, Door, FixedItem, ItemUseState, UsePickupableItem, UseDecoration
 
 JSON_MAP_PATH = 'gameworld/maps/'
 
@@ -65,11 +65,8 @@ class MapBuilder(object):
         except KeyError:
             print("Unable to add %s: room %s does not exist" % (name, room))
             return
-
-        if fixed:
-            item = FixedItem()
-        else:
-            item = Item()
+        
+        item = FixedItem()
 
         # check if item already exists in the room
         # since FixedItem is parent class of Item, it holds both
@@ -81,9 +78,8 @@ class MapBuilder(object):
                 # don't assign item = match bc the type won't be modified
                 # delete so duplicates don't show up
                 match.delete()
-
         item.name = name
-        item.hidden = hidden
+        item.pickupable = fixed
         item.default_state = default_state
         item.save()
 
@@ -93,12 +89,13 @@ class MapBuilder(object):
         return item
 
 
-    def addItemUseState(self, item, state, shortdesc="", examine=""):
+    def addItemUseState(self, item, state, hidden, shortdesc="", examine=""):
 
         itemUseState = ItemUseState()
         itemUseState.item = item
         itemUseState.examine = examine
         itemUseState.state = state
+        itemUseState.hidden = hidden
 
         if shortdesc == "":
             if name[0] in "aeio":
@@ -146,14 +143,13 @@ def clean_map():
     """ clear everything in gameworld """
     Room.objects.all().delete()
     Door.objects.all().delete()
-    Item.objects.all().delete()
     FixedItem.objects.all().delete()
     ItemUseState.objects.all().delete()
 
 def save_map(module_name):
     """ backup builder-generated gameworld to a JSON file """
     all_objects = list(Room.objects.all()) + list(Door.objects.all()) \
-                + list(Item.objects.all()) + list(FixedItem.objects.all())
+                + list(FixedItem.objects.all())
     # TODO: include ItemUse classes
     data = serializers.serialize('json', all_objects)
 

@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gameworld', '__first__'),
+        ('gameworld', '0001_initial'),
         ('player', '0001_initial'),
     ]
 
@@ -30,7 +30,6 @@ class Migration(migrations.Migration):
             name='ItemState',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('hidden', models.BooleanField()),
                 ('state', models.IntegerField()),
                 ('item', models.ForeignKey(to='gameworld.FixedItem')),
             ],
@@ -73,7 +72,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='gamestate',
             name='inventory',
-            field=models.ManyToManyField(to='gameworld.Item'),
+            field=models.ManyToManyField(to='gameworld.FixedItem'),
         ),
         migrations.AddField(
             model_name='doorstate',
