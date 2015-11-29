@@ -23,13 +23,10 @@ def get_current_room(request):
     """
 
     player = Player.objects.get(user=request.user)
+    game = player.gamestate
 
     # Get the room state for the players current room
-    room_state = RoomState.objects.filter(
-        game_state=player.gamestate
-    ).get(
-        room=player.gamestate.current_room
-    )
+    room_state = game.roomstate_set.get(room=game.current_room)
     
     return JsonResponse(room_state.json())
 
