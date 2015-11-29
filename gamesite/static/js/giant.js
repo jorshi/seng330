@@ -1,33 +1,39 @@
+function GameManager()  {
+	this.currentRoom;
+	this.inventory;
+	
+	// returns a room object with description fields, room contents,
+	// doors, etc.
+	this.getRoom = function()  {
+		$.get('/get_current_room/', function(data) {
+			manager.currentRoom = data;
+			$("#pinnedText").html(data.title);
+			printRoom(data);
+			
+			parser.addRoomItems(data.items);
+			
+			$("#commandUserInput").focus();
+		}, "json");
+	}
+	
+	
+}
+
 /* script.js */
 var parser, manager;
 
 $(function()  {
 	manager = new GameManager();
-	getRoom();
-	getInventory();
-	
-	/*parser class*/
 	parser = new Parser();
-
+	manager.getRoom();
+	//getInventory();
+	
 });
 
-// returns a room object with description fields, room contents,
-// doors, etc.
-function getRoom()  {
-	$.get('/get_current_room/', function(data) {
-		manager.currentRoom = data;
-		$("#pinnedText").html(data.title);
-		printRoom(data);
-		// TODO: add regexes from room items to parser
-		parser.addRoomItems(data.items);
-		
-		$("#commandUserInput").focus();
-	}, "json");
-}
+
 
 // print the room description & its contents to the terminal
 function printRoom(room)  {
-	// TODO takes no arguments
 	// TODO if it's not illuminated, the player can't see anything
 	
 	// TODO make special functions to list the items
@@ -50,7 +56,7 @@ function postInventoryChange()  {
 
 // tells the backend the player used an item
 function postPlayerAction(ref)  {
-	
+	displayResponse("POSTing action " + ref);
 	// backend returns a string describing the result
 	// room contents may be updated
 	// player inventory may be updated
@@ -96,18 +102,28 @@ function Parser()  {
 
 	this.check = function(s)  {
 		s = s.toLowerCase();
-		for (i = 0; i < this.patterns.length; i++)  {
-			var match = this.patterns[i].patt.exec(s);
+		
+		var pattList = this.patterns;
+		for (i = 0; i < pattList.length; i++)  {
+			var match = pattList[i].patt.exec(s);
 			if (match == null)  continue;
-			var value = match[this.patterns[i].ind];
+			var value = match[pattList[i].ind];
 			// execute corresponding function
-			var f = this.patterns[i].func;
+			var f = pattList[i].func;
 			f(value);
 			return;
 		}
 		// TODO check roomItemPatterns
 		// (calls postPlayerAction with the reference number
 		// and prints out message)
+		pattList = this.roomItemPatterns;
+		for (i = 0; i < pattList.length; i++)  {
+			var match = pattList[i].patt.exec(s);
+			if (match == null)  continue;
+			displayResponse(pattList[i].message);
+			postPlayerAction(pattList[i].ref);
+			return;
+		}
 		
 		displayResponse("I don't know what you mean.");
 		return;
@@ -144,30 +160,18 @@ function takeItem(item)  {
 }
 
 function examineItem(item)  {
-	// check room items AND inventory
-	// possible results:
-	// "What [item]?"
-	// [display item examine text]
-	displayResponse("You examine the " + item + ".");
+	// TODO: check room items AND inventory
+	var items = manager.currentRoom.items;
+	for (i = 0; i < items.length; i++)  {
+		if (item == items[i].name.toLowerCase())  {
+			displayResponse(items[i].examineDescription);
+			return;
+		}
+	}
+	displayResponse("What " + item + "?");
 }
 
 
-/* item.js - Item classes & subclasses */
-// a list of all the possible properties:
-/*
- * name
- * description
- * enterRoomDescription
- * hidden bool
- * usePattern regex
- * inInv bool
- * useMessage
- * locked
- * room1
- * room2
-*/
-
-/* gameState.js - example gamestate changes */
 
 /* functions.js - checkers */
 // itemIsInRoomOrInv() - checks if item is in room, inventory, or both
@@ -215,8 +219,4 @@ function displayResponse(s)  {
 
  	/* TODO: create a gamestate_change function */
  	/* this updates the gamestate in the database */
-function GameManager()  {
-	this.currentRoom;
-	this.inventory;
-}
 	
