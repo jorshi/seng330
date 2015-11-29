@@ -1,31 +1,41 @@
 /* script.js */
-var inventory, currentRoom, parser;
+var parser, manager;
+
 $(function()  {
+	manager = new GameManager();
 	getRoom();
 	getInventory();
 	
 	/*parser class*/
 	parser = new Parser();
 
-	/* TODO: use currentRoom's fields to update HTML 
-	if it's not illuminated, the player can't do much. */
-	
-	
-	/*
-	currentRoom.updateDescription();
-	displayResponse("How would you like to proceed?");
-	$("#pinnedText").html(player.currentRoom.description);
-	*/
-	
 });
 
 // returns a room object with description fields, room contents,
 // doors, etc.
 function getRoom()  {
 	$.get('/get_current_room/', function(data) {
-		displayResponse("Got current room.");
-		currentRoom = data;
-	});
+		manager.currentRoom = data;
+		$("#pinnedText").html(data.title);
+		printRoom(data);
+		// TODO: add regexes from room items to parser
+		parser.addRoomItems(data.items);
+		
+		$("#commandUserInput").focus();
+	}, "json");
+}
+
+// print the room description & its contents to the terminal
+function printRoom(room)  {
+	// TODO takes no arguments
+	// TODO if it's not illuminated, the player can't see anything
+	
+	// TODO make special functions to list the items
+	displayResponse(room.desc_header);
+	for (i = 0; i < room.items.length; i++)  {
+		displayResponse(" * " + room.items[i].enterRoomDescription);
+	}
+	displayResponse(room.desc_footer);
 }
 
 // returns a list of player's inventory items
@@ -39,24 +49,18 @@ function postInventoryChange()  {
 }
 
 // tells the backend the player used an item
-function postPlayerAction()  {
+function postPlayerAction(ref)  {
 	
 	// backend returns a string describing the result
 	// room contents may be updated
+	// player inventory may be updated
+	// (these all should be pushed here)
 }
 
 // tells the backend the player went through a door
 function postRoomChange(room)  {
 	// if successful/unsuccessful
 }
-
-/* extraClasses.js */
-// Room()
-
-//Player()
-	// changeRoom()
-	
-//Inventory()
 
 
 /* parser.js */
@@ -87,7 +91,8 @@ function Parser()  {
 		func: examineItem
 	}
 	];
-	// patterns from server will be added
+	this.roomItemPatterns = [];
+	
 
 	this.check = function(s)  {
 		s = s.toLowerCase();
@@ -100,15 +105,33 @@ function Parser()  {
 			f(value);
 			return;
 		}
+		// TODO check roomItemPatterns
+		// (calls postPlayerAction with the reference number
+		// and prints out message)
+		
 		displayResponse("I don't know what you mean.");
 		return;
 	}
 	//var patt = new RegExp("string", "i"); // returns /string/i
+	
+	// patterns from server will be added
+	this.addRoomItems = function(items)  {
+		for (i = 0; i < items.length; i++)  {
+			for (j = 0; j < items[i].useCases.length; j++)  {
+				var useCase = items[i].useCases[j];
+				this.roomItemPatterns.push({
+					patt: new RegExp(useCase.usePattern, ""),
+					message: useCase.useMessage,
+					ref: useCase.ref
+				});
+			}
+		}
+	}
 }
 
 function goThroughDoor(dir)  {
 	// check doors object
-	displayResponse("You try to go through the " + doorDirection + " door.");
+	displayResponse("You try to go through the " + dir + " door.");
 }
 
 function takeItem(item)  {
@@ -192,3 +215,8 @@ function displayResponse(s)  {
 
  	/* TODO: create a gamestate_change function */
  	/* this updates the gamestate in the database */
+function GameManager()  {
+	this.currentRoom;
+	this.inventory;
+}
+	
