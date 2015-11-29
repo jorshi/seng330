@@ -19,9 +19,10 @@ class GameState(models.Model):
         Add a room state if this is the
         first time the player has entered this room.
         """
-
-        roomState = RoomState.objects.filter(game_state=self)
-        if not room in [rm.room for rm in roomState]:
+        #self.current_room = room
+        
+        visited = RoomState.objects.filter(game_state=self)
+        if not room in [rm.room for rm in visited]:
             roomState = RoomState()
             roomState.game_state = self
             roomState.room = room
@@ -102,7 +103,7 @@ class RoomState(models.Model):
                 ).json(self.room),
             # etc.
         }
-        return json.dumps(obj)
+        return obj
 
     def __unicode__(self):
         return u'%s.%s' % (self.game_state, self.room)
@@ -111,9 +112,26 @@ class RoomState(models.Model):
 class ItemState(models.Model):
     """ Saves all the items present in each saved room """
 
+<<<<<<< HEAD
     room_state = models.ForeignKey('RoomState')         # RoomState reference
     item = models.ForeignKey('gameworld.FixedItem')     # Item reference
     state = models.IntegerField()                       # current state of item
+=======
+    room_state = models.ForeignKey('RoomState')
+    # the item
+    item = models.ForeignKey('gameworld.ItemUseState')
+    
+    def json(self):
+        obj = {
+            'name': self.item.item.name,
+            'hidden': self.item.hidden,
+            'examineDescription': self.item.examine,
+            'enterRoomDescription': self.item.short_desc
+        }
+        usecases = self.item.usedecoration_action.all()
+        obj['useCases'] = [{'usePattern': usecase.use_pattern, 'useMessage': usecase.use_message} for usecase in usecases]
+        
+>>>>>>> untested ItemState and usecase stuff
 
     def __unicode__(self):
         return u'%s.%s' % (self.room_state, self.item)

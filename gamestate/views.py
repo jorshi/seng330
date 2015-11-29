@@ -39,8 +39,14 @@ def get_current_room(request):
     """
 
     player = Player.objects.get(user=request.user)
-    jsonResponse = serializers.serialize('json', [player_current_room(player),])
-    return HttpResponse(jsonResponse, content_type="application/json")
+    # Get the room state for the players current room
+    room_state = RoomState.objects.filter(
+        game_state=player.gamestate
+    ).get(
+        room=player.gamestate.current_room
+    )
+    
+    return JsonResponse(room_state.json)
 
 
 @login_required
@@ -69,7 +75,6 @@ def get_doors(request):
             })
 
     return JsonResponse(doors, safe=False)
-
 
 
 @login_required

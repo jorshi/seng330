@@ -8,8 +8,7 @@ class FixedItem(models.Model):
     """ concrete parent class for anything the player can interact with """
 
     # name the player uses to refer to the item, e.g. "painting"
-    name = models.CharField(max_length=30, default=None)
-	
+    name = models.CharField(max_length=30, default=None)	
     pickupable = models.BooleanField(default=False)
     default_state = models.IntegerField(default=0)
 
@@ -25,12 +24,12 @@ class ItemUseState(models.Model):
     unlit. Depending on this we want to be able to return a different description
     status.
     """
-
+    
+    state = models.IntegerField()
     item = models.ForeignKey("FixedItem")
-    hidden = models.BooleanField()
+    hidden = models.BooleanField(default=False)
     examine = models.TextField()
     short_desc = models.CharField(max_length=30, default=None)
-    state = models.IntegerField()
 
     def __unicode__(self):
         return u'%s(%s)' % (self.item, self.state)
