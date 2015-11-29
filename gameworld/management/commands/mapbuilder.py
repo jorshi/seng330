@@ -22,7 +22,7 @@ class MapBuilder(object):
         door.room_a = self.rooms.get(roomA)
         door.room_b = self.rooms.get(roomB)
         door.locked  = locked
-        door.name = 'Door'
+        door.name = 'Door: %s to %s' % (roomA, roomB)
         door.shortdesc = ''
         door.examine = ''
         door.save()

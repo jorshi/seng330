@@ -4,11 +4,12 @@ related to game play
 """
 
 from django.shortcuts import render
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.core import serializers
 from player.models import Player
-from gamestate.models import GameState, RoomState, ItemState
+from gamestate.models import GameState, RoomState, ItemState, DoorState
 from gameworld.models import Room, ItemUseState, UseDecoration, AbstractUseItem
 
 
@@ -35,15 +36,36 @@ def get_current_room(request):
     return HttpResponse(jsonResponse, content_type="application/json")
 
 
-def get_room_doors(room):
+@login_required
+def get_doors(request):
     """
-    Returns the door state objects for a room
+    Returns JSON list containing the doors for a particular room. The
+    dictionary for each door contains the id of the door, the current
+    locked status of the door, the room that door leads to, and the wall
+    that door belongs to in the requested room
     """
-    pass
+
+    player = Player.objects.get(user=request.user)
+    room = Room.objects.get(pk=request.GET.get('room', None))
+    doors = []
+
+    for direction in ['north', 'south', 'east', 'west']:
+        door = room.get_door(direction)
+        if door:
+            doorState = DoorState.objects.get(door=door)
+            doors.append({
+                'id': door.pk,
+                'locked': doorState.locked,
+                'roomLinkedTo': doorState.room_a.title if
+                    doorState.room_b == room else doorState.room_b.title,
+                'wall': direction,
+            })
+
+    return JsonResponse(doors, safe=False)
 
 
 @login_required
-def get_room_inventory(request):
+def get_inventory(request):
     """
     Get the inventory of the requested room
 
