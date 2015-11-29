@@ -31,7 +31,7 @@ class ItemUseState(models.Model):
     examine = models.TextField()
     short_desc = models.CharField(max_length=30, default=None)
     state = models.IntegerField()
-    
+
     def __unicode__(self):
         return u'%s(%s)' % (self.item, self.state)
 

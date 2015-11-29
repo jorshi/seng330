@@ -67,12 +67,11 @@ class DoorState(models.Model):
 
 
 class RoomState(models.Model):
-    """ Saves all the rooms the player has entered """
+    """ Saves all the rooms the player has entered and any changes to that room """
 
-    game_state = models.ForeignKey('GameState')
-    room = models.ForeignKey('gameworld.Room')
-    # whether the room is currently lit
-    illuminated = models.BooleanField()
+    game_state = models.ForeignKey('GameState') # GameState reference
+    room = models.ForeignKey('gameworld.Room')  # Room reference
+    illuminated = models.BooleanField()         # Currently illuminated?
 
     def get_room(self):
         """ Returns a Room object that has been updated with this RoomState """
@@ -87,11 +86,9 @@ class RoomState(models.Model):
 class ItemState(models.Model):
     """ Saves all the items present in each saved room """
 
-    room_state = models.ForeignKey('RoomState')
-    # the item
-    item = models.ForeignKey('gameworld.FixedItem')
-    # whether the item is currently hidden
-    state = models.IntegerField()
+    room_state = models.ForeignKey('RoomState')         # RoomState reference
+    item = models.ForeignKey('gameworld.FixedItem')     # Item reference
+    state = models.IntegerField()                       # current state of item
 
     def __unicode__(self):
         return u'%s.%s' % (self.room_state, self.item)
