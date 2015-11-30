@@ -59,6 +59,8 @@ function Parser(player) {
 		/*cases passed item can be picked up!*/
 		moveToInventory(itemToCheck);
 		updateRoomDescription();	
+		$("#pinnedText").html(player.currentRoom.description);
+
 		return true;		
 	}
 
