@@ -87,6 +87,7 @@ class ItemUseState(models.Model):
     state = models.IntegerField()
     item = models.ForeignKey("FixedItem", related_name="states")
     examine = models.TextField()
+    hidden = models.BooleanField(default=False)
     short_desc = models.CharField(max_length=30, default=None)
 
     def __unicode__(self):

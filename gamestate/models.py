@@ -118,7 +118,6 @@ class ItemState(models.Model):
 
     room_state = models.ForeignKey('RoomState')         # RoomState reference
     item = models.ForeignKey('gameworld.ItemUseState')     # Item reference
-    state = models.IntegerField()                       # current state of item
     
     def json(self):
         obj = {
@@ -126,22 +125,17 @@ class ItemState(models.Model):
             'examineDescription': self.item.examine,
             'enterRoomDescription': self.item.short_desc
         }
-        obj['type'] = "pickupableAndUsable" if Item.objects.filter(pk=self.item.item.pk).exists() else "fixedAndUsable"
+        obj['type'] = "pickupableAndUsable" if self.item.item.pickupable else "fixedAndUsable"
         
-        usecases1 = self.item.usedecoration_action.all() 
-        usecases2 = self.item.usepickupableitem_action.all()
+        usecases1 = self.item.abstractuseitem_action.all() 
+        #usecases2 = self.item.usepickupableitem_action.all()
         obj['useCases'] = [
             {
                 'ref': usecase.pk,
                 'usePattern': usecase.use_pattern,
                 'useMessage': usecase.use_message
             } for usecase in usecases1]
-        obj['useCases'] += [
-            {
-                'ref': usecase.pk,
-                'usePattern': usecase.use_pattern,
-                'useMessage': usecase.use_message
-            } for usecase in usecases2]
+        
         return obj
 
     def __unicode__(self):
