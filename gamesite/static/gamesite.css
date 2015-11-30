@@ -46,6 +46,7 @@
     font-weight: 700;
     color: white;
     background-color: rgba(0,0,0,.3);
+	background-color: rgba(0,0,0,.7);
 }
 
 .navbar a:focus {
@@ -114,23 +115,32 @@
   display:         flex;
 }
 
+/* welcome page styling */
+.inner p {
+	text-shadow: none;
+}
+
 /* game UI (terminal) styling */
 .row {
-    margin-top: 40px;
+    
 }
 
 .terminal {
-    
+    background-color: #E6E6E6;
+	text-shadow: none;
+	border-radius: 4px;
+	border: 2px solid rgba(0, 0, 0, .2);
+	padding: 15px;
+	font-size: 
 }
 
 .map {
-    
-    background-color: #222;
+    border-radius: 4px;
 }
 
 .terminal > * {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #pinnedText {
@@ -138,10 +148,11 @@
 }
 
 #terminalText {
-    height: 20em; /* in relation to window? */
+	height: 22em; /* in relation to window? */
     overflow: auto;
     padding-top: 10px;
-    background-color: rgba(255, 255, 255, .2);
+    background-color: #FFF;
+	border-radius: 4px;
 }
 
 #pinnedText, #terminalText {
@@ -171,4 +182,28 @@
 
 #success {
     
+}
+
+#tabbedFormsWrapper {
+    padding-bottom: 15px;
+	margin: 0 15%;
+    border-radius: 4px;
+	background-color: #E6E6E6;
+}
+
+#tabbedFormsWrapper .nav-tabs {
+	margin: auto;
+}
+
+#tabbedFormsWrapper .tab-content {
+	
+}
+
+.login-reg-tabs {
+    background-color: rgba(36, 36, 36, 0.93);
+	border-radius: 4px 4px 0 0;
+}
+
+#tabbedFormsWrapper > ul > li > a {
+    border-bottom: 1px solid #242424;
 }
