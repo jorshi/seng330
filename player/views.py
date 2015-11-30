@@ -164,8 +164,9 @@ def _create_game(request, player):
     # TODO: anything else?
     currentRoom = Room.objects.get(name='start')
     gamestate.current_room = currentRoom
-    gamestate.add_room(currentRoom)
+    # Save gamestate first
     gamestate.save()
+    gamestate.add_room(currentRoom)
     return _terminal(request, gamestate)
 
 def qunit_tests(request):
