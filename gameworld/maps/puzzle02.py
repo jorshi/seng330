@@ -2,7 +2,7 @@ import gameworld.management.commands.mapbuilder as mapbuilder
 
 def main():
     m = mapbuilder.MapBuilder()
-    mapbuilder.clean_map()
+    #mapbuilder.clean_map()
 
 
     # Make rooms
@@ -37,8 +37,8 @@ def main():
 
     item = m.addItem('start', 'Matches', True)
     item.addState(0, False, "Match short description 1", "Examine matches 1")
-    item.addItemUse(0, use_pattern="(strike|light|use) (a match|matches)")
+    item.addItemUse(0, pickup=True, use_pattern="(strike|light|use) (a match|matches)", use_message="")
 
     key = m.addItem('start', 'Tarnished Key', True)
     key.addState(0, False, "Tarnished Key", "You found a tarnished key")
-    m.addKeyUse(itemState, doorA)
+    #m.addKeyUse(itemState, doorA)

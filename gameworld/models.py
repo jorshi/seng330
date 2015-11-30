@@ -130,6 +130,14 @@ class UseDecoration(AbstractUseItem):
     def __unicode__(self):
         return u'use %s' % (self.item_use_state.item)
 
+class UseKey(AbstractUseItem):
+    """ Usage pattern for a key """
+
+    on_door = models.ForeignKey("Door")
+
+    def __unicode__(self):
+        return u"key: opens %s" % self.on_door
+
 
 class Door(FixedItem):
     """ Door object """
