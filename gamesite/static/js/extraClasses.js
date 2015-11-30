@@ -14,6 +14,23 @@ var Room = function(beginDescription, endDescription) {
 	this.updateDescription = function() {
 		this.description = beginDescription;
 		for (i = 0; i < this.itemsInRoom.length; i++){
+
+			//PLEASE FORGIVE THE FOLLOWING CODE
+			if (this.itemsInRoom[i].enterRoomDescription == "there is a door on the south wall, " && player.currentRoom != room1){
+				this.itemsInRoom[i].enterRoomDescription = "there is a door on the north wall, "
+			}
+
+			if (this.itemsInRoom[i].enterRoomDescription == "there is a door on the west wall, " && player.currentRoom == room2){
+				this.itemsInRoom[i].enterRoomDescription = "there is a door on the east wall, "
+			}
+			if (this.itemsInRoom[i].enterRoomDescription == "there is a door on the north wall, " && player.currentRoom == room1){
+				this.itemsInRoom[i].enterRoomDescription = "there is a door on the south wall, "
+			}
+
+			if (this.itemsInRoom[i].enterRoomDescription == "there is a door on the east wall, " && player.currentRoom == room3){
+				this.itemsInRoom[i].enterRoomDescription = "there is a door on the west wall, "
+			}
+			
 			this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription);
 		}
 		this.description = this.description.concat(endDescription);
