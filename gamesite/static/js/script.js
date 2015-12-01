@@ -34,22 +34,20 @@ $(document).ready(function()  {
 
         function addItemsToRoom(data){
             roomItemArray = [];
+
             for(i = 0; i < data.items.length; i++){
                 jsitem = data.items[i];
-                if (jsitem.type == "fixedAndUsable"){
 
-                    if (jsitem.useCases != null){
-                       tempRegex = new RegExp(jsitem.useCases.usePattern);
+                //TEMPORARY WORKAROUND, let's painting be picked up
+                if (jsitem.type == "fixedAndUsable" && jsitem.name == "painting"){
+                       tempRegex = new RegExp(jsitem.useCases[0].usePattern);
+
+                        tempItem = new NonPickupableAndUsable(jsitem.name, [jsitem.examineDescription], [jsitem.enterRoomDescription], [jsitem.useCases[0].useMessage], [tempRegex], 1);
+                        room.itemsInRoom.push(tempItem);
                     }
-
                     //Will need to loop through this
-                    tempItem = new NonPickupableAndUsable(jsitem.name, [jsitem.examineDescription], [jsitem.enterRoomDescription], [jsitem.useCases[0].useMessage], [tempRegex], 1);
-                    room.itemsInRoom.push(tempItem);
                 }
             }
-
-        }
- 
         /*rooms*//*
         room1 = new Room("Room 1: ", "end");
         room2 = new Room("Room 2: ", "end");

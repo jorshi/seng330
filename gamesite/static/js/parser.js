@@ -98,7 +98,6 @@ function Parser(player) {
 		if (notInInventory(itemToCheck)) return true;
 		/*the item can be used so display use message*/
 		
-		console.log(itemToCheck);
 		displayResponse(itemToCheck.useMessage);
 		//gameState(s);
 		return true;
