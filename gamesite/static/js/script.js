@@ -3,27 +3,52 @@ $(document).ready(function()  {
         // Game Manager class will handle requests to the
         // backend and loading room / inventory / among
         // other fuctionality relate to server communication
-        gameManager = new GameManager();
-        gameManager.load_current_room();
+        //gameManager = new GameManager();
+        //gameManager.load_current_room();
 
         /*TODO: call an update_room function*/
         $.get('/get_current_room/', function(data) {
                 console.log(data);
-                console.log(data[0].fields.title);
-                console.log(data[0].pk);
-                room = new Room(data[0].fields.desc_header, data[0].fields.desc_footer);
+                room = new Room(data.desc_header, data.desc_footer);
  
                 //TODO make doors added to room on creation
  
                 playerInventory = new Inventory();
                 player = new Player(room, playerInventory);
  
-                parser = new Parser(player);
+
  
+                addItemsToRoom(data);
+
+                parser = new Parser(player);
                 player.currentRoom.updateDescription();
+                
                 displayResponse("How would you like to proceed?");
                 $("#pinnedText").html(player.currentRoom.description);
+
+                
+
+
         });
+
+
+        function addItemsToRoom(data){
+            roomItemArray = [];
+            for(i = 0; i < data.items.length; i++){
+                jsitem = data.items[i];
+                if (jsitem.type == "fixedAndUsable"){
+
+                    if (jsitem.useCases != null){
+                       tempRegex = new RegExp(jsitem.useCases.usePattern);
+                    }
+
+                    //Will need to loop through this
+                    tempItem = new NonPickupableAndUsable(jsitem.name, [jsitem.examineDescription], [jsitem.enterRoomDescription], [jsitem.useCases[0].useMessage], [tempRegex], 1);
+                    room.itemsInRoom.push(tempItem);
+                }
+            }
+
+        }
  
         /*rooms*//*
         room1 = new Room("Room 1: ", "end");

@@ -12,7 +12,7 @@ pattUseOnDoor = /^\s*(use)\s+(\w+)\s+(on|with)\s+(east|west|south|north)\s+door\
 pattGoThrough = /^\s*(go through|enter|use|open)\s+(east|west|south|north)\s+door\s*$/i;
 pattFindDoor = /^\s*(north|south|east|west)\s+/i;
 /*Patterns for use Items*/
-pattGenericUse = /^\s*(use|fire|shoot|open|extinguish|stamp\s+out|put\s+out)\s+(\w+)\s*$/i;
+pattGenericUse = /^\s*(use|fire|shoot|open|extinguish|stamp\s+out|put\s+out|look\s+behind|lift)\s+(\w+)\s*$/i;
 pattUseItem = /^\s*(use)\s+(\w+)\s*$/i; /*Generic*/
 pattShootItem = /^\s*(use|fire|shoot)\s+(\w+)\s*$/i; /*shootable*/
 pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; /*openable*/
@@ -97,9 +97,10 @@ function Parser(player) {
 		/*case 4: item is useable but is not in your inventory*/
 		if (notInInventory(itemToCheck)) return true;
 		/*the item can be used so display use message*/
-	
+		
+		console.log(itemToCheck);
 		displayResponse(itemToCheck.useMessage);
-		gameState(s);
+		//gameState(s);
 		return true;
 	}
 
