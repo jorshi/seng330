@@ -32,7 +32,7 @@
     <div id="terminalText">
     </div>
     <form id="commandForm" role="form" class="input-group">
-        <input id="commandUserInput" class="form-control" type="text" name="command" /> 
+        <input id="commandUserInput" class="form-control" type="text" name="command" autocomplete="off" />
 		<span class="input-group-btn">
 			<input id="commandButton" class="btn btn-default" type="submit" value="enter" />
 		</span>
@@ -60,7 +60,7 @@
 {% block scripts %}
     {{ block.super }}
     <script src="http://malsup.github.com/jquery.form.js"></script>
-    
+
 <!--    <script language="javascript" type="text/javascript" src="{% static 'js/parsertest.js' %}"></script>-->
     <script language="javascript" type="text/javascript" src="{% static 'js/item.js' %}"></script>
     <script language="javascript" type="text/javascript" src="{% static 'js/extraClasses.js' %}"></script>
