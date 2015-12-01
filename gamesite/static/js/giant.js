@@ -8,6 +8,7 @@ function GameManager()  {
 	// doors, etc.
 	this.getRoom = function()  {
 		$.get('/get_current_room/', function(data) {
+			console.log(data)
 			manager.currentRoom = data;
 			manager.roomItems = data.items;
 			
@@ -243,6 +244,3 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-
-	

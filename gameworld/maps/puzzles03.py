@@ -16,14 +16,14 @@ def main():
 
 
     # Add items
-    window = m.addItem('start', 'window', fixed=True).addState(
+    window = m.addItem('start', 'window', pickupable=False).addState(
         shortdesc='There is a window to the South.', examine="The window faces South, It's dirty, and cracked, but you can look through it easily enough. The sun is setting over the forest below.")
     
-    painting = m.addItem('start', 'painting', fixed=True).addState(
+    painting = m.addItem('start', 'painting', pickupable=False).addState(
         0, shortdesc="There's a painting on the North Wall.", examine="The painting hangs crookedly and is extremely ugly, the colors are mottled and grotesque. You can't even understand the actual forms on the canvas. The left side of the frame is a quarter-inch away from the wall, but the right side is flush with it.")
     
     # TODO add "use painting"
-    key = m.addItem('start', 'key', fixed=False).addState(
+    key = m.addItem('start', 'key', pickupable=True).addState(
         0, hidden=True
         ).addState(
         1, shortdesc="There's a key taped to the back of the painting.", examine="It's small and worn.", hidden=False)
