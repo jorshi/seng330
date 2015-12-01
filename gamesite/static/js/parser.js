@@ -203,7 +203,7 @@ function Parser(player) {
 	}
 
 	cantBePickedUp = function(item) {
-		if (item instanceof NonPickupable) {
+		if (item instanceof NonPickupable || item instanceof Door) {
 			displayResponse("You can not pick up the " + item.name);
 			return true;
 		}
