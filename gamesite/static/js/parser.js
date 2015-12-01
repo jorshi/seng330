@@ -100,8 +100,12 @@ function Parser(player) {
 		if (notInInventory(itemToCheck)) return true;
 		/*the item can be used so display use message*/
 	
+
+		updateRoomDescription();
+		$("#pinnedText").html(player.currentRoom.description);
 		displayResponse(itemToCheck.useMessage);
 		gameState(s);
+
 		return true;
 	}
 
@@ -129,6 +133,8 @@ function Parser(player) {
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name);
 		gameState(s);
+		updateRoomDescription();
+		$("#pinnedText").html(player.currentRoom.description);
 		return true;
 	}
 

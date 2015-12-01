@@ -29,9 +29,11 @@ function gameState(s) {
 		}
 		firePlace.stateChange(2);
 		displayResponse("You light the fireplace");
+		player.currentRoom.updateDescription();
 	}	
 	if (pattState5Change.exec(s)) {
 		firePlace.stateChange(1);
 		displayResponse("You put out the fireplace");
+		player.currentRoom.updateDescription();
 	}	
 }
