@@ -97,7 +97,11 @@ function Parser(player) {
 		/*case 4: item is useable but is not in your inventory*/
 		if (notInInventory(itemToCheck)) return true;
 		/*the item can be used so display use message*/
+<<<<<<< HEAD
 	
+=======
+		
+>>>>>>> Painting can be lifted, temporary workaround
 		displayResponse(itemToCheck.useMessage);
 		gameState(s);
 		return true;

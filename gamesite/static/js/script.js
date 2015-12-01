@@ -24,7 +24,28 @@ $(document).ready(function()  {
                 displayResponse("How would you like to proceed?");
                 $("#pinnedText").html(player.currentRoom.description);
         });
+<<<<<<< HEAD
  
+=======
+
+
+        function addItemsToRoom(data){
+            roomItemArray = [];
+
+            for(i = 0; i < data.items.length; i++){
+                jsitem = data.items[i];
+
+                //TEMPORARY WORKAROUND, let's painting be picked up
+                if (jsitem.type == "fixedAndUsable" && jsitem.name == "painting"){
+                       tempRegex = new RegExp(jsitem.useCases[0].usePattern);
+
+                        tempItem = new NonPickupableAndUsable(jsitem.name, [jsitem.examineDescription], [jsitem.enterRoomDescription], [jsitem.useCases[0].useMessage], [tempRegex], 1);
+                        room.itemsInRoom.push(tempItem);
+                    }
+                    //Will need to loop through this
+                }
+            }
+>>>>>>> Painting can be lifted, temporary workaround
         /*rooms*//*
         room1 = new Room("Room 1: ", "end");
         room2 = new Room("Room 2: ", "end");
