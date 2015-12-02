@@ -34,8 +34,9 @@ class FixedItem(models.Model):
         state.save()
         return self
     
-    # TODO make on_item be the pk, not the name
     def addItemUse(self, state, pickup, use_pattern, use_message, consumed=False, on_item=None, change_self=None, change_other=None):
+        #  TODO this makes UseKey()s too?
+    
         if pickup:
             itemUse = UsePickupableItem()
             itemUse.consumed = consumed
@@ -51,10 +52,11 @@ class FixedItem(models.Model):
             return
         
         itemUse.use_message = use_message
-        fpatt = use_pattern.replace("NAME", self.name)
+        #fpatt = use_pattern.replace("NAME", self.name)
+        fpatt = use_pattern.replace("NAME", "\w+")
         if on_item:
             try:
-                other = FixedItem.objects.get(name=on_item)
+                other = FixedItem.objects.get(pk=on_item.pk)
                 itemUse.on_item = other
                 if change_other:
                     try:
@@ -66,10 +68,26 @@ class FixedItem(models.Model):
                 print("Error: on_item %s doesn't exist or is ambiguous" % (on_item,))
                 return
             
-            fpatt = fpatt.replace("OTHER", on_item)
+            #fpatt = fpatt.replace("OTHER", on_item.name)
+            fpatt = fpatt.replace("OTHER", "\w+")
         itemUse.use_pattern = "^\s*" + "\s+".join(fpatt.split()) + "\s*$"
         
         itemUse.save()
+    
+    def addKeyUse(self, state, on_door, use_message="", use_pattern=""):
+        """ Usage for keys """
+
+        keyUse = UseKey()
+        try:
+            keyUse.item_use_state = self.states.get(state=state)
+        except:
+            print("Error trying to add key use: state %s doesn't exist" % (state,))
+            return
+        keyUse.on_door = on_door
+        keyUse.use_message = use_message
+        # TODO regex parsing
+        keyUse.use_pattern = use_pattern
+        keyUse.save()
         
     def __unicode__(self):
         return self.name
@@ -149,7 +167,7 @@ class Door(FixedItem):
 
     def shortdesc(self, this_room):
         """ Returns a string describing the door's position """
-        
+        pass
         
     def examine(self, this_room):
         """ Returns a string hinting at the next room """
@@ -164,7 +182,7 @@ class Door(FixedItem):
             return failure
 
     def other_room(self, this_room):
-        """ Returns pk of the other room """
+        """ Returns name of the other room """
         if this_room == self.room_a:
             return self.room_b
         elif this_room == self.room_b:

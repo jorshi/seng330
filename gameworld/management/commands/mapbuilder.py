@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 import importlib
 from django.core import serializers
-from gameworld.models import Room, Door, FixedItem, ItemUseState, UsePickupableItem, UseDecoration, UseKey
+from gameworld.models import Room, Door, FixedItem, ItemUseState, AbstractUseItem, UsePickupableItem, UseDecoration, UseKey
 
 JSON_MAP_PATH = 'gameworld/maps/'
 
@@ -47,7 +47,7 @@ class MapBuilder(object):
                  desc="You are in a dim room.", desc2=""):
 
         try:
-            room = Room.objects.get(name=name)
+            room = Room.objects.get(name)
             print("Warning: %s already exists... overwriting" % name)
         except:
             room = Room()
@@ -72,13 +72,11 @@ class MapBuilder(object):
         item = FixedItem()
 
         # check if item already exists in the room
-        # since FixedItem is parent class of Item, it holds both
         samename = FixedItem.objects.filter(name=name)
         for match in samename:
             if r in match.found_in.all():
                 print("Warning: %s already exists in room %s... overwriting"
                 % (name, room))
-                # don't assign item = match bc the type won't be modified
                 # delete so duplicates don't show up
                 match.delete()
         item.name = name
@@ -93,16 +91,6 @@ class MapBuilder(object):
 
 
 
-    def addKeyUse(self, item_use_state, on_door, use_message="", use_pattern=""):
-        """ Usage for keys """
-
-        keyUse = UseKey()
-        keyUse.item_use_state = item_use_state
-        keyUse.on_door = on_door
-        keyUse.use_message = use_message
-        keyUse.use_pattern = use_pattern
-        keyUse.save()
-
 
 def clean_map():
     """ clear everything in gameworld """
@@ -110,9 +98,10 @@ def clean_map():
     Door.objects.all().delete()
     FixedItem.objects.all().delete()
     ItemUseState.objects.all().delete()
-    UsePickupableItem.objects.all().delete()
-    UseDecoration.objects.all().delete()
-    UseKey.objects.all().delete()
+    AbstractUseItem.objects.all().delete()
+    #UsePickupableItem.objects.all().delete()
+    #UseDecoration.objects.all().delete()
+    #UseKey.objects.all().delete()
 
 
 def save_map(module_name):
@@ -121,6 +110,7 @@ def save_map(module_name):
                 + list(Door.objects.all()) \
                 + list(FixedItem.objects.all()) \
                 + list(ItemUseState.objects.all()) \
+                + list(AbstractUseItem.objects.all()) \
                 + list(UsePickupableItem.objects.all()) \
                 + list(UseDecoration.objects.all()) \
                 + list(UseKey.objects.all())

@@ -155,8 +155,13 @@ def get_current_room(request):
 
     # Get the room state for the players current room
     room_state = game.roomstate_set.get(room=game.current_room)
+    response = {}
+    response["room"] = room_state.json()  #TODO add doors
     
-    return JsonResponse(room_state.json())
+    # get the player's inventory
+    response["inventory"] = [item.json() for item in game.inventory.all()]
+    
+    return JsonResponse(response)
 
 @login_required
 def post_player_action(request):
@@ -168,3 +173,17 @@ def post_player_action(request):
         # TODO lookup the action performed & update the gamestate db
 
     return JsonResponse({})
+
+@login_required
+def post_change_room(request):
+
+    player = Player.objects.get(user=request.user)
+    game = player.gamestate
+    if request.method == 'POST':
+        room_name = request.POST['room']
+        room = Room.objects.get(name=room_name)
+        game.add_room(room)
+        game.current_room = room
+        game.save()
+        
+    return get_current_room(request)

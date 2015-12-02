@@ -19,7 +19,7 @@ class GameState(models.Model):
         Add a room state if this is the
         first time the player has entered this room.
         """
-        #self.current_room = room
+        print("adding %s for %s" % (room, self.player))
         
         # TODO this could probably be more Django-like
         visited = RoomState.objects.filter(game_state=self)
@@ -40,7 +40,8 @@ class GameState(models.Model):
             # Add all doors as DoorStates for this room - unless they have already been added
             # by another room that has been visited
             for door in Door.objects.filter(models.Q(room_a=room) | models.Q(room_b=room)):
-                if not DoorState.objects.filter(door=door).count():
+                #if not DoorState.objects.filter(door=door).count():
+                if not self.doorstate_set.filter(door=door).exists():
                     doorState = DoorState()
                     doorState.game_state = self
                     doorState.door = door
@@ -65,13 +66,10 @@ class DoorState(models.Model):
     room_a = models.ForeignKey('gameworld.Room', related_name='unlocked_a')
     room_b = models.ForeignKey('gameworld.Room', related_name='unlocked_b')
 
-    # TODO still needs a lot of work
     def json(self, room):
         obj = { 
             'locked': self.locked,
-            'next_room': self.door.other_room(room),
-            'shortdesc': None, # todo 'a door to the [dir]'
-            'examine': self.door.desc(room)
+            'next_room': self.door.other_room(room).name
         }
         return obj
         
@@ -96,17 +94,17 @@ class RoomState(models.Model):
         items = self.itemstate_set.all()
         obj['items'] = [item.json() for item in items if not item.item.hidden]
         
+        dirs = ['north', 'south', 'east', 'west']
         
+        obj['doors'] = {}
+        for dir in dirs:
+            try:
+                door = self.game_state.doorstate_set.get(door=self.room.get_door(dir))
+                obj['doors'][dir] = door.json(self.room)
+            except:
+                obj['doors'][dir] = None
+            
         
-        # this is awful please fix it-
-        # obj['doors'] = { 
-            # 'north': DoorState.objects.filter(
-                # game_state = self.game_state
-                # ).get(
-                # door = self.room.door_north
-                # ).json(self.room),
-            # # etc.
-        # }
         return obj
 
     def __unicode__(self):
@@ -125,6 +123,7 @@ class ItemState(models.Model):
             'examineDescription': self.item.examine,
             'enterRoomDescription': self.item.short_desc
         }
+        # todo quick-fix for frontend spec
         obj['type'] = "pickupableAndUsable" if self.item.item.pickupable else "fixedAndUsable"
         
         usecases1 = self.item.abstractuseitem_action.all() 
@@ -135,6 +134,8 @@ class ItemState(models.Model):
                 'usePattern': usecase.use_pattern,
                 'useMessage': usecase.use_message
             } for usecase in usecases1]
+        if not obj['useCases'] and not self.item.item.pickupable:
+            obj['type'] = 'decoration'
         
         return obj
 
