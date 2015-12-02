@@ -7,7 +7,8 @@ var Item = function(name, description, enterRoomDescription) {
 	/*adds a new item into the room array when the item is created*/
 }
 
-var Pickupable = function(name, description, enterRoomDescription) {
+var Pickupable = function(name, description, enterRoomDescription, inInv) {
+	this.inInv = inInv;
 	Item.call(this, name, description, enterRoomDescription);
 }
 
@@ -18,10 +19,9 @@ var NonPickupable = function(name, description, enterRoomDescription) {
 /*this item can be picked up and used if it is picked up, it's usePattern is just a regular
 expression that is matched for the items use command.  it's needed so different items can
 be used by typing different verbs.*/
-var PickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, state) {
-	Pickupable.call(this, name, description[state-1], enterRoomDescription[state-1]);
+var PickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, inInv, state) {
+	Pickupable.call(this, name, description[state-1], enterRoomDescription[state-1], inInv);
 	this.usePattern = usePattern[state-1];
-	this.inInv = false;
 	this.useMessage = useMessage[state-1];
 
 	this.stateChange = function(newState) {
@@ -32,9 +32,15 @@ var PickupableAndUsable = function(name, description, enterRoomDescription, useM
 	}
 }
 
+var PickupableAndUsable = function(name, description, enterRoomDescription, inInv) {
+	Pickupable.call(this, name, description, enterRoomDescription, inInv);
+	
+}
+
+
 
 /* TODO: create a key Item (for special error messages when trying to unlock a door with the wrong key)*/
-var Key = function(name, description, enterRoomDescription) {
+var Key = function(name, description, enterRoomDescription, doorToOpen) {
 	regx = /^\s*(use)\s+(\w+)\s*$/i;
 	PickupableAndUsable.call(this, name, [description], [enterRoomDescription], ["You need to use it on something."], [regx], 1);
 }
