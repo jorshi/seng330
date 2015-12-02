@@ -100,11 +100,11 @@ function Parser(player) {
 		if (notInInventory(itemToCheck)) return true;
 		/*the item can be used so display use message*/
 	
-
+		gameState(s);
 		updateRoomDescription();
 		$("#pinnedText").html(player.currentRoom.description);
 		displayResponse(itemToCheck.useMessage);
-		gameState(s);
+
 
 		return true;
 	}
