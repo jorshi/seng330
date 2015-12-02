@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -7,7 +8,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="">
+    <link rel="icon" href="{% static 'images/unlock-512.png' %}">
 
     <title>Room Escape</title>
 
@@ -16,7 +17,7 @@
     <script src="http://code.jquery.com/qunit/qunit-1.20.0.js"></script>
 
     <!-- Bootstrap core CSS -->
-    {% load staticfiles %}
+
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- Custom styles -->
@@ -41,7 +42,13 @@
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header page-scroll">
+
                     <a class="navbar-brand" href="/">Room Escape</a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -52,14 +59,14 @@
                                 {{ request.user.username }}
                             </li>
                             <li class="page-scroll">
-                                <a href="{% url 'logout' %}">Logout</a>
+                                <a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                             </li>
                         {% else %}
                             <li class="page-scroll">
-                                <a href="{% url 'login' %}">Login</a>
+                                <a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Register</a>
                             </li>
                             <li class="page-scroll">
-                                <a href="{% url 'register' %}">Register</a>
+                                <a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a>
                             </li>
                         {% endif %}
                     {% endblock %}
