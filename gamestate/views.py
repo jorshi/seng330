@@ -8,8 +8,8 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from player.models import Player
-from gamestate.models import GameState, RoomState, ItemState, DoorState
-from gameworld.models import Room, ItemUseState, UseDecoration, AbstractUseItem, UseKey
+from gamestate.models import ItemState
+#from gameworld.models import Room, ItemUseState, UseDecoration, AbstractUseItem, UseKey
 
 @login_required
 def get_current_room(request):
@@ -49,5 +49,22 @@ def post_change_room(request):
         room_state = game.add_room(room_name)
         game.current_room = room_state
         game.save()
+        
+    return get_current_room(request)
+    
+@login_required
+def post_take_item(request):
+    player = Player.objects.get(user=request.user)
+    game = player.gamestate
+    if request.method == 'POST':
+        item_name = request.POST['name']
+        try:
+            item = game.current_room.itemstate_set.get(item__name=item_name)
+        except ItemState.DoesNotExist:
+            return get_current_room(request)  # add error response?
+        if item.item.pickupable:  # check if it can be picked up
+            game.inventory.add(item)
+            game.current_room.itemstate_set.remove(item)
+            # add() and remove() autoupdate the database - no need to call save()
         
     return get_current_room(request)

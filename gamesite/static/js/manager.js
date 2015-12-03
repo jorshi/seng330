@@ -6,17 +6,25 @@ function GameManager()  {
 	
 	// returns a room object with description fields, room contents,
 	// doors, etc.
+	// called on page load
 	this.getRoom = function()  {
 		$.get('/get_current_room/', function(data) {
-			console.log(data)
 			manager.updateSelf(data);
 			manager.printRoom();
-			manager.updateTitle();
+			manager.printTitle();
 			
-			parser.addRoomItems(manager.roomItems); // TODO also inventory items
+			//parser.addItemUses(manager.roomItems.concat(manager.inventory));
 			
 			$("#commandUserInput").focus();
 		}, "json");
+	}
+	
+	// TODO call this
+	this.updateRoom = function(data)  {
+		this.updateSelf(data);
+		this.printRoom();
+		this.printTitle();
+		$("#commandUserInput").focus();
 	}
 	
 	this.updateSelf = function(data)  {
@@ -24,13 +32,12 @@ function GameManager()  {
 		this.roomItems = this.currentRoom.items;
 		this.roomDoors = this.currentRoom.doors;
 		this.inventory = data.inventory;
-		
+		parser.addItemUses(this.roomItems.concat(this.inventory));
 	}
 	
 	// print the room description & its contents to the terminal
 	this.printRoom = function()  {
 		var room = this.currentRoom;
-		// TODO if it's not illuminated, the player can't see anything
 	
 		// TODO make special functions to list the items
 		displayResponse(room.desc_header);
@@ -40,17 +47,20 @@ function GameManager()  {
 		displayResponse(room.desc_footer);
 	}
 	
-	this.updateTitle = function()  {
+	this.printTitle = function()  {
 		$("#pinnedText").html(this.currentRoom.title);
-
 	}
 
+	
+	// API functions
+	
 	this.postChangeRoom = function(data)  {
 		$.post('/post_change_room/', data, function(serverdata)  {
+			// todo 
 			manager.updateSelf(serverdata);
 			
 			manager.printRoom();
-			manager.updateTitle();
+			manager.printTitle();
 		}, 'json');
 	}
 	// tells the backend the player used an item
@@ -64,4 +74,10 @@ function GameManager()  {
 		// (these all should be pushed here)
 	}
 	
+	this.postTakeItem = function(data)  {
+		$.post('/post_take_item/', data, function(serverdata)  {
+			manager.updateSelf(serverdata);
+			displayInventory(null);
+		}, 'json');
+	}
 }

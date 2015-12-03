@@ -9,13 +9,13 @@ function Parser()  {
 	},
 	{
 		name: "go",
-		patt: /^\s*(go|move|walk)\s+(east|west|south|north)\s*$/,
+		patt: /^\s*(go|move|walk)?\s+(east|west|south|north)\s*$/,
 		ind: 2,
 		func: goThroughDoor
 	},
 	{
 		name: "go through",
-		patt: /^\s*(go\s*through|enter|use|open)\s+(east|west|south|north)\s+door\s*$/,
+		patt: /^\s*(go\s+through|enter|use|open)\s+(east|west|south|north)\s+door\s*$/,
 		ind: 2,
 		func: goThroughDoor
 	},
@@ -48,16 +48,15 @@ function Parser()  {
 			f(value);
 			return;
 		}
-		// TODO check roomItemPatterns
-		// (calls postPlayerAction with the reference number
-		// and prints out message)
+		
+		// iterate again b/c of slightly different function behaviour
 		pattList = this.roomItemPatterns;
 		for (i = 0; i < pattList.length; i++)  {
 			var match = pattList[i].patt.exec(s);
 			if (match == null)  continue;
+			// execute action & tell server
 			displayResponse(pattList[i].message);
 			manager.postPlayerAction({
-				name: pattList[i].name,
 				ref: pattList[i].ref
 				});
 			return;
@@ -69,8 +68,8 @@ function Parser()  {
 	//var patt = new RegExp("string", "i"); // returns /string/i
 	
 	// patterns from server will be added
-	this.addRoomItems = function(items)  {
-		this.roomItemPatterns = [];
+	this.addItemUses = function(items)  {
+		this.roomItemPatterns = [];  // clear patterns whenever room is updated
 		
 		for (i = 0; i < items.length; i++)  {
 			for (j = 0; j < items[i].useCases.length; j++)  {
@@ -110,12 +109,27 @@ function takeItem(item)  {
 	// "There isn't any [item] here."
 	// "You physically can't pick the [item] up, but you can examine it."
 	// "You take the [item]."
-	displayResponse("You try to take the " + item + ".");
+	var items = manager.roomItems;
+	for (i = 0; i < items.length; i++)  {
+		if (item == items[i].name.toLowerCase())  {
+			if (item.type == "pickupableAndUsable")  {
+				displayResponse("You take the " + item + ".");
+				manager.postTakeItem({ "name": item });
+			}
+			else  {
+				displayResponse("You can't physically pick the " + item 
+					+ " up, but you can examine it.");
+			}
+			return;
+		}
+	}
+	
+	displayResponse("There isn't any " + item + " here.");
 }
 
 function examineItem(item)  {
 	// TODO: check room items AND inventory
-	var items = manager.currentRoom.items;
+	var items = manager.roomItems.concat(manager.inventory);
 	for (i = 0; i < items.length; i++)  {
 		if (item == items[i].name.toLowerCase())  {
 			displayResponse(items[i].examineDescription);
@@ -125,6 +139,15 @@ function examineItem(item)  {
 	displayResponse("What " + item + "?");
 }
 
-function displayInventory(data)  {
+function displayInventory(data)  {  // dummy parameter
 	var inventory = manager.inventory;
+	if (inventory.length > 0)  {
+		displayResponse("You have:");
+		for (i = 0; i < inventory.length; i++)  {
+			displayResponse(" * " + inventory[i].enterRoomDescription);
+		}
+	}
+	else  {
+		displayResponse("Your inventory is empty.");
+	}
 }

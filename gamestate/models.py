@@ -104,6 +104,8 @@ class RoomState(models.Model):
     illuminated = models.BooleanField()         # Currently illuminated?
 
     def json(self):
+        # TODO if not illuminated...
+    
         obj = { 
             'title': self.room.title,
             'desc_header': self.room.desc_header,

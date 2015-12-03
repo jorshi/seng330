@@ -21,7 +21,7 @@ $("#commandForm").submit(function(event)  {
  // Function called upon submit button being pressed
 function parse() {
 	//clear form after submitting text
-	var enteredCommand = commandForm.command.value;
+	var enteredCommand = commandForm.command.value.trim();
 	$("#commandUserInput").val('');
 
 	if (enteredCommand != "")  {
