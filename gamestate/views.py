@@ -59,12 +59,16 @@ def post_take_item(request):
     if request.method == 'POST':
         item_name = request.POST['name']
         try:
-            item = game.current_room.itemstate_set.get(item__name=item_name)
+            theitem = game.current_room.itemstate_set.get(item__item__name=item_name)
         except ItemState.DoesNotExist:
             return get_current_room(request)  # add error response?
-        if item.item.pickupable:  # check if it can be picked up
-            game.inventory.add(item)
-            game.current_room.itemstate_set.remove(item)
-            # add() and remove() autoupdate the database - no need to call save()
+        # check if it can be picked up
+        # FixedItem (wrapped in ItemUseState, wrapped in ItemState)
+        if theitem.item.item.pickupable:  
+            print("moving %s to inventory" % item_name)
+            game.inventory.add(theitem.item)  # ItemUseState (wrapped in ItemState)
+            # delete the wrapper ItemState
+            theitem.delete()
+            # add() and delete() autoupdate the database - no need to call save()
         
     return get_current_room(request)

@@ -112,7 +112,7 @@ function takeItem(item)  {
 	var items = manager.roomItems;
 	for (i = 0; i < items.length; i++)  {
 		if (item == items[i].name.toLowerCase())  {
-			if (item.type == "pickupableAndUsable")  {
+			if (items[i].type == "pickupableAndUsable")  {
 				displayResponse("You take the " + item + ".");
 				manager.postTakeItem({ "name": item });
 			}
@@ -120,6 +120,13 @@ function takeItem(item)  {
 				displayResponse("You can't physically pick the " + item 
 					+ " up, but you can examine it.");
 			}
+			return;
+		}
+	}
+	items = manager.inventory;
+	for (i = 0; i < items.length; i++)  {
+		if (item == items[i].name.toLowerCase())  {
+			displayResponse("You're already holding the " + item + ".");
 			return;
 		}
 	}
@@ -144,7 +151,10 @@ function displayInventory(data)  {  // dummy parameter
 	if (inventory.length > 0)  {
 		displayResponse("You have:");
 		for (i = 0; i < inventory.length; i++)  {
-			displayResponse(" * " + inventory[i].enterRoomDescription);
+			var name = inventory[i].name;
+			var article = "aeio".indexOf(name.charAt(0)) >= 0 ? "an " : "a ";
+			article = name.charAt(0) == name.charAt(0).toUpperCase() ? "the " : article;
+			displayResponse(" * " + article + inventory[i].name);
 		}
 	}
 	else  {
