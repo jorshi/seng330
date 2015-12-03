@@ -53,7 +53,7 @@ class FixedItem(models.Model):
         
         itemUse.use_message = use_message
         #fpatt = use_pattern.replace("NAME", self.name)
-        fpatt = use_pattern.replace("NAME", "\w+")
+        fpatt = use_pattern.replace("NAME", "(.+)")
         if on_item:
             try:
                 other = FixedItem.objects.get(pk=on_item.pk)
@@ -69,7 +69,7 @@ class FixedItem(models.Model):
                 return
             
             #fpatt = fpatt.replace("OTHER", on_item.name)
-            fpatt = fpatt.replace("OTHER", "\w+")
+            fpatt = fpatt.replace("OTHER", "(.+)")
         itemUse.use_pattern = "^\s*" + "\s+".join(fpatt.split()) + "\s*$"
         
         itemUse.save()
