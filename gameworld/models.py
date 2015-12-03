@@ -108,6 +108,27 @@ class ItemUseState(models.Model):
     hidden = models.BooleanField(default=False)
     short_desc = models.CharField(max_length=30, default=None)
 
+    def json(self):
+        obj = {
+            'name': self.item.name,
+            'examineDescription': self.examine,
+            'enterRoomDescription': self.short_desc
+        }
+        # todo quick-fix for frontend spec
+        obj['type'] = "pickupableAndUsable" if self.item.pickupable else "fixedAndUsable"
+        
+        usecases1 = self.abstractuseitem_action.all() 
+        obj['useCases'] = [
+            {
+                'ref': usecase.pk,
+                'usePattern': usecase.use_pattern,
+                'useMessage': usecase.use_message
+            } for usecase in usecases1]
+        if not obj['useCases'] and not self.item.pickupable:
+            obj['type'] = 'decoration'
+        
+        return obj
+        
     def __unicode__(self):
         return u'%s(%s)' % (self.item, self.state)
 

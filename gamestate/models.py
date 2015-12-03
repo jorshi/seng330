@@ -2,28 +2,35 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from player.models import Player
 from gameworld.models import Room, Door, FixedItem
-import json
 
 
 class GameState(models.Model):
     """ Saves the state of player's current game """
 
     player = models.OneToOneField('player.Player', primary_key=True)
-    current_room = models.ForeignKey('gameworld.Room')
+
+    current_room = models.ForeignKey('gamestate.RoomState', null=True)
 
     # list of items the player has taken from rooms
-    inventory = models.ManyToManyField('gameworld.FixedItem')
+    inventory = models.ManyToManyField('gameworld.ItemUseState')
 
-    def add_room(self, room):
+    def add_room(self, room_name):
         """
         Add a room state if this is the
         first time the player has entered this room.
-        """
-        print("adding %s for %s" % (room, self.player))
         
-        # TODO this could probably be more Django-like
-        visited = RoomState.objects.filter(game_state=self)
-        if not room in [rm.room for rm in visited]:
+        Returns the RoomState.
+        """
+        
+        # TODO: error handling
+        room = Room.objects.get(name=room_name)
+        #print("adding %s for %s" % (room_name, self.player))
+        
+        try:
+            roomState = self.roomstate_set.get(room=room)
+            #print("%s already visited" % room_name)
+        except RoomState.DoesNotExist:
+            #print("%s not visited yet" % room_name)
             roomState = RoomState()
             roomState.game_state = self
             roomState.room = room
@@ -40,7 +47,6 @@ class GameState(models.Model):
             # Add all doors as DoorStates for this room - unless they have already been added
             # by another room that has been visited
             for door in Door.objects.filter(models.Q(room_a=room) | models.Q(room_b=room)):
-                #if not DoorState.objects.filter(door=door).count():
                 if not self.doorstate_set.filter(door=door).exists():
                     doorState = DoorState()
                     doorState.game_state = self
@@ -49,7 +55,20 @@ class GameState(models.Model):
                     doorState.room_a = door.room_a
                     doorState.room_b = door.room_b
                     doorState.save()
+        return roomState
 
+    def json(self):
+        """
+        Returns a serializable dictionary. 
+        room - the current room state
+        inventory - a list of the items in player's inventory
+        """
+        obj = {}
+        obj["room"] = self.current_room.json()
+        obj["inventory"] = [item.json() for item in self.inventory.all()]
+        return obj
+        
+    
     def __unicode__(self):
         return "%s.GameState" % self.player
 
@@ -101,7 +120,7 @@ class RoomState(models.Model):
             try:
                 door = self.game_state.doorstate_set.get(door=self.room.get_door(dir))
                 obj['doors'][dir] = door.json(self.room)
-            except:
+            except DoorState.DoesNotExist:
                 obj['doors'][dir] = None
             
         
@@ -118,26 +137,7 @@ class ItemState(models.Model):
     item = models.ForeignKey('gameworld.ItemUseState')     # Item reference
     
     def json(self):
-        obj = {
-            'name': self.item.item.name,
-            'examineDescription': self.item.examine,
-            'enterRoomDescription': self.item.short_desc
-        }
-        # todo quick-fix for frontend spec
-        obj['type'] = "pickupableAndUsable" if self.item.item.pickupable else "fixedAndUsable"
-        
-        usecases1 = self.item.abstractuseitem_action.all() 
-        #usecases2 = self.item.usepickupableitem_action.all()
-        obj['useCases'] = [
-            {
-                'ref': usecase.pk,
-                'usePattern': usecase.use_pattern,
-                'useMessage': usecase.use_message
-            } for usecase in usecases1]
-        if not obj['useCases'] and not self.item.item.pickupable:
-            obj['type'] = 'decoration'
-        
-        return obj
+        return self.item.json()
 
     def __unicode__(self):
         return u'%s.%s' % (self.room_state, self.item)
