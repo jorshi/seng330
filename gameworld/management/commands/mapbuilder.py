@@ -1,7 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
 import importlib
 from django.core import serializers
-from gameworld.models import Room, Door, FixedItem, ItemUseState, AbstractUseItem, UsePickupableItem, UseDecoration, UseKey
+from gameworld.models import Room, Door, FixedItem, ItemUseState, \
+AbstractUseItem, UsePickupableItem, UseDecoration, UseKey
+from gamestate.models import GameState
 
 JSON_MAP_PATH = 'gameworld/maps/'
 
@@ -102,6 +104,9 @@ def clean_map():
     #UsePickupableItem.objects.all().delete()
     #UseDecoration.objects.all().delete()
     #UseKey.objects.all().delete()
+    
+    # dev: clear all the save games
+    GameState.objects.all().delete()
 
 
 def save_map(module_name):
