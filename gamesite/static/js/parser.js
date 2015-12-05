@@ -2,21 +2,20 @@
 /* create key item and edge cases */
 
 /*Patterns*/
-pattTakeItem = /^\s*(get|grab|take|pick\s*up)\s+(\w+)\s*$/i;
-pattGo = /^\s*(go|move|walk)\s+(\w*)\s*$/i;
-pattExamine = /^\s*(examine|check|look at)\s+(\w*)\s*$/i;
-pattDrop = /^\s*(discard|drop|throw away|throw out)\s+(\w*)\s*$/i;
-pattUseOn = /^\s*(use)\s+(\w+)\s+(on|with)\s+(\w+)\s*$/i;
+pattTakeItem = /^\s*(get|grab|take|pick\s*up)\s+(.+)\s*$/i;
+pattGo = /^\s*(go|move|walk)\s+(\w+)\s*$/i;
+pattExamine = /^\s*(examine|check|look at)\s+(.+)\s*$/i;
+pattUseOn = /^\s*(use)\s+(\w+)\s+(on|with)\s+(.+)\s*$/i;
 pattUseOnDoor = /^\s*(use)\s+(\w+)\s+(on|with)\s+(east|west|south|north)\s+door\s*$/i;
 /*door related patterns*/
 pattGoThrough = /^\s*(go through|enter|use|open)\s+(east|west|south|north)\s+door\s*$/i;
 pattFindDoor = /^\s*(north|south|east|west)\s+/i;
 /*Patterns for use Items*/
-pattGenericUse = /^\s*(use|fire|shoot|open|extinguish|stamp\s+out|put\s+out|look\s+behind|lift)\s+(\w+)\s*$/i;
-pattUseItem = /^\s*(use)\s+(\w+)\s*$/i; /*Generic*/
-pattShootItem = /^\s*(use|fire|shoot)\s+(\w+)\s*$/i; /*shootable*/
-pattOpenItem = /^\s*(use|open)\s+(\w+)\s*$/i; /*openable*/
-pattUnlightItem = /^\s*(extinguish|stamp\s+out|put\s+out)\s+(\w+)\s*$/i; /*openable*/
+pattGenericUse = /^\s*(use|fire|shoot|open|extinguish|stamp\s+out|put\s+out|look\s+behind|lift)\s+(.+)\s*$/i;
+pattUseItem = /^\s*(use)\s+(.+)\s*$/i; /*Generic*/
+pattShootItem = /^\s*(use|fire|shoot)\s+(.+)\s*$/i; /*shootable*/
+pattOpenItem = /^\s*(use|open)\s+(.+)\s*$/i; /*openable*/
+pattUnlightItem = /^\s*(extinguish|stamp\s+out|put\s+out)\s+(.+)\s*$/i; /*openable*/
 
 
 /*Parser Class*/
@@ -25,7 +24,7 @@ function Parser(player) {
 	/*this.player = player;
 	Parser Method to check if a command is valid or not*/
 	this.check = function(s) {
-		//scroll down chat window
+			//scroll down chat window
 		$('#terminalText').scrollTop(1000000);
 
 		s = s.toLowerCase();
@@ -126,7 +125,7 @@ function Parser(player) {
 		if (useOnSelf(itemToUse,itemToGetUsedOn)) return true;
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name);
-		gameState(s);
+		//gameState(s);
 		return true;
 	}
 
@@ -156,7 +155,7 @@ function Parser(player) {
 		/*TODO: case 6: you try to use the wrong key on the wrong door*/
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the "+itemToUse.name+" on the "+doorDirection+" door");
-		gameState(s);
+		//gameState(s);
 		return true;
 	}
 
@@ -216,7 +215,6 @@ function Parser(player) {
 
 	wrongVerbInputed = function(item, verb, s) {
 		if (item.usePattern.exec(s) == null) {
-			alert(1);
 			displayResponse("You can not "+verb+" the " + item.name);
 			return true;
 		}

@@ -43,3 +43,4 @@ var Inventory = function() {
 		this.itemsInInventory.push(name);
 	}
 }
+

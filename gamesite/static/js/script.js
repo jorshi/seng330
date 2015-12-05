@@ -16,19 +16,13 @@ $(document).ready(function()  {
                 playerInventory = new Inventory();
                 player = new Player(room, playerInventory);
  
-
- 
                 addItemsToRoom(data);
 
                 parser = new Parser(player);
                 player.currentRoom.updateDescription();
                 
                 displayResponse("How would you like to proceed?");
-                $("#pinnedText").html(player.currentRoom.description);
-
-                
-
-
+                $("#pinnedText").html(player.currentRoom.description);        
         });
 
 
@@ -41,11 +35,11 @@ $(document).ready(function()  {
                 //TEMPORARY WORKAROUND, let's painting be picked up
                 if (jsitem.type == "fixedAndUsable" && jsitem.name != "window"){
                         tempRegex = new RegExp(jsitem.useCases[0].usePattern);
-                        tempItem = new NonPickupableAndUsable(jsitem.name, [jsitem.examineDescription], [jsitem.enterRoomDescription], [jsitem.useCases[0].useMessage], [tempRegex], 1);
+                        tempItem = new NonPickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex);
                         room.itemsInRoom.push(tempItem);
                     } else if (jsitem.type == "pickupableAndUsable") {
                         tempRegex = new RegExp(jsitem.useCases[0].usePattern);
-                        tempItem = new PickupableAndUsable(jsitem.name, [jsitem.examineDescription], [jsitem.enterRoomDescription], [jsitem.useCases[0].useMessage], [tempRegex], false, 1);
+                        tempItem = new PickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex, false);
                         room.itemsInRoom.push(tempItem);
                     } else if (jsitem.type == "fixedAndNonUsable") {
                         tempItem = new Decoration(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription);

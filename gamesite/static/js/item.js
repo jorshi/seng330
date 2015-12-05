@@ -3,7 +3,6 @@ var Item = function(name, description, enterRoomDescription) {
 	this.name = name;
 	this.description = description;
 	this.enterRoomDescription = enterRoomDescription;
-	this.hidden = false;
 	/*adds a new item into the room array when the item is created*/
 }
 
@@ -19,22 +18,24 @@ var NonPickupable = function(name, description, enterRoomDescription) {
 /*this item can be picked up and used if it is picked up, it's usePattern is just a regular
 expression that is matched for the items use command.  it's needed so different items can
 be used by typing different verbs.*/
-var PickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, inInv, state) {
-	Pickupable.call(this, name, description[state-1], enterRoomDescription[state-1], inInv);
-	this.usePattern = usePattern[state-1];
-	this.useMessage = useMessage[state-1];
+var PickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, inInv) {
+	Pickupable.call(this, name, description, enterRoomDescription, inInv);
+	this.usePattern = usePattern;
+	this.useMessage = useMessage;
 
-	this.stateChange = function(newState) {
-		this.usePattern = usePattern[newState-1];
-		this.useMessage = useMessage[newState-1];
-		this.description = description[newState-1];
-		this.enterRoomDescription = enterRoomDescription[newState-1];
+	this.newItemState = function(name, description, enterRoomDescription, useMessage, usePattern, inInv) {
+		this.name = name;
+		this.description = description;
+		this.enterRoomDescription = enterRoomDescription;
+		this.inInv = inInv;
+		this.usePattern = usePattern;
+		this.useMessage = useMessage;		
 	}
+
 }
 
-var PickupableAndUsable = function(name, description, enterRoomDescription, inInv) {
+var PickupableAndNonUseable = function(name, description, enterRoomDescription, inInv) {
 	Pickupable.call(this, name, description, enterRoomDescription, inInv);
-	
 }
 
 
@@ -42,21 +43,22 @@ var PickupableAndUsable = function(name, description, enterRoomDescription, inIn
 /* TODO: create a key Item (for special error messages when trying to unlock a door with the wrong key)*/
 var Key = function(name, description, enterRoomDescription, doorToOpen) {
 	regx = /^\s*(use)\s+(\w+)\s*$/i;
-	PickupableAndUsable.call(this, name, [description], [enterRoomDescription], ["You need to use it on something."], [regx], 1);
+	PickupableAndUsable.call(this, name, description, enterRoomDescription, "You need to use it on something.", regx, inInv);
 }
 /*this item cannot be picked up but it can be used, it's usePattern is just a regular
 expression that is matched for the items use command.  it's needed so different items can
 be used by typing different verbs.*/
-var NonPickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, state) {
-	NonPickupable.call(this, name, description[state-1], enterRoomDescription[state-1]);
-	this.usePattern = usePattern[state-1];
-	this.useMessage = useMessage[state-1];
+var NonPickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern) {
+	NonPickupable.call(this, name, description, enterRoomDescription);
+	this.usePattern = usePattern;
+	this.useMessage = useMessage;
 
-	this.stateChange = function(newState) {
-		this.usePattern = usePattern[newState-1];
-		this.useMessage = useMessage[newState-1];
-		this.description = description[newState-1];
-		this.enterRoomDescription = enterRoomDescription[newState-1];
+	this.newItemState = function(name, description, enterRoomDescription, useMessage, usePattern) {
+		this.name = name;
+		this.description = description;
+		this.enterRoomDescription = enterRoomDescription;
+		this.usePattern = usePattern;
+		this.useMessage = useMessage;		
 	}
 }
 
@@ -83,6 +85,9 @@ NonPickupable.prototype.constructor = NonPickupable;
 
 PickupableAndUsable.prototype = Object.create(Pickupable.prototype); 
 PickupableAndUsable.prototype.constructor = PickupableAndUsable; 
+
+PickupableAndNonUseable.prototype = Object.create(Pickupable.prototype); 
+PickupableAndNonUseable.prototype.constructor = PickupableAndNonUseable; 
 
 Key.prototype = Object.create(PickupableAndUsable.prototype); 
 Key.prototype.constructor = Key; 
