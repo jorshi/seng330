@@ -44,3 +44,25 @@ var Inventory = function() {
 	}
 }
 
+var MapNode = function(current, visited, x, y) {
+	this.current = current;
+	this.visited = visited;
+	this.unvisitedButKnown = unvisitedButKnown;
+	this.x = x;
+	this.y = y;
+}
+
+var Map = function() {
+	this.mapArray = [];
+
+	this.printMap = function() {
+		//$("#map").append("<TEXT>");
+		for (var i = 0; i < mapArray.length; i++) {
+			x = mapArray[i].x;
+			y = mapArray[i].y;
+			current = mapArray[i].current;
+			visited = mapArray[i].visited;
+			unvisitedButKnown = mapArray[i].unvisitedButKnown;
+		}
+	}
+}
