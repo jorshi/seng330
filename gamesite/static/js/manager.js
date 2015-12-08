@@ -4,22 +4,6 @@ function GameManager()  {
 	this.roomDoors;
 	this.inventory;
 	
-	// returns a room object with description fields, room contents,
-	// doors, etc.
-	// called on page load
-	this.getRoom = function()  {
-		$.get('/get_current_room/', function(data) {
-			manager.updateSelf(data);
-			manager.printRoom();
-			manager.printTitle();
-			
-			//parser.addItemUses(manager.roomItems.concat(manager.inventory));
-			
-			$("#commandUserInput").focus();
-		}, "json");
-	}
-	
-	// TODO call this
 	this.updateRoom = function(data)  {
 		this.updateSelf(data);
 		this.printRoom();
@@ -39,14 +23,15 @@ function GameManager()  {
 	this.printRoom = function()  {
 		var room = this.currentRoom;
 	
-		// TODO make special functions to list the items
 		displayResponse(room.desc_header);
-		for (i = 0; i < room.items.length; i++)  {
-			displayResponse(" * " + room.items[i].enterRoomDescription);
-		}
+		printItemList(room.items, function(item)  {
+			return item.enterRoomDescription;
+		});
+		
 		displayResponse(room.desc_footer);
 	}
 	
+	// replace title with new one
 	this.printTitle = function()  {
 		$("#pinnedText").html(this.currentRoom.title);
 	}
@@ -54,13 +39,18 @@ function GameManager()  {
 	
 	// API functions
 	
+	// returns a room object with description fields, room contents,
+	// doors, etc.
+	// called on page load
+	this.getRoom = function()  {
+		$.get('/get_current_room/', function(data) {
+			manager.updateRoom(data);
+		}, "json");
+	}
+	
 	this.postChangeRoom = function(data)  {
 		$.post('/post_change_room/', data, function(serverdata)  {
-			// todo 
-			manager.updateSelf(serverdata);
-			
-			manager.printRoom();
-			manager.printTitle();
+			manager.updateRoom(serverdata);
 		}, 'json');
 	}
 	// tells the backend the player used an item

@@ -39,6 +39,14 @@ function displayResponse(s)  {
 	$("#terminalText").scrollTop($("#terminalText")[0].scrollHeight);
 }
 
+function printItemList(items, func)  {
+	$("#terminalText").append("<ul class=\"response itemlist\"></ul>");
+	for (i = 0; i < items.length; i++)  {
+		$(".itemlist:last").append("<li>" + func(items[i]) + "</li>");
+	}
+	$("#terminalText").scrollTop($("#terminalText")[0].scrollHeight);
+}
+
 // Django's xss protection https://docs.djangoproject.com/en/1.8/ref/csrf/
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection

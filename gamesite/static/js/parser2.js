@@ -20,6 +20,12 @@ function Parser()  {
 		func: goThroughDoor
 	},
 	{
+		name: "examine room",
+		patt: /^\s*examine\s+room\s*$/,
+		ind: 0,
+		func: examineRoom
+	},
+	{
 		name: "examine",
 		patt: /^\s*(examine|check|look at)\s+(.+)\s*$/,
 		ind: 2,
@@ -104,20 +110,15 @@ function goThroughDoor(dir)  {
 }
 
 function takeItem(item)  {
-	// check room items
-	// possible results:
-	// "There isn't any [item] here."
-	// "You physically can't pick the [item] up, but you can examine it."
-	// "You take the [item]."
 	var items = manager.roomItems;
 	for (i = 0; i < items.length; i++)  {
 		if (item == items[i].name.toLowerCase())  {
 			if (items[i].type == "pickupableAndUsable")  {
-				displayResponse("You take the " + item + ".");
-				manager.postTakeItem({ "name": item });
+				//displayResponse("You take the " + item + ".");
+				manager.postTakeItem({ "name": item });  // prints the inventory
 			}
 			else  {
-				displayResponse("You can't physically pick the " + item 
+				displayResponse("You can't pick the " + item 
 					+ " up, but you can examine it.");
 			}
 			return;
@@ -135,7 +136,6 @@ function takeItem(item)  {
 }
 
 function examineItem(item)  {
-	// TODO: check room items AND inventory
 	var items = manager.roomItems.concat(manager.inventory);
 	for (i = 0; i < items.length; i++)  {
 		if (item == items[i].name.toLowerCase())  {
@@ -147,17 +147,21 @@ function examineItem(item)  {
 }
 
 function displayInventory(data)  {  // dummy parameter
+
 	var inventory = manager.inventory;
 	if (inventory.length > 0)  {
 		displayResponse("You have:");
-		for (i = 0; i < inventory.length; i++)  {
-			var name = inventory[i].name;
+		printItemList(manager.inventory, function(item)  { 
+			var name = item.name;
 			var article = "aeio".indexOf(name.charAt(0)) >= 0 ? "an " : "a ";
-			article = name.charAt(0) == name.charAt(0).toUpperCase() ? "the " : article;
-			displayResponse(" * " + article + inventory[i].name);
-		}
+			return article + name;
+		});
 	}
 	else  {
 		displayResponse("Your inventory is empty.");
 	}
+}
+
+function examineRoom(data)  {
+	manager.printRoom();
 }
