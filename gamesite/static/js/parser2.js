@@ -21,14 +21,20 @@ function Parser()  {
 	},
 	{
 		name: "examine room",
-		patt: /^\s*examine\s+room\s*$/,
+		patt: /^\s*(examine\s+room)|look\s*$/,
 		ind: 0,
 		func: examineRoom
 	},
 	{
+		name: "examine door",
+		patt: /^\s*examine\s+(east|west|south|north)\s+door\s*$/,
+		ind: 1,
+		func: examineDoor
+	},
+	{
 		name: "examine",
-		patt: /^\s*(examine|check|look at)\s+(.+)\s*$/,
-		ind: 2,
+		patt: /^\s*examine\s+(.+)\s*$/,
+		ind: 1,
 		func: examineItem
 	},
 	{
@@ -164,4 +170,20 @@ function displayInventory(data)  {  // dummy parameter
 
 function examineRoom(data)  {
 	manager.printRoom();
+}
+
+function examineDoor(dir)  {
+	var doors = manager.roomDoors;
+	var d = doors[dir];
+	if (d)  {
+		if (d.locked)  {
+			displayResponse("The " + dir + " door is locked.");
+		}
+		else  {
+			displayResponse("The " + dir + " door is unlocked.");
+		}
+	}
+	else  {
+		displayResponse("There's no door, just a wall.");
+	}
 }
