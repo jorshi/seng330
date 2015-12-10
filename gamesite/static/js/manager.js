@@ -8,15 +8,16 @@ function GameManager()  {
 		this.updateSelf(data);
 		this.printRoom();
 		this.printTitle();
-		$("#commandUserInput").focus();
 	}
 	
 	this.updateSelf = function(data)  {
+		console.log(data);
 		this.currentRoom = data.room;
 		this.roomItems = this.currentRoom.items;
 		this.roomDoors = this.currentRoom.doors;
 		this.inventory = data.inventory;
 		parser.addItemUses(this.roomItems.concat(this.inventory));
+		$("#commandUserInput").focus();
 	}
 	
 	// print the room description & its contents to the terminal
@@ -55,13 +56,10 @@ function GameManager()  {
 	}
 	// tells the backend the player used an item
 	this.postPlayerAction = function(data)  {
-		// TODO add a handler
-		$.post('/post_player_action/', data);
+		$.post('/post_player_action/', data, function(serverdata)  {
+			manager.updateSelf(serverdata);
+		}, 'json');
 		
-		// backend returns a string describing the result
-		// room contents may be updated
-		// player inventory may be updated
-		// (these all should be pushed here)
 	}
 	
 	this.postTakeItem = function(data)  {

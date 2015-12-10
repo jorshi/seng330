@@ -121,7 +121,7 @@ function useItem(item)  {
 				manager.postPlayerAction({
 					ref: item.ref
 				});
-				break;
+				return;
 			}
 		}
 		displayResponse("You need to be holding the " + item.name);

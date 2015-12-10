@@ -4,6 +4,10 @@ from model_utils.managers import InheritanceManager
 # default=None: hack to enforce NOT NULL
 # http://stackoverflow.com/questions/12879256/
 
+def usePatternFormat(patt):
+    fpatt = patt.replace("NAME", "(.+)").replace("OTHER", "(.+)")
+    return "^\s*" + "\s+".join(fpatt.split()) + "\s*$"
+
 class FixedItem(models.Model):
     """ concrete parent class for anything the player can interact with """
 
@@ -34,8 +38,11 @@ class FixedItem(models.Model):
         state.save()
         return self
     
-    def addItemUse(self, state, pickup, use_pattern, use_message, consumed=False, on_item=None, change_self=None, change_other=None):
-        #  TODO this makes UseKey()s too?
+    def addItemUse(self, state, pickup, use_pattern, use_message, 
+        consumed=False, on_item=None, change_self=None, change_other=None):
+        """
+        use_pattern: use the NAME and OTHER wildcards to replace the item and on_item names
+        """
     
         if pickup or on_item is not None:
             itemUse = UsePickupableItem()
@@ -52,8 +59,7 @@ class FixedItem(models.Model):
             return
         
         itemUse.use_message = use_message
-        #fpatt = use_pattern.replace("NAME", self.name)
-        fpatt = use_pattern.replace("NAME", "(.+)")
+        
         if on_item:
             try:
                 other = ItemUseState.objects.get(pk=on_item.pk)
@@ -68,14 +74,13 @@ class FixedItem(models.Model):
                 print("Error: on_item %s doesn't exist or is ambiguous" % (on_item,))
                 return
             
-            #fpatt = fpatt.replace("OTHER", on_item.name)
-            fpatt = fpatt.replace("OTHER", "(.+)")
-        itemUse.use_pattern = "^\s*" + "\s+".join(fpatt.split()) + "\s*$"
-        
+        itemUse.use_pattern = usePatternFormat(use_pattern)
         itemUse.save()
     
     def addKeyUse(self, state, on_door, use_message="", use_pattern=""):
-        """ Usage for keys """
+        """ Usage for keys 
+            use_pattern: use the DOOR wildcard to replace with appropriate door(s)
+        """
 
         keyUse = UseKey()
         try:
@@ -83,11 +88,16 @@ class FixedItem(models.Model):
         except:
             print("Error trying to add key use: state %s doesn't exist" % (state,))
             return
+        
         keyUse.on_door = on_door
-        keyUse.use_message = use_message
-        # TODO regex parsing
-        # get the possible door directions
-        keyUse.use_pattern = use_pattern
+        if use_message:
+            keyUse.use_message = use_message
+        else:
+            keyUse.use_message = "The door is unlocked."
+        
+        if not use_pattern:
+            use_pattern = "unlock|(use NAME on) DOOR"
+        keyUse.use_pattern = usePatternFormat(use_pattern)
         keyUse.save()
         
     def getState(self, num):
@@ -112,7 +122,7 @@ class ItemUseState(models.Model):
     hidden = models.BooleanField(default=False)
     short_desc = models.CharField(max_length=30, default=None)
 
-    def json(self):
+    def json(self, room_name):
         obj = {
             'name': self.item.name,
             'examineDescription': self.examine,
@@ -121,15 +131,11 @@ class ItemUseState(models.Model):
         # quick-fix for frontend spec
         obj['type'] = "pickupableAndUsable" if self.item.pickupable else "fixedAndUsable"
         
-        # TODO add subclassing esp for UseKey which is room/direction-dependent
-        # TODO add name of on_item
-        usecases1 = self.abstractuseitem_action.all() 
-        obj['useCases'] = [
-            {
-                'ref': usecase.pk,
-                'usePattern': usecase.use_pattern,
-                'useMessage': usecase.use_message
-            } for usecase in usecases1]
+        usecases = AbstractUseItem.objects.select_subclasses().filter(
+            item_use_state=self)
+        temp = [use.json(room_name) for use in usecases]
+        obj['useCases'] = [x for x in temp if x is not None]
+        
         if not obj['useCases'] and not self.item.pickupable:
             obj['type'] = 'decoration'
         
@@ -152,6 +158,12 @@ class AbstractUseItem(models.Model):
     # on this item after it has been used?
     item_change = models.ForeignKey('ItemUseState', null=True, related_name='%(class)s_cause')
     
+    def json(self, room_name):
+        obj = {}
+        obj['ref'] = self.pk
+        obj['usePattern'] = self.use_pattern
+        obj['useMessage'] = self.use_message
+        return obj
 
 
 class UsePickupableItem(AbstractUseItem):
@@ -174,16 +186,22 @@ class UsePickupableItem(AbstractUseItem):
             if not game_state.inventory.filter(pk=item.pk).exists():  # ItemUseState items
                 print("UsePickupableItem error: %s is not in inventory" % item)
                 return False
+            if self.item_change:
+                game_state.inventory.add(self.item_change)
+                game_state.inventory.remove(item)
         else:
             # check if item is in current room
             if not game_state.current_room.itemstate_set.filter(item=item).exists():
                 print("UsePickupableItem error: %s is not in the room" % item)
                 return False
+            if self.item_change:
+                wrapper = game_state.current_room.itemstate_set.get(item=item)
+                wrapper.item = self.item_change
+                wrapper.save()
+                
         if self.consumed:
             game_state.inventory.remove(item)
-        elif self.item_change is not None:
-            game_state.inventory.add(self.item_change)
-            game_state.inventory.remove(item)
+        
             
         if self.on_item is not None:
             # check if on_item is in inventory
@@ -229,6 +247,21 @@ class UseKey(AbstractUseItem):
     """ Usage pattern for a key """
 
     on_door = models.ForeignKey("Door")
+    
+    def json(self, room_name):
+        obj = super(UseKey, self).json(room_name)
+        # return appropriate usePattern if the door is in current room
+        # otherwise return None
+        room = Room.objects.get(name=room_name)
+        if self.on_door.room_a == room or self.on_door.room_b == room:
+            dirs = ['north', 'east', 'west', 'south']
+            for dir in dirs:
+                if room.get_door(dir) == self.on_door:
+                    obj['usePattern'] = obj['usePattern'].replace("DOOR", dir + "\s+door")
+                    break
+        else:
+            return None
+        return obj
     
     def execute(self, game_state):
         # check if key is in inventory

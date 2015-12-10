@@ -159,6 +159,7 @@ def _create_game(request, player):
     except GameState.DoesNotExist:
         pass
 
+    print("player.views: creating new game")
     gamestate = GameState()
     gamestate.player = player
     gamestate.save()

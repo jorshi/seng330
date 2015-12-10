@@ -65,7 +65,7 @@ class GameState(models.Model):
         """
         obj = {}
         obj["room"] = self.current_room.json()
-        obj["inventory"] = [item.json() for item in self.inventory.all()]
+        obj["inventory"] = [item.json(self.current_room.room.name) for item in self.inventory.all()]
         return obj
         
     
@@ -139,7 +139,7 @@ class ItemState(models.Model):
     item = models.ForeignKey('gameworld.ItemUseState')     # Item reference
     
     def json(self):
-        return self.item.json()
+        return self.item.json(self.room_state.room.name)
 
     def __unicode__(self):
         return u'%s.%s' % (self.room_state, self.item)
