@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from player.models import Player
 from gamestate.models import ItemState
+from gameworld.models import AbstractUseItem
 #from gameworld.models import Room, ItemUseState, UseDecoration, AbstractUseItem, UseKey
 
 @login_required
@@ -35,13 +36,24 @@ def post_player_action(request):
     game = player.gamestate
     if request.method == 'POST':
         print(request.POST)
-        # TODO lookup the action performed & update the gamestate db
-
-    return JsonResponse({})
+        try:
+            action_pk = int(request.POST['ref'])
+            action = AbstractUseItem.objects.filter(
+                        pk=action_pk).select_subclasses()[0]
+            if not action.execute(game):
+                return
+                
+        except ValueError:
+            print("POST data was not an int")
+            return
+        except IndexError:
+            print("%s not found" % action_pk)
+            return  # TODO error response
+        
+    return get_current_room(request)
 
 @login_required
 def post_change_room(request):
-
     player = Player.objects.get(user=request.user)
     game = player.gamestate
     if request.method == 'POST':

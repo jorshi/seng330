@@ -66,11 +66,7 @@ function Parser()  {
 		for (i = 0; i < pattList.length; i++)  {
 			var match = pattList[i].patt.exec(s);
 			if (match == null)  continue;
-			// execute action & tell server
-			displayResponse(pattList[i].message);
-			manager.postPlayerAction({
-				ref: pattList[i].ref
-				});
+			useItem(pattList[i]);
 			return;
 		}
 		
@@ -88,6 +84,7 @@ function Parser()  {
 				var useCase = items[i].useCases[j];
 				this.roomItemPatterns.push({
 					name: items[i].name,
+					type: items[i].type,
 					patt: new RegExp(useCase.usePattern, ""),
 					message: useCase.useMessage,
 					ref: useCase.ref
@@ -112,6 +109,28 @@ function goThroughDoor(dir)  {
 	}
 	else  {
 		displayResponse("There's no door, just a wall.");
+	}
+}
+
+function useItem(item)  {
+	if (item.type == "pickupableAndUsable")  {
+		// item must be in inventory
+		for (i = 0; i < manager.inventory.length; i++)  {
+			if (item.name == manager.inventory[i].name)  {
+				displayResponse(item.message);
+				manager.postPlayerAction({
+					ref: item.ref
+				});
+				break;
+			}
+		}
+		displayResponse("You need to be holding the " + item.name);
+	}
+	else  {
+		displayResponse(item.message);
+		manager.postPlayerAction({
+			ref: item.ref
+		});
 	}
 }
 

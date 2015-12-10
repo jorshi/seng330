@@ -37,7 +37,7 @@ class FixedItem(models.Model):
     def addItemUse(self, state, pickup, use_pattern, use_message, consumed=False, on_item=None, change_self=None, change_other=None):
         #  TODO this makes UseKey()s too?
     
-        if pickup:
+        if pickup or on_item is not None:
             itemUse = UsePickupableItem()
             itemUse.consumed = consumed
         else:
@@ -56,11 +56,11 @@ class FixedItem(models.Model):
         fpatt = use_pattern.replace("NAME", "(.+)")
         if on_item:
             try:
-                other = FixedItem.objects.get(pk=on_item.pk)
+                other = ItemUseState.objects.get(pk=on_item.pk)
                 itemUse.on_item = other
                 if change_other:
                     try:
-                        itemUse.on_item_change = other.states.get(state=change_other)
+                        itemUse.on_item_change = other.item.getState(change_other)
                     except:
                         print("Error: change_other %s doesn't exist for %s" % (change_other, other))
                         return
@@ -86,8 +86,12 @@ class FixedItem(models.Model):
         keyUse.on_door = on_door
         keyUse.use_message = use_message
         # TODO regex parsing
+        # get the possible door directions
         keyUse.use_pattern = use_pattern
         keyUse.save()
+        
+    def getState(self, num):
+        return self.states.get(state=num)
         
     def __unicode__(self):
         return self.name
@@ -114,9 +118,11 @@ class ItemUseState(models.Model):
             'examineDescription': self.examine,
             'enterRoomDescription': self.short_desc
         }
-        # todo quick-fix for frontend spec
+        # quick-fix for frontend spec
         obj['type'] = "pickupableAndUsable" if self.item.pickupable else "fixedAndUsable"
         
+        # TODO add subclassing esp for UseKey which is room/direction-dependent
+        # TODO add name of on_item
         usecases1 = self.abstractuseitem_action.all() 
         obj['useCases'] = [
             {
@@ -145,6 +151,7 @@ class AbstractUseItem(models.Model):
     # State to change this item to after usage - ie, what is the affect
     # on this item after it has been used?
     item_change = models.ForeignKey('ItemUseState', null=True, related_name='%(class)s_cause')
+    
 
 
 class UsePickupableItem(AbstractUseItem):
@@ -159,21 +166,94 @@ class UsePickupableItem(AbstractUseItem):
     # Does this item disappear from the users inventory after it has
     # been used?
     consumed = models.BooleanField(default=False)
+    
+    def execute(self, game_state):
+        item = self.item_use_state
+        if item.item.pickupable:
+            # check if item is in inventory
+            if not game_state.inventory.filter(pk=item.pk).exists():  # ItemUseState items
+                print("UsePickupableItem error: %s is not in inventory" % item)
+                return False
+        else:
+            # check if item is in current room
+            if not game_state.current_room.itemstate_set.filter(item=item).exists():
+                print("UsePickupableItem error: %s is not in the room" % item)
+                return False
+        if self.consumed:
+            game_state.inventory.remove(item)
+        elif self.item_change is not None:
+            game_state.inventory.add(self.item_change)
+            game_state.inventory.remove(item)
+            
+        if self.on_item is not None:
+            # check if on_item is in inventory
+            if game_state.inventory.filter(pk=self.on_item.pk).exists():
+                if self.on_item_change is not None:
+                    game_state.inventory.add(self.on_item_change)
+                    game_state.inventory.remove(self.on_item)
+            # check if on_item is in room
+            elif game_state.current_room.itemstate_set.filter(item=self.on_item).exists():
+                wrapper = game_state.current_room.itemstate_set.get(item=self.on_item)
+                if self.on_item_change is not None:
+                    wrapper.item = self.on_item_change
+                    wrapper.save()
+            else:
+                print("UsePickupableItem error: on_item not found anywhere")
+                return False
+                
+        return True
 
     def __unicode__(self):
-        return u'use %s on %s' % (self.item_use_state.item, self.on_item)
+        return u'use %s on %s' % (self.item_use_state.item, self.on_item.item)
 
 
 class UseDecoration(AbstractUseItem):
     """ Usage patterns for using a decoration """
 
+    def execute(self, game_state):
+        item = self.item_use_state
+        # check if item is in current room
+        if not game_state.current_room.itemstate_set.filter(item=item).exists():
+            print("UseDecoration error: %s is not in the room" % item)
+            return False
+        if self.item_change is not None:
+            wrapper = game_state.current_room.itemstate_set.get(item=item)
+            wrapper.item = self.item_change
+            wrapper.save()
+        return True
+        
     def __unicode__(self):
-        return u'use %s' % (self.item_use_state.item)
+        return u'use %s' % self.item_use_state.item
 
 class UseKey(AbstractUseItem):
     """ Usage pattern for a key """
 
     on_door = models.ForeignKey("Door")
+    
+    def execute(self, game_state):
+        # check if key is in inventory
+        item = self.item_use_state
+        if not game_state.inventory.filter(pk=item.pk).exists():  # ItemUseState items
+            print("UseKey error: %s is not in inventory" % item)
+            return False
+        # check door direction
+        room = game_state.current_room.room
+        door_state = game_state.doorstate_set.filter(
+            models.Q(room_a=room) | models.Q(room_b=room)
+            ).filter(
+            door=self.on_door
+            )
+        if not door_state.exists():
+            print("UseKey error: door isn't in current room")
+            return False
+            
+        # unlock the door (DoorState)
+        door_state[0].locked = False
+        door_state[0].save()
+        
+        # key is always consumed
+        game_state.inventory.remove(item)
+        return True
 
     def __unicode__(self):
         return u"key: opens %s" % self.on_door
