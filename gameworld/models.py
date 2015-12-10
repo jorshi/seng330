@@ -271,18 +271,19 @@ class UseKey(AbstractUseItem):
             return False
         # check door direction
         room = game_state.current_room.room
-        door_state = game_state.doorstate_set.filter(
+        door_match = game_state.doorstate_set.filter(
             models.Q(room_a=room) | models.Q(room_b=room)
             ).filter(
             door=self.on_door
             )
-        if not door_state.exists():
+        if not door_match.exists():
             print("UseKey error: door isn't in current room")
             return False
             
         # unlock the door (DoorState)
-        door_state[0].locked = False
-        door_state[0].save()
+        door_state = door_match[0]
+        door_state.locked = False
+        door_state.save()
         
         # key is always consumed
         game_state.inventory.remove(item)
