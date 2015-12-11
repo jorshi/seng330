@@ -93,7 +93,7 @@ class FixedItem(models.Model):
         if use_message:
             keyUse.use_message = use_message
         else:
-            keyUse.use_message = "The door is unlocked."
+            keyUse.use_message = "You unlocked the door."
         
         if not use_pattern:
             use_pattern = "unlock|(use NAME on) DOOR"

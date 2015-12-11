@@ -23,10 +23,8 @@ def main():
         0, shortdesc="There's a painting on the North wall.", examine="The painting hangs crookedly and is extremely ugly, the colors are mottled and grotesque. You can't even understand the actual forms on the canvas. The left side of the frame is a quarter-inch away from the wall, but the right side is flush with it.").addState(
         1, shortdesc="There's a painting on the North wall.", examine="The painting hangs crookedly and is extremely ugly, the colors are mottled and grotesque. You can't even understand the actual forms on the canvas. There's a key taped to the back of the painting.")
     
-    '''
     lighter = m.addItem('start', 'lighter', pickupable=True).addState(
         shortdesc="There's a lighter on the floor.", examine="It's a prosaic yellow BIC lighter.")
-    '''
     
     key = m.addItem('start', 'key', pickupable=True).addState(
         0, hidden=True
