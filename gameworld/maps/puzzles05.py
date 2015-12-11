@@ -146,7 +146,7 @@ def main():
     # south door - fake use-case - tell the player the key failed to unlock the door
     key2.addItemUse(1, pickup=True, use_pattern="(unlock|use NAME on) south door",
         use_message="The key sticks in the lock and, despite your best efforts, \
-        snaps into two.", consumed=True)
+        breaks in half.", consumed=True)
     # east door
     bluekey.addKeyUse(state=1, on_door=bluedoor)
     
