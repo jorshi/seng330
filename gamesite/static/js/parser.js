@@ -20,7 +20,7 @@ pattUnlightItem = /^\s*(extinguish|stamp\s+out|put\s+out)\s+(.+)\s*$/i; /*openab
 
 /*Parser Class*/
 
-function Parser(player) 
+function Parser(player) {
 	/*this.player = player;
 	Parser Method to check if a command is valid or not*/
 	this.check = function(s) {

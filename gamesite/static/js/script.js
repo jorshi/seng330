@@ -9,14 +9,14 @@ $(document).ready(function()  {
         /*TODO: call an update_room function*/
         $.get('/get_current_room/', function(data) {
                 console.log(data);
-                room = new Room(data.desc_header, data.desc_footer);
+                room = new Room(data.room.desc_header, data.room.desc_footer);
  
                 //TODO make doors added to room on creation
  
                 playerInventory = new Inventory();
                 player = new Player(room, playerInventory);
  
-                addItemsToRoom(data);
+                addItemsToRoom(data.room);
 
                 parser = new Parser(player);
                 player.currentRoom.updateDescription();
