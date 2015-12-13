@@ -3,15 +3,13 @@ $(document).ready(function()  {
         // Game Manager class will handle requests to the
         // backend and loading room / inventory / among
         // other fuctionality relate to server communication
-        gameManager = new GameManager();
-        gameManager.load_current_room();
+        //gameManager = new GameManager();
+        //gameManager.load_current_room();
 
         /*TODO: call an update_room function*/
         $.get('/get_current_room/', function(data) {
                 console.log(data);
-                console.log(data[0].fields.title);
-                console.log(data[0].pk);
-                room = new Room(data[0].fields.desc_header, data[0].fields.desc_footer);
+                room = new Room(data.desc_header, data.desc_footer);
  
                 //TODO make doors added to room on creation
  
@@ -21,11 +19,12 @@ $(document).ready(function()  {
                 addItemsToRoom(data);
 
                 parser = new Parser(player);
- 
                 player.currentRoom.updateDescription();
+                
                 displayResponse("How would you like to proceed?");
 
                 $("#pinnedText").html(player.currentRoom.description);        
+
 
         });
 

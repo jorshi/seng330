@@ -28,7 +28,11 @@ def main():
         ).addState(
         1, shortdesc="There's a key taped to the back of the painting.", examine="It's small and worn.", hidden=False)
     
+<<<<<<< HEAD
     painting.addItemUse(0, pickup=False, use_pattern="(look behind)|lift NAME", use_message="You lift the painting away from the wall.", on_item=key, change_other=1)
+=======
+    painting.addItemUse(0, pickup=False, use_pattern="(look behind|lift) (\w+)", use_message="You lift the painting away from the wall.", on_item="key", change_other=1)
+>>>>>>> 99198e7f694998394177212e300aaf9e8af7889a
     
     
     

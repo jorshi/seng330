@@ -98,7 +98,7 @@ function Parser(player)
 		/*the item can be used so display use message*/
 
 		displayResponse(itemToCheck.useMessage);
-		gameState(s);
+		//gameState(s);
 		return true;
 	}
 
