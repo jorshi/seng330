@@ -136,8 +136,11 @@ class ItemUseState(models.Model):
         temp = [use.json(room_name) for use in usecases]
         obj['useCases'] = [x for x in temp if x is not None]
         
-        if not obj['useCases'] and not self.item.pickupable:
-            obj['type'] = 'decoration'
+        if not obj['useCases']:
+            if not self.item.pickupable:
+                obj['type'] = 'decoration'
+            else:
+                obj['type'] = 'pickupableAndNonUsable'
         
         return obj
         
