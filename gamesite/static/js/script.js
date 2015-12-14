@@ -8,25 +8,31 @@ $(document).ready(function()  {
 
         /*TODO: call an update_room function*/
         $.get('/get_current_room/', function(data) {
-                console.log(data);
-                room = new Room(data.room.desc_header, data.room.desc_footer);
- 
-                //TODO make doors added to room on creation
- 
-                playerInventory = new Inventory();
-                player = new Player(room, playerInventory);
- 
-                addItemsToRoom(data.room);
 
-                parser = new Parser(player);
-                player.currentRoom.updateDescription();
-                
-                displayResponse("How would you like to proceed?");
-
-                $("#pinnedText").html(player.currentRoom.description);        
-
+            getState(data);
 
         });
+
+
+        function getState(data) {
+
+            console.log(data);
+            room = new Room(data.room.desc_header, data.room.desc_footer);
+ 
+            //TODO make doors added to room on creation
+            playerInventory = new Inventory();
+            player = new Player(room, playerInventory);
+ 
+            addItemsToRoom(data.room);
+
+
+            parser = new Parser(player);
+            player.currentRoom.updateDescription();
+                
+            displayResponse("How would you like to proceed?");
+            $("#pinnedText").html(player.currentRoom.description);    
+        }
+
 
 
         function addItemsToRoom(data){
@@ -50,16 +56,35 @@ $(document).ready(function()  {
                     } else if (jsitem.type == "key") {
                         tempItem = new Key(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.doorToOpen);
                         room.itemsInRoom.push(tempItem);
-                    } else if (jsitem.type == "door") {
-                        tempItem = new Door(jsitem.direction, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.locked, jsitem.roomName);
-                        room.itemsInRoom.push(tempItem);
+                    //} else if (jsitem.type == "door") {
+                    //    tempItem = new Door(jsitem.direction, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.locked, jsitem.roomName);
+                    //    room.itemsInRoom.push(tempItem);
                     } else if (jsitem.type == "pickupableAndNonUsable") {
                         tempItem = new PickupableAndNonUseable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, false);
                         room.itemsInRoom.push(tempItem);
                     } 
                     //Will need to loop through this
                 }
+
+            eastDoor = null;
+            westDoor = null;
+            southDoor = null;
+            northDoor = null;
+            if (data.doors.east != null) {
+                eastDoor = new Door("east door","It's a door on the east wall.", "there is a door on the east wall, ", data.doors.east.locked, data.doors.east.next_room);
             }
+            if (data.doors.west != null) {
+                westDoor = new Door("west door", "It's a door on the west wall.", "there is a door on the west wall, ", data.doors.west.locked, data.doors.west.next_room);
+            }
+            if (data.doors.north != null) {
+                northDoor = new Door("north door","It's a door on the north wall.", "there is a door on the north wall, ", data.doors.north.locked, data.doors.north.next_room);
+            }
+            if (data.doors.south != null) {
+                southDoor = new Door("south door", "It's a door on the south wall.", "there is a door on the south wall, ", data.doors.south.locked, data.doors.south.next_room);
+            }
+            room.setUpDoors([northDoor,eastDoor,southDoor,westDoor]);
+
+        }
         /*rooms*//*
         room1 = new Room("Room 1: ", "end");
         room2 = new Room("Room 2: ", "end");

@@ -179,6 +179,7 @@ function Parser(player) {
 		updateRoomDescription();
 		$("#pinnedText").html(player.currentRoom.description);
 		mapUpdate(player.currentRoom);
+
 		return true;
 	}
 
@@ -281,11 +282,9 @@ function Parser(player) {
 	}
 
 	moveRoom = function(doorToCheck) {
-		if (doorToCheck.room == player.currentRoom) {
-			player.changeRoom(doorToCheck.room2);
-		} else {
-			player.changeRoom(doorToCheck.room);
-		}
+		$.post('/post_change_room/', {'room' : doorToCheck.nextRoomName}, function(serverdata)  {
+			getState(serverdata);
+		}, 'json');
 	}
 
 	getDoor = function(doorDirection) {

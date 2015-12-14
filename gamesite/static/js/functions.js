@@ -12,6 +12,11 @@ function itemIsInRoomOrInv(room, inventory, name, mode) {
 			if (name == inventory.itemsInInventory[i].name) return inventory.itemsInInventory[i];
 		}
 	}
+	for (var i = 0; i < room.doorLayout.length; i++) {
+		if (room.doorLayout[i] != null) {		
+			if (name == room.doorLayout[i].name) return room.doorLayout[i];
+		}
+	}
 	return null;
 }
 

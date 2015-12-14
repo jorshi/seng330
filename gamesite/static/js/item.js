@@ -68,13 +68,12 @@ var Decoration = function(name, description, enterRoomDescription) {
 }
 
 /*doors are not items anymore but they still kind of work the same way*/
-var Door = function(room, room2, name, description, enterRoomDescription, locked) {
+var Door = function(name, description, enterRoomDescription, locked, nextRoomName) {
 	this.name = name;
 	this.description = description;
 	this.enterRoomDescription = enterRoomDescription;
 	this.locked = locked;
-	this.room = room;
-	this.room2 = room2;
+	this.nextRoomName = nextRoomName;
 }
 
 Pickupable.prototype = Object.create(Item.prototype); 
