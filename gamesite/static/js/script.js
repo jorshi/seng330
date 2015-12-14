@@ -10,6 +10,7 @@ $(document).ready(function()  {
         $.get('/get_current_room/', function(data) {
 
             getState(data);
+            displayResponse("How would you like to proceed?");
 
         });
 
@@ -81,7 +82,7 @@ function getState(data) {
             parser = new Parser(player);
             player.currentRoom.updateDescription();
                 
-            displayResponse("How would you like to proceed?");
+            
             $("#pinnedText").html(player.currentRoom.description);    
         }
 

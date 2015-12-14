@@ -5,7 +5,7 @@
 pattTakeItem = /^\s*(get|grab|take|pick\s*up)\s+(.+)\s*$/i;
 pattGo = /^\s*(go|move|walk)\s+(\w+)\s*$/i;
 pattExamine = /^\s*(examine|check|look at)\s+(.+)\s*$/i;
-pattUseOn = /^\s*(use)\s+(\w+)\s+(on|with)\s+(.+)\s*$/i;
+pattUseOn = /^\s*(use)\s+(.+)\s+(on|with)\s+(.+)\s*$/i;
 pattUseOnDoor = /^\s*(use)\s+(\w+)\s+(on|with)\s+(east|west|south|north)\s+door\s*$/i;
 /*door related patterns*/
 pattGoThrough = /^\s*(go through|enter|use|open)\s+(east|west|south|north)\s+door\s*$/i;
@@ -99,6 +99,7 @@ function Parser(player) {
 		/*the item can be used so display use message*/
 
 		displayResponse(itemToCheck.useMessage);
+		changeItemState(itemToCheck);
 		//gameState(s);
 		return true;
 	}
@@ -286,6 +287,12 @@ function Parser(player) {
 			getState(serverdata);
 			displayResponse("How would you like to proceed?");
 		}, 'json');
+	}
+	changeItemState = function(itemToCheck) {
+		$.post('/post_player_action/', {'name':itemToCheck.name}, function(serverdata)  {
+			getState(serverdata);
+		}, 'json');
+
 	}
 
 	getDoor = function(doorDirection) {
