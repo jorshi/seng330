@@ -18,19 +18,11 @@ var NonPickupable = function(name, description, enterRoomDescription) {
 /*this item can be picked up and used if it is picked up, it's usePattern is just a regular
 expression that is matched for the items use command.  it's needed so different items can
 be used by typing different verbs.*/
-var PickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, inInv) {
+var PickupableAndUsable = function(name, description, enterRoomDescription, useMessage, usePattern, inInv, usedOn) {
 	Pickupable.call(this, name, description, enterRoomDescription, inInv);
 	this.usePattern = usePattern;
 	this.useMessage = useMessage;
-
-	this.newItemState = function(name, description, enterRoomDescription, useMessage, usePattern, inInv) {
-		this.name = name;
-		this.description = description;
-		this.enterRoomDescription = enterRoomDescription;
-		this.inInv = inInv;
-		this.usePattern = usePattern;
-		this.useMessage = useMessage;		
-	}
+	this.usedOn = usedOn;
 
 }
 

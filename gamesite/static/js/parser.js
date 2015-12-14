@@ -53,7 +53,6 @@ function Parser(player) {
 		/*now that we have the item check edge cases:*/
 		/*case 1: item doesent exist or is hidden*/
 		if (doesNotExist(itemToCheck,match[2])) return true;
-		if (isHidden(itemToCheck,match[2])) return true;
 		/*case 2: item is unpickupable*/
 		if (cantBePickedUp(itemToCheck)) return true;
 		/*cases passed item can be picked up!*/
@@ -73,7 +72,6 @@ function Parser(player) {
 		/*now that we have the item check edge cases:*/
 		/*case 1: item doesent exist or is hidden*/
 		if (doesNotExist(itemToCheck,match[2])) return true;
-		if (isHidden(itemToCheck,match[2])) return true;
 		/*It must exist so examine it*/
 		displayResponse(itemToCheck.description);
 		return true;
@@ -90,7 +88,6 @@ function Parser(player) {
 		/*now that we have the item check edge cases:*/
 		/*case 1: item doesent exist or is hidden*/
 		if (doesNotExist(itemToCheck,match[2])) return true;
-		if (isHidden(itemToCheck,match[2])) return true;
 		/*case 2: item can't be used*/
 		if (cantBeUsed(itemToCheck,match[1])) return true;
 		/*case 3: improper use of RE*/
@@ -117,9 +114,7 @@ function Parser(player) {
 		/*now that we have the item check edge cases:*/
 		/*case 1: item doesent exist*/
 		if (doesNotExist(itemToUse,match[2])) return true;
-		if (isHidden(itemToUse,match[2])) return true;
 		if (doesNotExist(itemToGetUsedOn,match[4])) return true;
-		if (isHidden(itemToGetUsedOn,match[4])) return true;
 		/*case 2: item can't be used on that item*/
 		if (cantBeUsedOn(itemToUse,itemToGetUsedOn)) return true;
 		/*case 3: item is useable but is not in your inventory*/
@@ -127,7 +122,8 @@ function Parser(player) {
 		/*case 4: you try to use an item on itself*/
 		if (useOnSelf(itemToUse,itemToGetUsedOn)) return true;
 		/*the item can be used so display use message*/
-		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name+".");
+		displayResponse(itemToUse.useMessage);
+
 		changeStateOfItemUsedOn(itemToUse,itemToGetUsedOn);
 		//gameState(s);
 		return true;
@@ -146,20 +142,19 @@ function Parser(player) {
 		/*now that we have the item check edge cases:*/
 		/*case 1: item doesent exist*/
 		if (doesNotExist(itemToUse,match[2])) return true;
-		if (isHidden(itemToUse,match[2])) return true;
 		/*case 2: there is no door on the wall*/
 		doorToCheck = getDoor(doorDirection);
 		if (doesNotExist(doorToCheck,doorDirection+" door")) return true;
 		/*case 3: item is useable but is not in your inventory*/
 		if (notInInventory(itemToUse)) return true;
 		/*case 4: item isnt a key*/
-		if (itemIsNotKey(itemToUse)) return true;
+		if (itemIsNotKey(itemToUse,doorToCheck)) return true;
 		
 		/*case 5: you try to use a key on an unlocked door*/
 		if (doorAlreadyUnlocked(doorToCheck,doorDirection)) return true;
 		/*TODO: case 6: you try to use the wrong key on the wrong door*/
 		/*the item can be used so display use message*/
-		displayResponse("You try to use the "+itemToUse.name+" on the "+doorDirection+" door.");
+		displayResponse(itemToUse.useMessage);
 		//gameState(s);
 		changeStateOfItemUsedOn(itemToUse,doorToCheck);
 		return true;
@@ -207,14 +202,6 @@ function Parser(player) {
 		}
 	}
 
-	isHidden = function(item, name) {
-		if (item.hidden == true) {
-			/*print out message saying item is not in room*/
-			displayResponse("There is no "+name+".");
-			return true;
-		}
-	}
-
 	cantBePickedUp = function(item) {
 		if (item instanceof NonPickupable) {
 			displayResponse("You can not pick up the " + item.name+".");
@@ -245,7 +232,11 @@ function Parser(player) {
 
 	cantBeUsedOn = function(itemToUse,itemToGetUsedOn) {
 		if (!(itemToUse instanceof PickupableAndUsable) || (!(itemToGetUsedOn instanceof Door) && !(itemToGetUsedOn instanceof PickupableAndUsable) && !(itemToGetUsedOn instanceof NonPickupableAndUsable))) {
-			displayResponse("You can not use the " + itemToUse.name + " on that.");
+			displayResponse("You can not use the " + itemToUse.name + " on the"+itemToGetUsedOn.name+".");
+			return true;
+		}
+		if (!(itemToUse.usedOn == itemToGetUsedOn.name)) {
+			displayResponse("You can not use the " + itemToUse.name + " on the"+itemToGetUsedOn.name+".");
 			return true;
 		}
 	}
@@ -257,9 +248,13 @@ function Parser(player) {
 		}
 	}
 
-	itemIsNotKey = function(item) {
+	itemIsNotKey = function(item, itemToGetUsedOn) {
 		if (!(item instanceof PickupableAndUsable)) {
 			displayResponse("You can not use the " + item.name + " on that.");
+			return true;
+		}
+		if (!(item.usedOn == itemToGetUsedOn.name)) {
+			displayResponse("You can not use the " + item.name + " on the"+itemToGetUsedOn.name+".");
 			return true;
 		}
 	}
@@ -307,7 +302,7 @@ function Parser(player) {
 		}, 'json');
 	}
 	changeStateOfItemUsedOn = function(itemToCheck,itemToCheck2) {
-		$.post('/post_player_action/', {'name':itemToCheck.name, 'name':itemToCheck2.name}, function(serverdata)  {
+		$.post('/post_player_action/', {'name':itemToCheck.name, 'name2':itemToCheck2.name}, function(serverdata)  {
 			getState(serverdata);
 		}, 'json');
 	}
