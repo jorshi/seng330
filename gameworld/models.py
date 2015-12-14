@@ -184,6 +184,13 @@ class UsePickupableItem(AbstractUseItem):
     # been used?
     consumed = models.BooleanField(default=False)
     
+    def json(self, room_name):
+        obj = super(UsePickupableItem, self).json(room_name)
+        if self.on_item is not None:
+            if not self.on_item.hidden:
+                obj['usedOn'] = self.on_item.name
+        return obj
+        
     def execute(self, game_state):
         #print("UsePickupableItem: executing")
         item = self.item_use_state
@@ -264,9 +271,11 @@ class UseKey(AbstractUseItem):
             for dir in dirs:
                 if room.get_door(dir) == self.on_door:
                     obj['usePattern'] = obj['usePattern'].replace("DOOR", dir + "\s+door")
+                    obj['usedOn'] = dir + " door"
                     break
         else:
             return None
+        
         return obj
     
     def execute(self, game_state):
