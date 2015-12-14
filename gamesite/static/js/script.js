@@ -73,9 +73,10 @@ function getState(data) {
             //TODO make doors added to room on creation
             playerInventory = new Inventory();
             player = new Player(room, playerInventory);
+
+            addItemsToPlayer(data.inventory);
  
             addItemsToRoom(data.room);
-
 
             parser = new Parser(player);
             player.currentRoom.updateDescription();
@@ -84,15 +85,33 @@ function getState(data) {
             $("#pinnedText").html(player.currentRoom.description);    
         }
 
+function addItemsToPlayer(data) {
+
+     for(i = 0; i < data.length; i++){
+        jsitem = data[i];
+        if (jsitem.type == "pickupableAndUsable") {
+            tempRegex = new RegExp(jsitem.useCases[0].usePattern);
+            tempItem = new PickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex, false);
+            tempItem.inInv = true;
+            player.inv.add(tempItem);
+        } else if (jsitem.type == "pickupableAndNonUsable") {
+            tempItem = new PickupableAndNonUseable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, false);
+            tempItem.inInv = true;
+            player.inv.add(tempItem);
+        } 
+     }
+}
+
 
 function addItemsToRoom(data){
             roomItemArray = [];
+
 
             for(i = 0; i < data.items.length; i++){
                 jsitem = data.items[i];
 
                 //TEMPORARY WORKAROUND, let's painting be picked up
-                if (jsitem.type == "fixedAndUsable" && jsitem.name != "window"){
+                if (jsitem.type == "fixedAndUsable"){
                         tempRegex = new RegExp(jsitem.useCases[0].usePattern);
                         tempItem = new NonPickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex);
                         room.itemsInRoom.push(tempItem);
@@ -100,7 +119,7 @@ function addItemsToRoom(data){
                         tempRegex = new RegExp(jsitem.useCases[0].usePattern);
                         tempItem = new PickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex, false);
                         room.itemsInRoom.push(tempItem);
-                    } else if (jsitem.type == "fixedAndNonUsable") {
+                    } else if (jsitem.type == "decoration") {
                         tempItem = new Decoration(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription);
                         room.itemsInRoom.push(tempItem);
                     } else if (jsitem.type == "key") {

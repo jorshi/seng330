@@ -42,6 +42,11 @@ var Inventory = function() {
 	this.add = function(name) {
 		this.itemsInInventory.push(name);
 	}
+	this.printInv = function() {
+		for (var i = 0; i < this.itemsInInventory.length; i++) {
+			displayResponse(this.itemsInInventory[i].name);
+		}
+	}
 }
 
 var MapNode = function(current, visited, x, y) {

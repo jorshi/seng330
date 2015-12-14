@@ -35,8 +35,8 @@ function Parser(player) {
 		if (this.useItemOnCheck(s)) return true;
 		if (this.useItemOnDoorCheck(s)) return true;
 
-		if (s == "printroom") {
-			printArray(player.currentRoom.itemsInRoom);
+		if (s == "print inventory") {
+			player.inv.printInv();
 			return true;
 		}
 		return false;	
@@ -57,6 +57,7 @@ function Parser(player) {
 		if (cantBePickedUp(itemToCheck)) return true;
 		/*cases passed item can be picked up!*/
 		moveToInventory(itemToCheck);
+
 		updateRoomDescription();	
 		return true;		
 	}
@@ -269,12 +270,11 @@ function Parser(player) {
 		/*now we know item must be pickupable*/
 		displayResponse("You just picked up the " + item.name);
 		/*Now we have to remove the item from the room and put it into the inventory*/
-		var index = player.currentRoom.itemsInRoom.indexOf(item);
-		/*confusing looking but all it does is move the item from the room to the inventory*/
+		$.post('/post_take_item/', {"name" : item.name}, function(serverdata)  {
+			getState(serverdata);
+		}, 'json');
 
-		/*TODO: call a update_inventory_pickup function*/
-		player.inv.itemsInInventory.push(player.currentRoom.itemsInRoom.splice(index, 1)[0]);
-		itemToCheck.inInv = true;
+
 	}
 
 	updateRoomDescription = function() {
@@ -284,6 +284,7 @@ function Parser(player) {
 	moveRoom = function(doorToCheck) {
 		$.post('/post_change_room/', {'room' : doorToCheck.nextRoomName}, function(serverdata)  {
 			getState(serverdata);
+			displayResponse("How would you like to proceed?");
 		}, 'json');
 	}
 
