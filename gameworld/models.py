@@ -163,7 +163,9 @@ class AbstractUseItem(models.Model):
     
     def json(self, room_name):
         obj = {}
-        obj['ref'] = self.pk
+        #obj['ref'] = self.pk
+        
+        # TODO: add name, other name fields
         obj['usePattern'] = self.use_pattern
         obj['useMessage'] = self.use_message
         return obj
@@ -183,6 +185,7 @@ class UsePickupableItem(AbstractUseItem):
     consumed = models.BooleanField(default=False)
     
     def execute(self, game_state):
+        #print("UsePickupableItem: executing")
         item = self.item_use_state
         if item.item.pickupable:
             # check if item is in inventory
