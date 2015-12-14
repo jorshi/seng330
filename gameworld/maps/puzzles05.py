@@ -30,7 +30,7 @@ def main():
     thing apart from the door you just came from, not even the walls.")
     
     # Connect rooms
-    door = m.connectRooms('start', 'room2', 'east', locked=True)
+    door = m.connectRooms('start', 'room2', 'east', locked=False)
     northdoor = m.connectRooms('room2', 'northroom', 'north', locked=True)
     southdoor = m.connectRooms('room2', 'room3', 'south', locked=True)
     bluedoor = m.connectRooms('room2', 'eastroom', 'east', locked=True)

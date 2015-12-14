@@ -1,5 +1,5 @@
 $(document).ready(function()  {
-        
+        csrftoken = getCookie('csrftoken');
         // Game Manager class will handle requests to the
         // backend and loading room / inventory / among
         // other fuctionality relate to server communication
@@ -14,7 +14,58 @@ $(document).ready(function()  {
         });
 
 
-        function getState(data) {
+        
+
+
+
+        
+        /*rooms*//*
+        room1 = new Room("Room 1: ", "end");
+        room2 = new Room("Room 2: ", "end");
+        room3 = new Room("Room 3: ", "end");
+ 
+        /*player*//*
+        playerInventory = new Inventory();
+        player = new Player(room1, playerInventory);
+ 
+        /*items*/
+        // need to make it so keys are linked to doors in some way
+        /*key1 = new Key("key1", "Unlocks somthing.", "there is a key on the ground (called 'key1'), ");
+        key2 = new Key("key2", "Unlocks somthing.", "there is a key on the ground (called 'key2'), ");
+ 
+        door1 = new Door(room1, room2, "door", "its shut.", "there is a door on the south wall, ", true);
+        door2 = new Door(room2, room3, "door2", "its shut.", "there is a door on the east wall, ", true);
+        clock = new Decoration("clock", "It's a clock, It appears to be broken.", "there is a clock on the wall, ");
+        gun = new PickupableAndUsable("gun", ["It doesn't appear to be loaded.", "The gun is loaded"],
+                                                                                 ["there is a gun on the floor, ","there is a loaded gun on the floor, "],
+                                                                                 ["You try to fire the gun but you can't.", "You fire the gun, It makes a loud BANG"],
+                                                                                 [pattShootItem,pattShootItem], 1);
+        ammo = new PickupableAndUsable("ammo", ["Ammo for a gun"], ["there is a cartrige of ammo on the floor, "],
+                                                                                   ["You need to use it with somthing"], [pattUseItem], 1);
+ 
+        firePlace = new NonPickupableAndUsable("fireplace", ["It is not lit", "there is a fire burning in it"],
+                                                                                                                ["there is an unlit fireplace on the west wall, ","there is a fireplace on the west wall with a fire burning in it, "],
+                                                                                                                ["You need to light it with somthing","you try to put out the fire"],
+                                                                                                                [pattUseItem,pattUnlightItem], 1);
+        lighter = new PickupableAndUsable("lighter", ["used to make fires"], ["there is a lighter on the floor, "],
+                                                                                   ["You flicker it on and off, prehaps you should use it on somthing?"],
+                                                                                   [pattUseItem], 1);
+ 
+        /*this array will be [north,east,south,west] null means no door
+        might make this automatically happen in the constructor later*/
+        /*room1.setUpDoors([null,null,door1,null]);
+        room2.setUpDoors([door1,door2,null,null]);
+        room3.setUpDoors([null,null,null,door2]);
+ 
+        room1.setUpItems([key1,door1,clock,gun]);
+        room2.setUpItems([key2,door1,door2,ammo,firePlace]);
+        room3.setUpItems([door2,lighter]);
+ 
+        /*parser class*/
+       
+});
+
+function getState(data) {
 
             console.log(data);
             room = new Room(data.room.desc_header, data.room.desc_footer);
@@ -34,8 +85,7 @@ $(document).ready(function()  {
         }
 
 
-
-        function addItemsToRoom(data){
+function addItemsToRoom(data){
             roomItemArray = [];
 
             for(i = 0; i < data.items.length; i++){
@@ -85,48 +135,32 @@ $(document).ready(function()  {
             room.setUpDoors([northDoor,eastDoor,southDoor,westDoor]);
 
         }
-        /*rooms*//*
-        room1 = new Room("Room 1: ", "end");
-        room2 = new Room("Room 2: ", "end");
-        room3 = new Room("Room 3: ", "end");
- 
-        /*player*//*
-        playerInventory = new Inventory();
-        player = new Player(room1, playerInventory);
- 
-        /*items*/
-        // need to make it so keys are linked to doors in some way
-        /*key1 = new Key("key1", "Unlocks somthing.", "there is a key on the ground (called 'key1'), ");
-        key2 = new Key("key2", "Unlocks somthing.", "there is a key on the ground (called 'key2'), ");
- 
-        door1 = new Door(room1, room2, "door", "its shut.", "there is a door on the south wall, ", true);
-        door2 = new Door(room2, room3, "door2", "its shut.", "there is a door on the east wall, ", true);
-        clock = new Decoration("clock", "It's a clock, It appears to be broken.", "there is a clock on the wall, ");
-        gun = new PickupableAndUsable("gun", ["It doesn't appear to be loaded.", "The gun is loaded"],
-                                                                                 ["there is a gun on the floor, ","there is a loaded gun on the floor, "],
-                                                                                 ["You try to fire the gun but you can't.", "You fire the gun, It makes a loud BANG"],
-                                                                                 [pattShootItem,pattShootItem], 1);
-        ammo = new PickupableAndUsable("ammo", ["Ammo for a gun"], ["there is a cartrige of ammo on the floor, "],
-                                                                                   ["You need to use it with somthing"], [pattUseItem], 1);
- 
-        firePlace = new NonPickupableAndUsable("fireplace", ["It is not lit", "there is a fire burning in it"],
-                                                                                                                ["there is an unlit fireplace on the west wall, ","there is a fireplace on the west wall with a fire burning in it, "],
-                                                                                                                ["You need to light it with somthing","you try to put out the fire"],
-                                                                                                                [pattUseItem,pattUnlightItem], 1);
-        lighter = new PickupableAndUsable("lighter", ["used to make fires"], ["there is a lighter on the floor, "],
-                                                                                   ["You flicker it on and off, prehaps you should use it on somthing?"],
-                                                                                   [pattUseItem], 1);
- 
-        /*this array will be [north,east,south,west] null means no door
-        might make this automatically happen in the constructor later*/
-        /*room1.setUpDoors([null,null,door1,null]);
-        room2.setUpDoors([door1,door2,null,null]);
-        room3.setUpDoors([null,null,null,door2]);
- 
-        room1.setUpItems([key1,door1,clock,gun]);
-        room2.setUpItems([key2,door1,door2,ammo,firePlace]);
-        room3.setUpItems([door2,lighter]);
- 
-        /*parser class*/
-       
+
+
+// Django's xss protection https://docs.djangoproject.com/en/1.8/ref/csrf/
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
 });
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
