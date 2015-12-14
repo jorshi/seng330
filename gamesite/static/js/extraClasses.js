@@ -12,9 +12,9 @@ var Room = function(beginDescription, endDescription) {
 
 	//Building room description
 	this.updateDescription = function() {
-		this.description = beginDescription;
+		this.description = beginDescription+" ";
 		for (i = 0; i < this.itemsInRoom.length; i++){
-			this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription);
+			this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription+" ");
 		}
 		this.description = this.description.concat(endDescription);
 	}

@@ -9,6 +9,7 @@ pattUseOn = /^\s*(use)\s+(.+)\s+(on|with)\s+(.+)\s*$/i;
 pattUseOnDoor = /^\s*(use)\s+(\w+)\s+(on|with)\s+(east|west|south|north)\s+door\s*$/i;
 /*door related patterns*/
 pattGoThrough = /^\s*(go through|enter|use|open)\s+(east|west|south|north)\s+door\s*$/i;
+pattGoThroughNonDirection = /^\s*(go through|enter|use|open)\s+door\s*$/i;
 pattFindDoor = /^\s*(north|south|east|west)\s+/i;
 /*Patterns for use Items*/
 pattGenericUse = /^\s*(use|fire|shoot|open|extinguish|stamp\s+out|put\s+out|look\s+behind|lift)\s+(.+)\s*$/i;
@@ -127,6 +128,7 @@ function Parser(player) {
 		if (useOnSelf(itemToUse,itemToGetUsedOn)) return true;
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name+".");
+		changeStateOfItemUsedOn(itemToUse,itemToGetUsedOn);
 		//gameState(s);
 		return true;
 	}
@@ -159,11 +161,17 @@ function Parser(player) {
 		/*the item can be used so display use message*/
 		displayResponse("You try to use the "+itemToUse.name+" on the "+doorDirection+" door.");
 		//gameState(s);
+		changeStateOfItemUsedOn(itemToUse,doorToCheck);
 		return true;
 	}
 
 	this.goThroughCheck = function(s) {
 		/*this gets the group in the RE*/
+		match = pattGoThroughNonDirection.exec(s);
+		if (match != null) {
+			displayResponse("You need to specify a direction.");
+			return true;
+		}
 		match = pattGoThrough.exec(s);
 		/*no match*/
 		if (match == null) return false;
@@ -188,6 +196,10 @@ function Parser(player) {
 
 	/*EDGE CASE FUNCTIONS*/
 	doesNotExist = function(item, name) {
+		if (name == 'door') {
+			displayResponse("You need to specify a direction.");
+			return true;
+		}
 		if (item == null) {
 			/*print out message saying item is not in room*/
 			displayResponse("There is no "+name+".");
@@ -246,7 +258,7 @@ function Parser(player) {
 	}
 
 	itemIsNotKey = function(item) {
-		if (!(item instanceof Key)) {
+		if (!(item instanceof PickupableAndUsable)) {
 			displayResponse("You can not use the " + item.name + " on that.");
 			return true;
 		}
@@ -261,7 +273,7 @@ function Parser(player) {
 
 	doorIsLocked = function(doorToCheck, doorDirection) {
 		if (doorToCheck.locked) {
-			displayResponse("you try to go through the "+doorDirection+" door but its locked.");
+			displayResponse("You try to go through the "+doorDirection+" door but its locked.");
 			return true;
 		}
 	}
@@ -293,7 +305,11 @@ function Parser(player) {
 		$.post('/post_player_action/', {'name':itemToCheck.name}, function(serverdata)  {
 			getState(serverdata);
 		}, 'json');
-
+	}
+	changeStateOfItemUsedOn = function(itemToCheck,itemToCheck2) {
+		$.post('/post_player_action/', {'name':itemToCheck.name, 'name':itemToCheck2.name}, function(serverdata)  {
+			getState(serverdata);
+		}, 'json');
 	}
 
 	getDoor = function(doorDirection) {
