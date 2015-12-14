@@ -2,30 +2,10 @@
 {% load staticfiles %}
 <!-- template for game dashboard with parser -->
 {% block content %}
-<style type="text/css">
-#map {
-    float: right;
-    position: absolute;
-    z-index: 0;
-}
-#commandForm {
-    z-index: 3;
-    position: relative;
-}
-
-#terminalText {
-    z-index: 4;
-    position: relative;
-}
-#mapBox {
-    z-index: 0;
-    position: relative;
-}
-</style>
 
 <div class="container-fluid">
 <div class="row">
-<div class="terminal col-md-8">
+<div class="terminal">
 	<div id="roomName">
 	</div>
     <div id="pinnedText">
@@ -39,9 +19,6 @@
         <input id="commandButton" class="btn btn-default" type="submit" value="enter" /> 
     </form>
 </div>
-<div  id="mapBox" class="map col-md-4">
-    <p style="height: 300px;">Map</p>
-</div>
 <div id="map">
 </div>
 
@@ -52,8 +29,6 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="http://malsup.github.com/jquery.form.js"></script>
-    
 
     <script language="javascript" type="text/javascript" src="{% static 'js/item.js' %}"></script>
      <script language="javascript" type="text/javascript" src="{% static 'js/extraClasses.js' %}"></script>
