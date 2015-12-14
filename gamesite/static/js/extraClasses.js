@@ -43,6 +43,7 @@ var Inventory = function() {
 		this.itemsInInventory.push(name);
 	}
 	this.printInv = function() {
+		if (this.itemsInInventory.length == 0) displayResponse("There are no items in your inventory.");
 		for (var i = 0; i < this.itemsInInventory.length; i++) {
 			displayResponse(this.itemsInInventory[i].name);
 		}

@@ -31,9 +31,9 @@ function Parser(player) {
 		if (this.pickUpCheck(s)) return true;
 		if (this.examineCheck(s)) return true;
 		if (this.goThroughCheck(s)) return true;
-		if (this.useItemCheck(s)) return true;
-		if (this.useItemOnCheck(s)) return true;
 		if (this.useItemOnDoorCheck(s)) return true;
+		if (this.useItemOnCheck(s)) return true;
+		if (this.useItemCheck(s)) return true;		
 
 		if (s == "print inventory") {
 			player.inv.printInv();
@@ -117,8 +117,8 @@ function Parser(player) {
 		/*case 1: item doesent exist*/
 		if (doesNotExist(itemToUse,match[2])) return true;
 		if (isHidden(itemToUse,match[2])) return true;
-		if (doesNotExist(itemToGetUsedOn,match[2])) return true;
-		if (isHidden(itemToGetUsedOn,match[2])) return true;
+		if (doesNotExist(itemToGetUsedOn,match[4])) return true;
+		if (isHidden(itemToGetUsedOn,match[4])) return true;
 		/*case 2: item can't be used on that item*/
 		if (cantBeUsedOn(itemToUse,itemToGetUsedOn)) return true;
 		/*case 3: item is useable but is not in your inventory*/
@@ -126,7 +126,7 @@ function Parser(player) {
 		/*case 4: you try to use an item on itself*/
 		if (useOnSelf(itemToUse,itemToGetUsedOn)) return true;
 		/*the item can be used so display use message*/
-		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name);
+		displayResponse("You try to use the " + itemToUse.name + " on the " + itemToGetUsedOn.name+".");
 		//gameState(s);
 		return true;
 	}
@@ -148,15 +148,16 @@ function Parser(player) {
 		/*case 2: there is no door on the wall*/
 		doorToCheck = getDoor(doorDirection);
 		if (doesNotExist(doorToCheck,doorDirection+" door")) return true;
-		/*case 3: item isnt a key*/
-		if (itemIsNotKey(itemToUse)) return true;
-		/*case 4: item is useable but is not in your inventory*/
+		/*case 3: item is useable but is not in your inventory*/
 		if (notInInventory(itemToUse)) return true;
+		/*case 4: item isnt a key*/
+		if (itemIsNotKey(itemToUse)) return true;
+		
 		/*case 5: you try to use a key on an unlocked door*/
 		if (doorAlreadyUnlocked(doorToCheck,doorDirection)) return true;
 		/*TODO: case 6: you try to use the wrong key on the wrong door*/
 		/*the item can be used so display use message*/
-		displayResponse("You try to use the "+itemToUse.name+" on the "+doorDirection+" door");
+		displayResponse("You try to use the "+itemToUse.name+" on the "+doorDirection+" door.");
 		//gameState(s);
 		return true;
 	}
@@ -177,7 +178,7 @@ function Parser(player) {
 		/*now figure out the new room*/
 		moveRoom(doorToCheck);
 		/* TODO: call an update_room function*/
-		displayResponse("you went through the "+doorDirection+" door");
+		displayResponse("you went through the "+doorDirection+" door.");
 		updateRoomDescription();
 		$("#pinnedText").html(player.currentRoom.description);
 		//mapUpdate(player.currentRoom);
@@ -189,7 +190,7 @@ function Parser(player) {
 	doesNotExist = function(item, name) {
 		if (item == null) {
 			/*print out message saying item is not in room*/
-			displayResponse("There is no "+name);
+			displayResponse("There is no "+name+".");
 			return true;
 		}
 	}
@@ -197,70 +198,70 @@ function Parser(player) {
 	isHidden = function(item, name) {
 		if (item.hidden == true) {
 			/*print out message saying item is not in room*/
-			displayResponse("There is no "+name);
+			displayResponse("There is no "+name+".");
 			return true;
 		}
 	}
 
 	cantBePickedUp = function(item) {
 		if (item instanceof NonPickupable) {
-			displayResponse("You can not pick up the " + item.name);
+			displayResponse("You can not pick up the " + item.name+".");
 			return true;
 		}
 	}
 
 	cantBeUsed = function(item, verb) {
 		if (!(item instanceof NonPickupableAndUsable) && !(item instanceof PickupableAndUsable)) {
-			displayResponse("You can not "+verb+" the " + item.name);
+			displayResponse("You can not "+verb+" the " + item.name+ ".");
 			return true;
 		}
 	}
 
 	wrongVerbInputed = function(item, verb, s) {
 		if (item.usePattern.exec(s) == null) {
-			displayResponse("You can not "+verb+" the " + item.name);
+			displayResponse("You can not "+verb+" the " + item.name+ ".");
 			return true;
 		}
 	}
 
 	notInInventory = function(item) {
-		if ((item instanceof PickupableAndUsable) && (item.inInv == false)) {
-			displayResponse("The "+item.name+" is not in your inventory");
+		if ((item instanceof Pickupable) && (item.inInv == false)) {
+			displayResponse("The "+item.name+" is not in your inventory.");
 			return true;
 		}
 	}
 
 	cantBeUsedOn = function(itemToUse,itemToGetUsedOn) {
 		if (!(itemToUse instanceof PickupableAndUsable) || (!(itemToGetUsedOn instanceof Door) && !(itemToGetUsedOn instanceof PickupableAndUsable) && !(itemToGetUsedOn instanceof NonPickupableAndUsable))) {
-			displayResponse("You can not use the " + itemToUse.name + " on that");
+			displayResponse("You can not use the " + itemToUse.name + " on that.");
 			return true;
 		}
 	}
 
 	useOnSelf = function(itemToUse,itemToGetUsedOn) {
 		if (itemToUse.name == itemToGetUsedOn.name) {
-			displayResponse("You can not use the "+itemToUse.name+" on itself");
+			displayResponse("You can not use the "+itemToUse.name+" on itself.");
 			return true;
 		}
 	}
 
 	itemIsNotKey = function(item) {
 		if (!(item instanceof Key)) {
-			displayResponse("You can not use the " + item.name + " on that");
+			displayResponse("You can not use the " + item.name + " on that.");
 			return true;
 		}
 	}
 
 	doorAlreadyUnlocked = function(doorToCheck, doorDirection) {
 		if (doorToCheck.locked == false) {
-			displayResponse("The "+doorDirection+" door is unlocked already");
+			displayResponse("The "+doorDirection+" door is unlocked already.");
 			return true;
 		}
 	}
 
 	doorIsLocked = function(doorToCheck, doorDirection) {
 		if (doorToCheck.locked) {
-			displayResponse("you try to go through the "+doorDirection+" door but its locked");
+			displayResponse("you try to go through the "+doorDirection+" door but its locked.");
 			return true;
 		}
 	}
@@ -269,7 +270,7 @@ function Parser(player) {
 	/*OTHER FUNCTIONS*/
 	moveToInventory = function(item) {
 		/*now we know item must be pickupable*/
-		displayResponse("You just picked up the " + item.name);
+		displayResponse("You just picked up the " + item.name+".");
 		/*Now we have to remove the item from the room and put it into the inventory*/
 		$.post('/post_take_item/', {"name" : item.name}, function(serverdata)  {
 			getState(serverdata);
