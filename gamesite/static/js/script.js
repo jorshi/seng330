@@ -92,12 +92,10 @@ function addItemsToPlayer(data) {
         jsitem = data[i];
         if (jsitem.type == "pickupableAndUsable") {
             tempRegex = new RegExp(jsitem.useCases[0].usePattern);
-            tempItem = new PickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex, false);
-            tempItem.inInv = true;
+            tempItem = new PickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex, true, jsitem.useCases[0].usedOn);
             player.inv.add(tempItem);
         } else if (jsitem.type == "pickupableAndNonUsable") {
-            tempItem = new PickupableAndNonUseable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, false);
-            tempItem.inInv = true;
+            tempItem = new PickupableAndNonUseable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, true);
             player.inv.add(tempItem);
         } 
      }
@@ -118,7 +116,7 @@ function addItemsToRoom(data){
                         room.itemsInRoom.push(tempItem);
                     } else if (jsitem.type == "pickupableAndUsable") {
                         tempRegex = new RegExp(jsitem.useCases[0].usePattern);
-                        tempItem = new PickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex, false);
+                        tempItem = new PickupableAndUsable(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription, jsitem.useCases[0].useMessage, tempRegex, false, jsitem.useCases[0].usedOn);
                         room.itemsInRoom.push(tempItem);
                     } else if (jsitem.type == "decoration") {
                         tempItem = new Decoration(jsitem.name, jsitem.examineDescription, jsitem.enterRoomDescription);
