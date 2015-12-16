@@ -124,7 +124,6 @@
 
 /* game UI (terminal) styling */
 .row {
-    
 }
 
 .terminal {
@@ -149,10 +148,11 @@
 
 #pinnedText {
     font-weight: bold;
+	min-height: 8em;
 }
 
 #terminalText {
-	height: 22em; /* in relation to window? */
+    height: 12em; /* in relation to window? */
     overflow: auto;
     padding-top: 10px;
     background-color: #FFF;

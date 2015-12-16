@@ -11,7 +11,7 @@ def main():
 
     # Connect Rooms
     mapBuilder.connectRooms('Kitchen', 'Living Room', 'east')
-    
+
     # Add items
     mapBuilder.addItem('start', 'iron key', fixed=True)
     mapBuilder.addItem('start', 'iron key', fixed=False)

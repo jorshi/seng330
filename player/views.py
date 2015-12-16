@@ -144,6 +144,7 @@ def _terminal(request, gamestate):
     """
     Resume an existing game for this player
     """
+    # TODO do we need to return gamestate?
     return render(request, 'game_view.html', { 'user': request.user, 'gameState': gamestate })
 
 def _create_game(request, player):
@@ -158,13 +159,15 @@ def _create_game(request, player):
     except GameState.DoesNotExist:
         pass
 
+    print("player.views: creating new game")
     gamestate = GameState()
     gamestate.player = player
-    currentRoom = Room.objects.get(name='start')
-    gamestate.current_room = currentRoom
-    # other stuff?
     gamestate.save()
-    gamestate.add_room(currentRoom)
+
+    start = gamestate.add_room('start')
+    gamestate.current_room = start
+    gamestate.save()
+    
     return _terminal(request, gamestate)
 
 def qunit_tests(request):
@@ -174,12 +177,12 @@ def qunit_tests(request):
 
     return render(request, 'qunit_tests.html');
 
-def delete_game(request):
+#def delete_game(request):
     """
     Quick delete game function add for removing the players current gamestate
     """
-    player = Player.objects.get(pk=request.user)
-    gameState = player.gamestate
-    gameState.delete()
-
-    #TODO if we actually want implement this for reals then make it return real HTTP
+#    player = Player.objects.get(pk=request.user)
+#    gameState = player.gamestate
+#    gameState.delete()
+    
+#    return redirect('/')

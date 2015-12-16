@@ -15,11 +15,14 @@ urlpatterns = patterns('',
     url(r'^logout/$', player.views.player_logout, name='logout'),
     url(r'^register/$', player.views.login_register, {'tab': 'register'}, name='register'),
     url(r'^qunit_tests/$', player.views.qunit_tests),
-    url(r'^delete_game/$', player.views.delete_game),
+#    url(r'^delete_game/$', player.views.delete_game),
 
     # Gamestate Views
     url(r'^get_current_room/$', gamestate.views.get_current_room),
-    url(r'^get_room_inventory/$', gamestate.views.get_room_inventory),
+    url(r'^post_player_action/$', gamestate.views.post_player_action),
+    url(r'^post_change_room/$', gamestate.views.post_change_room),
+    url(r'^post_take_item/$', gamestate.views.post_take_item),
+
 )
 
 # Serve Doxygen static files in development #TODO look into serving for production

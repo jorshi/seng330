@@ -12,26 +12,9 @@ var Room = function(beginDescription, endDescription) {
 
 	//Building room description
 	this.updateDescription = function() {
-		this.description = beginDescription;
+		this.description = beginDescription+" ";
 		for (i = 0; i < this.itemsInRoom.length; i++){
-
-			//PLEASE FORGIVE THE FOLLOWING CODE
-			if (this.itemsInRoom[i].enterRoomDescription == "there is a door on the south wall, " && player.currentRoom != room1){
-				this.itemsInRoom[i].enterRoomDescription = "there is a door on the north wall, "
-			}
-
-			if (this.itemsInRoom[i].enterRoomDescription == "there is a door on the west wall, " && player.currentRoom == room2){
-				this.itemsInRoom[i].enterRoomDescription = "there is a door on the east wall, "
-			}
-			if (this.itemsInRoom[i].enterRoomDescription == "there is a door on the north wall, " && player.currentRoom == room1){
-				this.itemsInRoom[i].enterRoomDescription = "there is a door on the south wall, "
-			}
-
-			if (this.itemsInRoom[i].enterRoomDescription == "there is a door on the east wall, " && player.currentRoom == room3){
-				this.itemsInRoom[i].enterRoomDescription = "there is a door on the west wall, "
-			}
-			
-			this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription);
+			this.description = this.description.concat(this.itemsInRoom[i].enterRoomDescription+" ");
 		}
 		this.description = this.description.concat(endDescription);
 	}
@@ -58,5 +41,34 @@ var Inventory = function() {
 	}
 	this.add = function(name) {
 		this.itemsInInventory.push(name);
+	}
+	this.printInv = function() {
+		if (this.itemsInInventory.length == 0) displayResponse("There are no items in your inventory.");
+		for (var i = 0; i < this.itemsInInventory.length; i++) {
+			displayResponse(this.itemsInInventory[i].name);
+		}
+	}
+}
+
+var MapNode = function(current, visited, x, y) {
+	this.current = current;
+	this.visited = visited;
+	this.unvisitedButKnown = unvisitedButKnown;
+	this.x = x;
+	this.y = y;
+}
+
+var Map = function() {
+	this.mapArray = [];
+
+	this.printMap = function() {
+		//$("#map").append("<TEXT>");
+		for (var i = 0; i < mapArray.length; i++) {
+			x = mapArray[i].x;
+			y = mapArray[i].y;
+			current = mapArray[i].current;
+			visited = mapArray[i].visited;
+			unvisitedButKnown = mapArray[i].unvisitedButKnown;
+		}
 	}
 }

@@ -2,54 +2,26 @@
 {% load staticfiles %}
 <!-- template for game dashboard with parser -->
 {% block content %}
-<style type="text/css">
-#map {
-    float: right;
-    position: absolute;
-    z-index: 0;
-}
-#commandForm {
-    z-index: 3;
-    position: relative;
-}
-
-#terminalText {
-    z-index: 4;
-    position: relative;
-}
-#mapBox {
-
-    position: relative;
-}
-</style>
 
 <div class="container-fluid">
 <div class="row">
-<div class="terminal col-md-8">
+<div class="terminal">
+	<div id="roomName">
+	</div>
     <div id="pinnedText">
     <!-- insert room description -->
     </div>
     <div id="terminalText">
     </div>
     <form id="commandForm" role="form" class="input-group">
+	{% csrf_token %}
         <input id="commandUserInput" class="form-control" type="text" name="command" autocomplete="off" />
 		<span class="input-group-btn">
 			<input id="commandButton" class="btn btn-default" type="submit" value="enter" />
 		</span>
     </form>
 </div>
-<div  id="mapBox" class="map col-md-4">
-    <p style="height: 300px;">Map</p>
-    </div>
 <div id="map">
-<svg width="800" height="500">
-  <rect x="650" y="80"width="40" height="40" style="fill:rgb(255,255,255);stroke-width:1.5;stroke:rgb(0,0,0)" />
-
-  <rect x="650" y="125" width="40" height="40" style="fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)" />
-
-  <rect x="695" y="125" width="40" height="40" style="fill:rgb(0,0,0);stroke-width:1.5;stroke:rgb(0,0,0)" />
-
-</svg>
 </div>
 
 </div> <!-- end row -->
@@ -59,14 +31,15 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="http://malsup.github.com/jquery.form.js"></script>
 
-<!--    <script language="javascript" type="text/javascript" src="{% static 'js/parsertest.js' %}"></script>-->
     <script language="javascript" type="text/javascript" src="{% static 'js/item.js' %}"></script>
-    <script language="javascript" type="text/javascript" src="{% static 'js/extraClasses.js' %}"></script>
+     <script language="javascript" type="text/javascript" src="{% static 'js/extraClasses.js' %}"></script>
     <script language="javascript" type="text/javascript" src="{% static 'js/parser.js' %}"></script>
     <script language="javascript" type="text/javascript" src="{% static 'js/script.js' %}"></script>
-    <script language="javascript" type="text/javascript" src="{% static 'js/functions.js' %}"></script>
-    <script language="javascript" type="text/javascript" src="{% static 'js/gameState.js' %}"></script>
+    <script language="javascript" type="text/javascript" src="{% static 'js/functions.js' %}"></script>  	
+	<!--<script language="javascript" type="text/javascript" src="{% static 'js/giant.js' %}"></script>
+	<script language="javascript" type="text/javascript" src="{% static 'js/manager.js' %}"></script>
+	<!--<script language="javascript" type="text/javascript" src="{% static 'js/parser2.js' %}"></script>-->
+	
 
 {% endblock %}

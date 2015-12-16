@@ -11,22 +11,29 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='AbstractUseItem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('use_message', models.TextField()),
+                ('use_pattern', models.CharField(max_length=200, blank=True)),
+            ],
+        ),
+        migrations.CreateModel(
             name='FixedItem',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(default=None, max_length=30)),
-                ('examine', models.TextField()),
-                ('hidden', models.BooleanField(default=False)),
+                ('pickupable', models.BooleanField(default=False)),
+                ('default_state', models.IntegerField(default=0)),
             ],
         ),
         migrations.CreateModel(
-            name='ItemUse',
+            name='ItemUseState',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('gone', models.BooleanField()),
-                ('keywords', models.CharField(default=b'use', max_length=200)),
-                ('desc', models.TextField()),
-                ('script', models.CharField(max_length=200, blank=True)),
+                ('state', models.IntegerField()),
+                ('examine', models.TextField()),
+                ('short_desc', models.CharField(default=None, max_length=30)),
             ],
         ),
         migrations.CreateModel(
@@ -48,26 +55,49 @@ class Migration(migrations.Migration):
             bases=('gameworld.fixeditem',),
         ),
         migrations.CreateModel(
-            name='Item',
+            name='UseDecoration',
             fields=[
-                ('fixeditem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.FixedItem')),
+                ('abstractuseitem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.AbstractUseItem')),
             ],
-            bases=('gameworld.fixeditem',),
+            bases=('gameworld.abstractuseitem',),
+        ),
+        migrations.CreateModel(
+            name='UsePickupableItem',
+            fields=[
+                ('abstractuseitem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.AbstractUseItem')),
+                ('consumed', models.BooleanField(default=False)),
+            ],
+            bases=('gameworld.abstractuseitem',),
         ),
         migrations.AddField(
             model_name='room',
             name='default_items',
-            field=models.ManyToManyField(to='gameworld.FixedItem'),
+            field=models.ManyToManyField(related_name='found_in', to='gameworld.FixedItem'),
         ),
         migrations.AddField(
-            model_name='itemuse',
+            model_name='itemusestate',
             name='item',
-            field=models.ForeignKey(related_name='use_cases', to='gameworld.FixedItem'),
+            field=models.ForeignKey(related_name='states', to='gameworld.FixedItem'),
         ),
         migrations.AddField(
-            model_name='itemuse',
+            model_name='abstractuseitem',
+            name='item_change',
+            field=models.ForeignKey(related_name='abstractuseitem_cause', to='gameworld.ItemUseState', null=True),
+        ),
+        migrations.AddField(
+            model_name='abstractuseitem',
+            name='item_use_state',
+            field=models.ForeignKey(related_name='abstractuseitem_action', to='gameworld.ItemUseState'),
+        ),
+        migrations.AddField(
+            model_name='usepickupableitem',
             name='on_item',
-            field=models.ForeignKey(to='gameworld.FixedItem', blank=True),
+            field=models.ForeignKey(related_name='action_on_self', to='gameworld.ItemUseState', null=True),
+        ),
+        migrations.AddField(
+            model_name='usepickupableitem',
+            name='on_item_change',
+            field=models.ForeignKey(related_name='indirect_cause', to='gameworld.ItemUseState', null=True),
         ),
         migrations.AddField(
             model_name='room',
