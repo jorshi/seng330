@@ -37,44 +37,90 @@ def post_player_action(request):
     if request.method == 'POST':
         print(request.POST)
         item_name = request.POST['name']
+        try:
+            other_name = request.POST['name2']
+            #print(other_name)
+        except:
+            other_name = ""
         
         # TODO: changed API call
         # name: item name ***
-        # (optional) other item name
-        # (optional) name/dir of door
+        # (optional) name2 (door or item)
         
+        if other_name:
+            door_match = other_name.split()
+            if door_match[0] in ['east', 'west', 'north', 'south']:
+                if door_match[1] == 'door':
+                    print("looking for door in room")
+                    try:
+                        door = game.current_room.room.get_door(
+                            door_match[0])
+                    except:
+                        print("Error: door not found")
+                        return
+                    else:
+                        other_door = door
+                        other_item = None
+                else:
+                    print("Error")
+                    return
+            else:
+                try:
+                    print("looking for other item in room")
+                    other_item = game.current_room.itemstate_set.get(
+                        item__item__name=other_name)
+                except ItemState.DoesNotExist:
+                    print("post_player_action Error: %s not found" % other_name)
+                    return
+                else:
+                    other_item = other_item.item
+        else:
+            other_item = None
+            
         # look in inventory and current room
         item = None
         try:
+            print("looking for %s in inventory" % item_name)
             item = game.inventory.get(item__name=item_name)
         except ItemUseState.DoesNotExist:
             pass
-        try:
-            item = game.current_room.itemstate_set.get(item__item__name=item_name)
-            item = item.item  # go from ItemState (gamestate) to ItemUseState (gameworld)
-        except ItemUseState.DoesNotExist:
-            pass
-        if not item:
-            print("post_player_action Error: %s not found" % item_name)
-            return
-        
-        actions = AbstractUseItem.objects.select_subclasses()
-        # ambiguity?
-        try:
-            #print("looking for action")
-            action = actions.get(item_use_state=item)
-            
+        else:
+            action = _lookup_action(item, other_item)
             if not action.execute(game):
                 return
-                
-        except AbstractUseItem.DoesNotExist:
-            print("post_player_action Error: item usecase not found")
-            return
-        except AbstractUseItem.MultipleObjectsReturned:
-            print("post_player_action Error: >1 item usecase found for item")
-            return
+            return get_current_room(request)
         
+        try:
+            print("looking for %s in room" % item_name)
+            item = game.current_room.itemstate_set.get(item__item__name=item_name)
+        except ItemUseState.DoesNotExist:
+            print("post_player_action Error: %s not found" % item_name)
+            return
+        else:
+            item = item.item  # go from ItemState (gamestate) to ItemUseState (gameworld)
+            action = _lookup_action(item, other_item)
+            if not action.execute(game):
+                return
+            return get_current_room(request)
+  
     return get_current_room(request)
+
+def _lookup_action(item, other_item):
+    # TODO look for other_item
+    actions = AbstractUseItem.objects.select_subclasses()
+    # ambiguity?
+    try:
+        print("looking for action")
+        action = actions.get(item_use_state=item)
+        
+    except AbstractUseItem.DoesNotExist:
+        print("post_player_action Error: item usecase not found")
+        return False
+    except AbstractUseItem.MultipleObjectsReturned:
+        print("post_player_action Error: >1 item usecase found for item")
+        return False
+    else:
+        return action
 
 @login_required
 def post_change_room(request):
