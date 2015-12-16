@@ -127,12 +127,10 @@
 }
 
 .terminal {
-    background-color: #E6E6E6;
 	text-shadow: none;
 	border-radius: 4px;
 	border: 2px solid rgba(0, 0, 0, .2);
 	padding: 15px;
-	font-size: 
 }
 
 .map {
@@ -155,7 +153,7 @@
     height: 12em; /* in relation to window? */
     overflow: auto;
     padding-top: 10px;
-    background-color: #FFF;
+    background-color: rgba(255, 255, 255, .2);
 	border-radius: 4px;
 }
 
@@ -192,7 +190,6 @@
     padding-bottom: 15px;
 	margin: 0 15%;
     border-radius: 4px;
-	background-color: #E6E6E6;
 }
 
 #tabbedFormsWrapper .nav-tabs {
@@ -204,7 +201,6 @@
 }
 
 .login-reg-tabs {
-    background-color: rgba(36, 36, 36, 0.93);
 	border-radius: 4px 4px 0 0;
 }
 
