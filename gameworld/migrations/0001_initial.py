@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('use_message', models.TextField()),
-                ('use_pattern', models.CharField(max_length=200, blank=True)),
+                ('use_pattern', models.CharField(max_length=256, blank=True)),
             ],
         ),
         migrations.CreateModel(
@@ -33,7 +33,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('state', models.IntegerField()),
                 ('examine', models.TextField()),
-                ('short_desc', models.CharField(default=None, max_length=30)),
+                ('hidden', models.BooleanField(default=False)),
+                ('short_desc', models.CharField(default=None, max_length=256)),
             ],
         ),
         migrations.CreateModel(
@@ -58,6 +59,14 @@ class Migration(migrations.Migration):
             name='UseDecoration',
             fields=[
                 ('abstractuseitem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.AbstractUseItem')),
+            ],
+            bases=('gameworld.abstractuseitem',),
+        ),
+        migrations.CreateModel(
+            name='UseKey',
+            fields=[
+                ('abstractuseitem_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='gameworld.AbstractUseItem')),
+                ('on_door', models.ForeignKey(to='gameworld.Door')),
             ],
             bases=('gameworld.abstractuseitem',),
         ),

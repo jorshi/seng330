@@ -120,7 +120,7 @@ class ItemUseState(models.Model):
     item = models.ForeignKey("FixedItem", related_name="states")
     examine = models.TextField()
     hidden = models.BooleanField(default=False)
-    short_desc = models.CharField(max_length=30, default=None)
+    short_desc = models.CharField(max_length=256, default=None)
 
     def json(self, room_name):
         obj = {
@@ -155,7 +155,7 @@ class AbstractUseItem(models.Model):
     # longer text describing the result of performing the action
     use_message = models.TextField()
     # Regex for use in JavaScript
-    use_pattern = models.CharField(max_length=200, blank=True)
+    use_pattern = models.CharField(max_length=256, blank=True)
     item_use_state = models.ForeignKey("ItemUseState", related_name='%(class)s_action')
     # State to change this item to after usage - ie, what is the affect
     # on this item after it has been used?

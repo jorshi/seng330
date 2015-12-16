@@ -30,7 +30,6 @@ class Migration(migrations.Migration):
             name='ItemState',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('state', models.IntegerField()),
                 ('item', models.ForeignKey(to='gameworld.ItemUseState')),
             ],
         ),
@@ -67,12 +66,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='gamestate',
             name='current_room',
-            field=models.ForeignKey(to='gameworld.Room'),
+            field=models.ForeignKey(to='gamestate.RoomState', null=True),
         ),
         migrations.AddField(
             model_name='gamestate',
             name='inventory',
-            field=models.ManyToManyField(to='gameworld.FixedItem'),
+            field=models.ManyToManyField(to='gameworld.ItemUseState'),
         ),
         migrations.AddField(
             model_name='doorstate',
