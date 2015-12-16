@@ -181,7 +181,7 @@ function Parser(player) {
 		/*now figure out the new room*/
 		moveRoom(doorToCheck);
 		/* TODO: call an update_room function*/
-		displayResponse("you went through the "+doorDirection+" door.");
+		displayResponse("You went through the "+doorDirection+" door.");
 		updateRoomDescription();
 		$("#pinnedText").html(player.currentRoom.description);
 		//mapUpdate(player.currentRoom);
@@ -204,21 +204,21 @@ function Parser(player) {
 
 	cantBePickedUp = function(item) {
 		if (item instanceof NonPickupable) {
-			displayResponse("You can not pick up the " + item.name+".");
+			displayResponse("You cannot pick up the " + item.name+".");
 			return true;
 		}
 	}
 
 	cantBeUsed = function(item, verb) {
 		if (!(item instanceof NonPickupableAndUsable) && !(item instanceof PickupableAndUsable)) {
-			displayResponse("You can not "+verb+" the " + item.name+ ".");
+			displayResponse("You cannot "+verb+" the " + item.name+ ".");
 			return true;
 		}
 	}
 
 	wrongVerbInputed = function(item, verb, s) {
 		if (item.usePattern.exec(s) == null) {
-			displayResponse("You can not "+verb+" the " + item.name+ ".");
+			displayResponse("You cannot "+verb+" the " + item.name+ ".");
 			return true;
 		}
 	}
@@ -232,29 +232,29 @@ function Parser(player) {
 
 	cantBeUsedOn = function(itemToUse,itemToGetUsedOn) {
 		if (!(itemToUse instanceof PickupableAndUsable) || (!(itemToGetUsedOn instanceof Door) && !(itemToGetUsedOn instanceof PickupableAndUsable) && !(itemToGetUsedOn instanceof NonPickupableAndUsable))) {
-			displayResponse("You can not use the " + itemToUse.name + " on the"+itemToGetUsedOn.name+".");
+			displayResponse("You cannot use the " + itemToUse.name + " on the"+itemToGetUsedOn.name+".");
 			return true;
 		}
 		if (!(itemToUse.usedOn == itemToGetUsedOn.name)) {
-			displayResponse("You can not use the " + itemToUse.name + " on the"+itemToGetUsedOn.name+".");
+			displayResponse("You cannot use the " + itemToUse.name + " on the"+itemToGetUsedOn.name+".");
 			return true;
 		}
 	}
 
 	useOnSelf = function(itemToUse,itemToGetUsedOn) {
 		if (itemToUse.name == itemToGetUsedOn.name) {
-			displayResponse("You can not use the "+itemToUse.name+" on itself.");
+			displayResponse("You cannot use the "+itemToUse.name+" on itself.");
 			return true;
 		}
 	}
 
 	itemIsNotKey = function(item, itemToGetUsedOn) {
 		if (!(item instanceof PickupableAndUsable)) {
-			displayResponse("You can not use the " + item.name + " on that.");
+			displayResponse("You cannot use the " + item.name + " on that.");
 			return true;
 		}
 		if (!(item.usedOn == itemToGetUsedOn.name)) {
-			displayResponse("You can not use the " + item.name + " on the"+itemToGetUsedOn.name+".");
+			displayResponse("You cannot use the " + item.name + " on the"+itemToGetUsedOn.name+".");
 			return true;
 		}
 	}
@@ -268,7 +268,7 @@ function Parser(player) {
 
 	doorIsLocked = function(doorToCheck, doorDirection) {
 		if (doorToCheck.locked) {
-			displayResponse("You try to go through the "+doorDirection+" door but its locked.");
+			displayResponse("You try to go through the "+doorDirection+" door, but it's locked.");
 			return true;
 		}
 	}
