@@ -102,12 +102,21 @@ Inheritance diagram for gameworld.models.FixedItem:</div>
   <img src="classgameworld_1_1models_1_1_fixed_item.png" usemap="#gameworld.models.FixedItem_map" alt=""/>
   <map id="gameworld.models.FixedItem_map" name="gameworld.models.FixedItem_map">
 <area href="classgameworld_1_1models_1_1_door.html" alt="gameworld.models.Door" shape="rect" coords="0,112,173,136"/>
-<area href="classgameworld_1_1models_1_1_item.html" alt="gameworld.models.Item" shape="rect" coords="183,112,356,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ae645a76f41d1c1f189fc47da92129799"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae645a76f41d1c1f189fc47da92129799"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>addState</b></td></tr>
+<tr class="separator:ae645a76f41d1c1f189fc47da92129799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bbb31cf9effd80f5e97bf63c4827672"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgameworld_1_1models_1_1_fixed_item.html#a6bbb31cf9effd80f5e97bf63c4827672">addItemUse</a></td></tr>
+<tr class="separator:a6bbb31cf9effd80f5e97bf63c4827672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7370da9e51244d00b57ec21566f23040"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgameworld_1_1models_1_1_fixed_item.html#a7370da9e51244d00b57ec21566f23040">addKeyUse</a></td></tr>
+<tr class="separator:a7370da9e51244d00b57ec21566f23040"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8781fa8865828ff30ceb442301b05ec1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8781fa8865828ff30ceb442301b05ec1"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>getState</b> (self, num)</td></tr>
+<tr class="separator:a8781fa8865828ff30ceb442301b05ec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a018596f8f32742fc45eb5250b759896a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a018596f8f32742fc45eb5250b759896a"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>__unicode__</b> (self)</td></tr>
 <tr class="separator:a018596f8f32742fc45eb5250b759896a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,15 +126,131 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:a9f4e7fc2d261a0df9f96086248591555"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f4e7fc2d261a0df9f96086248591555"></a>
 tuple&#160;</td><td class="memItemRight" valign="bottom"><b>name</b> = models.CharField(max_length=30, default=None)</td></tr>
 <tr class="separator:a9f4e7fc2d261a0df9f96086248591555"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec99c30eab1c12a6813929030c2e6542"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec99c30eab1c12a6813929030c2e6542"></a>
-tuple&#160;</td><td class="memItemRight" valign="bottom"><b>examine</b> = models.TextField()</td></tr>
-<tr class="separator:aec99c30eab1c12a6813929030c2e6542"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af986ec7e4c5ff2b846b7f52a267538d7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af986ec7e4c5ff2b846b7f52a267538d7"></a>
-tuple&#160;</td><td class="memItemRight" valign="bottom"><b>hidden</b> = models.BooleanField(default=False)</td></tr>
-<tr class="separator:af986ec7e4c5ff2b846b7f52a267538d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d50db489e9376c29a5d7067b38aa4ef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9d50db489e9376c29a5d7067b38aa4ef"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>pickupable</b> = models.BooleanField(default=False)</td></tr>
+<tr class="separator:a9d50db489e9376c29a5d7067b38aa4ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1d137418a78787b33e6d60b05c90fd8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1d137418a78787b33e6d60b05c90fd8"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>default_state</b> = models.IntegerField(default=0)</td></tr>
+<tr class="separator:af1d137418a78787b33e6d60b05c90fd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><pre class="fragment">concrete parent class for anything the player can interact with </pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
+<div class="textblock"><pre class="fragment">concrete parent class for anything the player can interact with </pre> </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a6bbb31cf9effd80f5e97bf63c4827672"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def gameworld.models.FixedItem.addItemUse </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>pickup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>use_pattern</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>use_message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>consumed</em> = <code>False</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>on_item</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>change_self</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>change_other</em> = <code>None</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">use_pattern: use the NAME and OTHER wildcards to replace the item and on_item names
+</pre> 
+</div>
+</div>
+<a class="anchor" id="a7370da9e51244d00b57ec21566f23040"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def gameworld.models.FixedItem.addKeyUse </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>on_door</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>use_message</em> = <code>&quot;&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>use_pattern</em> = <code>&quot;&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Usage for keys 
+    use_pattern: use the DOOR wildcard to replace with appropriate door(s)
+</pre> 
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>gameworld/models.py</li>
 </ul>
 </div><!-- contents -->

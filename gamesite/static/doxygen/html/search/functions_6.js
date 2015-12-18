@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['player_5flogout',['player_logout',['../namespaceplayer_1_1views.html#a770d9c35d4de8b030e2a2e5da6b7edcd',1,'player::views']]]
+  ['json',['json',['../classgamestate_1_1models_1_1_game_state.html#a2ec0f178c8af809edea4b8a827db72cf',1,'gamestate::models::GameState']]]
 ];

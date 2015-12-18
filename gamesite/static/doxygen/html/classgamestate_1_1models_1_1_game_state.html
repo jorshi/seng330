@@ -106,6 +106,10 @@ Inheritance diagram for gamestate.models.GameState:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a6d026bd3219a76b3168dd29a8b050ea7"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgamestate_1_1models_1_1_game_state.html#a6d026bd3219a76b3168dd29a8b050ea7">add_room</a> (self, room_name)</td></tr>
+<tr class="separator:a6d026bd3219a76b3168dd29a8b050ea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ec0f178c8af809edea4b8a827db72cf"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgamestate_1_1models_1_1_game_state.html#a2ec0f178c8af809edea4b8a827db72cf">json</a> (self)</td></tr>
+<tr class="separator:a2ec0f178c8af809edea4b8a827db72cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37a88ce75f5c67c87cda310a9193c972"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37a88ce75f5c67c87cda310a9193c972"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>__unicode__</b> (self)</td></tr>
 <tr class="separator:a37a88ce75f5c67c87cda310a9193c972"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,14 +120,64 @@ Static Public Attributes</h2></td></tr>
 tuple&#160;</td><td class="memItemRight" valign="bottom"><b>player</b> = models.OneToOneField('player.Player', primary_key=True)</td></tr>
 <tr class="separator:aa1cdd45212d84a433d9760c418f86d33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a774dadc0aea895d08b1c71318df034f2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a774dadc0aea895d08b1c71318df034f2"></a>
-tuple&#160;</td><td class="memItemRight" valign="bottom"><b>current_room</b> = models.ForeignKey('gameworld.Room')</td></tr>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>current_room</b> = models.ForeignKey('gamestate.RoomState', null=True)</td></tr>
 <tr class="separator:a774dadc0aea895d08b1c71318df034f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a334398887a6b563127cd3fcea762085a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a334398887a6b563127cd3fcea762085a"></a>
-tuple&#160;</td><td class="memItemRight" valign="bottom"><b>inventory</b> = models.ManyToManyField('gameworld.Item')</td></tr>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>inventory</b> = models.ManyToManyField('gameworld.ItemUseState')</td></tr>
 <tr class="separator:a334398887a6b563127cd3fcea762085a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><pre class="fragment">Saves the state of player's current game </pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
+<div class="textblock"><pre class="fragment">Saves the state of player's current game </pre> </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a6d026bd3219a76b3168dd29a8b050ea7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def gamestate.models.GameState.add_room </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>room_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Add a room state if this is the
+first time the player has entered this room.
+
+Returns the RoomState.
+</pre> 
+</div>
+</div>
+<a class="anchor" id="a2ec0f178c8af809edea4b8a827db72cf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def gamestate.models.GameState.json </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Returns a serializable dictionary. 
+room - the current room state
+inventory - a list of the items in player's inventory
+</pre> 
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>gamestate/models.py</li>
 </ul>
 </div><!-- contents -->

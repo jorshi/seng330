@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['set_5fdoor',['set_door',['../classgameworld_1_1models_1_1_room.html#a8ad7729f23056247e7e98f8760acb2b7',1,'gameworld::models::Room']]]
+  ['login_5fregister',['login_register',['../namespaceplayer_1_1views.html#a82bad11beb6de221ec1b1fd74f6f8cab',1,'player::views']]]
 ];

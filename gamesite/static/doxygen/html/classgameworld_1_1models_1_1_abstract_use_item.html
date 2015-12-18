@@ -88,7 +88,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classgameworld_1_1models_1_1_abstract_use_item-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -101,30 +101,38 @@ Inheritance diagram for gameworld.models.AbstractUseItem:</div>
  <div class="center">
   <img src="classgameworld_1_1models_1_1_abstract_use_item.png" usemap="#gameworld.models.AbstractUseItem_map" alt=""/>
   <map id="gameworld.models.AbstractUseItem_map" name="gameworld.models.AbstractUseItem_map">
-<area href="classgameworld_1_1models_1_1_use_decoration.html" alt="gameworld.models.UseDecoration" shape="rect" coords="0,112,216,136"/>
-<area href="classgameworld_1_1models_1_1_use_inventory_item.html" alt="gameworld.models.UseInventoryItem" shape="rect" coords="226,112,442,136"/>
+<area href="classgameworld_1_1models_1_1_use_decoration.html" alt="gameworld.models.UseDecoration" shape="rect" coords="0,112,225,136"/>
+<area href="classgameworld_1_1models_1_1_use_key.html" alt="gameworld.models.UseKey" shape="rect" coords="235,112,460,136"/>
+<area href="classgameworld_1_1models_1_1_use_pickupable_item.html" alt="gameworld.models.UsePickupableItem" shape="rect" coords="470,112,695,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgameworld_1_1models_1_1_abstract_use_item_1_1_meta.html">Meta</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a2e08661ba10b4115bafe8377f76f0fa5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e08661ba10b4115bafe8377f76f0fa5"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>json</b> (self, room_name)</td></tr>
+<tr class="separator:a2e08661ba10b4115bafe8377f76f0fa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a5b880995a862bdc3abff5f0119a1d7f1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b880995a862bdc3abff5f0119a1d7f1"></a>
-tuple&#160;</td><td class="memItemRight" valign="bottom"><b>keywords</b> = models.CharField(max_length=200)</td></tr>
-<tr class="separator:a5b880995a862bdc3abff5f0119a1d7f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afde5cfce5ae186fc4455637e2194e893"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afde5cfce5ae186fc4455637e2194e893"></a>
-tuple&#160;</td><td class="memItemRight" valign="bottom"><b>desc</b> = models.TextField()</td></tr>
-<tr class="separator:afde5cfce5ae186fc4455637e2194e893"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fe9369d62c02ebc8c2aa270c5846fca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1fe9369d62c02ebc8c2aa270c5846fca"></a>
-tuple&#160;</td><td class="memItemRight" valign="bottom"><b>script</b> = models.CharField(max_length=200, blank=True)</td></tr>
-<tr class="separator:a1fe9369d62c02ebc8c2aa270c5846fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d1c10334b362c8d9fb0c3565bb5f517"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d1c10334b362c8d9fb0c3565bb5f517"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>objects</b> = InheritanceManager()</td></tr>
+<tr class="separator:a0d1c10334b362c8d9fb0c3565bb5f517"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90fb147aba8a45b549e7de9779bdbb90"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a90fb147aba8a45b549e7de9779bdbb90"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>use_message</b> = models.TextField()</td></tr>
+<tr class="separator:a90fb147aba8a45b549e7de9779bdbb90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae95ae56dec29e760cb02466df2282757"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae95ae56dec29e760cb02466df2282757"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>use_pattern</b> = models.CharField(max_length=256, blank=True)</td></tr>
+<tr class="separator:ae95ae56dec29e760cb02466df2282757"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2862ffbf431b1cc108f6349adabef513"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2862ffbf431b1cc108f6349adabef513"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>item_use_state</b> = models.ForeignKey(&quot;ItemUseState&quot;, related_name='%(class)s_action')</td></tr>
+<tr class="separator:a2862ffbf431b1cc108f6349adabef513"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ec294eeec870580260a7d3ee92d5d07"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ec294eeec870580260a7d3ee92d5d07"></a>
+tuple&#160;</td><td class="memItemRight" valign="bottom"><b>item_change</b> = models.ForeignKey('<a class="el" href="classgameworld_1_1models_1_1_item_use_state.html">ItemUseState</a>', null=True, related_name='%(class)s_cause')</td></tr>
+<tr class="separator:a4ec294eeec870580260a7d3ee92d5d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><pre class="fragment">describes how an item can be used </pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
+<div class="textblock"><pre class="fragment">Describes how an item can be used </pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>gameworld/models.py</li>
 </ul>
 </div><!-- contents -->

@@ -25,9 +25,8 @@ urlpatterns = patterns('',
 
 )
 
-# Serve Doxygen static files in development #TODO look into serving for production
-if gamesite.settings.DEBUG:
-    urlpatterns += [
-        url(r'^doxygen/(?P<path>.*)$',
-        gamesite.views.doxygen,
-    )]
+# Serve Doxygen static files
+urlpatterns += [
+    url(r'^doxygen/(?P<path>.*)$',
+    gamesite.views.doxygen,
+)]
